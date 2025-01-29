@@ -33,6 +33,22 @@ export default function Sidebar({ setActiveSection }) {
           </motion.div>
         ))}
       </div>
+      <div className={styles.sidebarFooter}>
+        <motion.button
+          className={styles.pillButton}
+          whileHover={{ backgroundColor: "rgba(239, 137, 13, 0.3)" , scale: 1.05}}
+          whileTap={{ scale: 0.95 }}
+        >
+          Edit Profile
+        </motion.button>
+        <motion.button
+          className={styles.pillButton}
+          whileHover={{ backgroundColor: "rgba(239, 137, 13, 0.3)", scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Logout
+        </motion.button>
+      </div>
     </nav>
   )
 }

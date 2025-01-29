@@ -1,19 +1,22 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #F8FAFC;
-    color: black;
-  }
-  
-  .content {
-    display: flex;
-    flex: 1;
-  }
-  
-  .main {
-    flex: 3;
-    padding: 20px;
-  }
-  
-  
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #F8FAFC;
+  color: black;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.main {
+  flex: 3;
+  overflow-y: auto; 
+  height: 82vh;
+  padding: 5px;
+}
+
