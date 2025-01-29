@@ -5,7 +5,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import styles from "./chat-requests.module.css"
 
-const ChatRequest = ({ name, iconUrl, text, time }) => (
+const ChatRequest = ({ name, iconUrl, text, time, cgpa, branch }) => (
   <motion.div
     className={styles.chatRequest}
     initial={{ opacity: 0, y: 20 }}
@@ -16,7 +16,12 @@ const ChatRequest = ({ name, iconUrl, text, time }) => (
       <Image src={iconUrl || "/placeholder.svg"} alt={name} width={40} height={40} />
     </div>
     <div className={styles.content}>
-      <h3>{name}</h3>
+      <div className={styles.nameInfo}>
+        <h3>{name}</h3>
+        <span className={styles.academicInfo}>
+          CGPA: {cgpa} | {branch}
+        </span>
+      </div>
       <p>{text}</p>
     </div>
     <div className={styles.time}>{time}</div>
