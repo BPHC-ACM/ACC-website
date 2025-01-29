@@ -50,10 +50,21 @@
     flex-grow: 1;
   }
   
-  .content h3 {
+  .nameInfo {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  
+  .nameInfo h3 {
     margin: 0;
     font-size: 1rem;
     color: #333;
+  }
+  
+  .academicInfo {
+    font-size: 0.8rem;
+    color: #666;
   }
   
   .content p {
@@ -98,6 +109,4 @@
   
   .rejectButton:hover {
     background-color: #da190b;
-  }
-  
-  
+  } 
