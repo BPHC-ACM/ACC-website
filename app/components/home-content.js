@@ -6,6 +6,9 @@ import Section1 from "./section1"       //Dashboard
 import Section2 from "./section2"       //Requests
 import Section3 from "./section3"       //Chats
 import Section4 from "./section4"       //Forum
+import Section5 from "./section5"       //Forum
+
+
 import Sidebar from "./sidebar"
 import styles from "../page.module.css"
 
@@ -22,6 +25,8 @@ export default function HomeContent() {
         return <Section3 key="section3" />
       case "section4":
         return <Section4 key="section4" />
+      case "section5":
+        return<Section5 key="section5"/>
       default:
         return <Section1 key="section1" />
     }
