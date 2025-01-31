@@ -6,7 +6,7 @@ import styles from "./sidebar.module.css"
 
 export default function Sidebar({ setActiveSection }) {
   const [activeButton, setActiveButton] = useState(null)
-  const sections = ["Dashboard", "Requests", "Chats", "Forum"]
+  const sections = ["Dashboard", "Requests", "Chats", "Forum","Forms"]
 
   const handleClick = (index) => {
     setActiveSection(`section${index + 1}`)
@@ -52,4 +52,3 @@ export default function Sidebar({ setActiveSection }) {
     </nav>
   )
 }
-
