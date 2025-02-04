@@ -5,6 +5,28 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import styles from './chat-requests.module.css';
 
+const ChatRequestSkeleton = () => (
+	<motion.div
+		className={`${styles.chatRequest} ${styles.skeleton}`}
+		initial={{ opacity: 0 }}
+		animate={{ opacity: 1 }}
+		transition={{ duration: 0.5 }}
+	>
+		<div className={styles.avatar}>
+			<div className={styles.skeletonAvatar} />
+		</div>
+		<div className={styles.content}>
+			<div className={styles.skeletonText} />
+			<div className={styles.skeletonSubText} />
+		</div>
+		<div className={styles.skeletonTime} />
+		<div className={styles.actions}>
+			<div className={styles.skeletonButton} />
+			<div className={styles.skeletonButton} />
+		</div>
+	</motion.div>
+);
+
 const ChatRequest = ({
 	name,
 	iconurl,
@@ -59,6 +81,7 @@ const ChatRequest = ({
 export default function ChatRequests() {
 	const [requests, setRequests] = useState([]);
 	const [totalRequests, setTotalRequests] = useState(0);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchChatRequests = async () => {
@@ -66,6 +89,7 @@ export default function ChatRequests() {
 			const data = await response.json();
 			setRequests(data.requests);
 			setTotalRequests(data.totalRequests);
+			setLoading(false);
 		};
 
 		fetchChatRequests();
@@ -77,9 +101,13 @@ export default function ChatRequests() {
 				Incoming Chat Requests ({totalRequests})
 			</h2>
 			<div className={styles.requestsContainer}>
-				{requests.map((request, index) => (
-					<ChatRequest key={index} {...request} />
-				))}
+				{loading
+					? Array.from({ length: 3 }).map((_, index) => (
+							<ChatRequestSkeleton key={index} />
+					  ))
+					: requests.map((request, index) => (
+							<ChatRequest key={index} {...request} />
+					  ))}
 			</div>
 		</div>
 	);
