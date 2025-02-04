@@ -28,54 +28,72 @@ const ChatRequestSkeleton = () => (
 );
 
 const ChatRequest = ({
+	id,
 	name,
 	iconurl,
 	subject,
 	relativeTime,
 	cgpa,
 	branch,
-}) => (
-	<motion.div
-		className={styles.chatRequest}
-		initial={{ opacity: 0, y: 20 }}
-		animate={{ opacity: 1, y: 0 }}
-		transition={{ duration: 0.3 }}
-	>
-		<div className={styles.avatar}>
-			<Image
-				src={iconurl || '/placeholder.svg'}
-				alt={name}
-				width={40}
-				height={40}
-			/>
-		</div>
-		<div className={styles.content}>
-			<div className={styles.nameInfo}>
-				<h3>{name}</h3>
-				<span className={styles.academicInfo}>
-					CGPA: {cgpa} | {branch}
-				</span>
+	status,
+	onStatusChange,
+}) => {
+	const handleStatusUpdate = async (newStatus) => {
+		if (!id) {
+			console.error('Request ID is missing!');
+			return;
+		}
+
+		try {
+			const response = await fetch('/api/chat-requests', {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ id, status: newStatus }),
+			});
+
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data.error || 'Failed to update request');
+			}
+
+			onStatusChange(id, newStatus);
+		} catch (error) {
+			console.error('Error updating status:', error);
+		}
+	};
+
+	return (
+		<><motion.div
+			className={styles.chatRequest}
+			initial={{ opacity: 0, y: 20 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.3 }}
+		>
+			<div className={styles.avatar}>
+				<Image
+					src={iconurl || '/placeholder.svg'}
+					alt={name}
+					width={40}
+					height={40} />
 			</div>
 			<p>{subject}</p>
-		</div>
-		<div className={styles.time}>{relativeTime}</div>
-		<div className={styles.actions}>
-			<motion.button
-				className={`${styles.actionButton} ${styles.acceptButton}`}
-				whileHover={{ scale: 1.05 }}
-				whileTap={{ scale: 0.95 }}
-			>
-				Accept
-			</motion.button>
-			<motion.button
-				className={`${styles.actionButton} ${styles.rejectButton}`}
-				whileHover={{ scale: 1.05 }}
-				whileTap={{ scale: 0.95 }}
-			>
-				Decline
-			</motion.button>
-		</div>
-	</motion.div>
+		</motion.div><div className={styles.time}>{relativeTime}</div><div className={styles.actions}>
+				<motion.button
+					className={`${styles.actionButton} ${styles.acceptButton}`}
+					whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.95 }}
+				>
+					Accept
+				</motion.button>
+				<motion.button
+					className={`${styles.actionButton} ${styles.rejectButton}`}
+					whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.95 }}
+				>
+					Decline
+				</motion.button>
+			</div></>
+	// </motion.div>
 );
 
 export default function ChatRequests() {
@@ -85,15 +103,28 @@ export default function ChatRequests() {
 
 	useEffect(() => {
 		const fetchChatRequests = async () => {
-			const response = await fetch('/api/chat-requests');
-			const data = await response.json();
-			setRequests(data.requests);
-			setTotalRequests(data.totalRequests);
-			setLoading(false);
+			try {
+				const response = await fetch('/api/chat-requests');
+				const data = await response.json();
+				setRequests(data.requests);
+				setTotalRequests(data.totalRequests);
+			} catch (error) {
+				console.error('Error fetching chat requests:', error);
+			} finally {
+				setLoading(false);
+			}
 		};
 
 		fetchChatRequests();
 	}, []);
+
+	const handleStatusChange = (id, newStatus) => {
+		setRequests((prevRequests) =>
+			prevRequests.map((request) =>
+				request.id === id ? { ...request, status: newStatus } : request
+			)
+		);
+	};
 
 	return (
 		<div className={styles.container}>
@@ -105,10 +136,15 @@ export default function ChatRequests() {
 					? Array.from({ length: 3 }).map((_, index) => (
 							<ChatRequestSkeleton key={index} />
 					  ))
-					: requests.map((request, index) => (
-							<ChatRequest key={index} {...request} />
+					: requests.map((request) => (
+							<ChatRequest
+								key={request.id}
+								id={request.id}
+								{...request}
+								onStatusChange={handleStatusChange}
+							/>
 					  ))}
 			</div>
 		</div>
 	);
-}
+}}
