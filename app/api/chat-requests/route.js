@@ -16,7 +16,7 @@ export async function GET() {
 	const { data, error } = await supabase
 		.from('requests')
 		.select(
-			'name, iconurl, subject, cgpa, branch, created_at, status, details'
+			'id, name, iconurl, subject, cgpa, branch, created_at, status, details'
 		);
 
 	if (error)
@@ -42,7 +42,7 @@ export async function PATCH(req) {
 	try {
 		const { id, status } = await req.json();
 
-		if (!id || !['accepted', 'denied'].includes(status)) {
+		if (!id || !['accepted', 'declined'].includes(status)) {
 			return NextResponse.json(
 				{ error: 'Invalid request data' },
 				{ status: 400 }
@@ -53,7 +53,13 @@ export async function PATCH(req) {
 			.from('requests')
 			.update({ status })
 			.eq('id', id);
-		if (error) throw error;
+		if (error) {
+			console.error('Supabase Update Error:', error);
+			return NextResponse.json(
+				{ error: 'Failed to update request', details: error },
+				{ status: 500 }
+			);
+		}
 
 		return NextResponse.json({
 			message: `Request ${id} updated to ${status}`,
@@ -80,6 +86,7 @@ export async function POST(req) {
 
 		const { data, error } = await supabase.from('requests').insert([
 			{
+				id,
 				name,
 				cgpa,
 				branch,
