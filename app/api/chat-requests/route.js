@@ -1,84 +1,27 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Create a .env.local in the project root directory and add the following:
+
+// SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a2R3Y3F4cWlyb2hucGxldGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg2NTA3NTgsImV4cCI6MjA1NDIyNjc1OH0.vQ5C9_onYsma85zA4402q4udtSnilu5uEmmA5d7qMGg
+
+// SUPABASE_URL = https://xvkdwcqxqirohnpleteu.supabase.co
 
 export async function GET() {
-  const mockRequests = [            // get the name , image, query, and time from database in this format
-    {
-      name: "Shree",
-      iconUrl: "/placeholder.svg?height=40&width=40",
-      text: "Need Help in Frontend",
-      time: "5m ago",
-      cgpa : "7.0",
-      branch : "EEE"
-    },
-    {
-        name: "Ritesh",
-        iconUrl: "/placeholder.svg?height=40&width=40",
-        text: "ANC ajao",
-        time: "1m ago",
-        cgpa : "8.0",
-        branch : "ECE"
-    },
-    {
-        name: "Devansh",
-        iconUrl: "/placeholder.svg?height=40&width=40",
-        text: "Update on the project",
-        time: "10m ago",
-        cgpa : "6.9",
-        branch : "CS"
-    },
-    {
-        name: "Dhairya",
-        iconUrl: "/placeholder.svg?height=40&width=40",
-        text: "Hey, can we chat about the project?",
-        time: "1h ago",
-        cgpa : "7.0",
-        branch : "EEE"
-    },
-    {
-        name: "Aravind",
-        iconUrl: "/placeholder.svg?height=40&width=40",
-        text: "Missed the meet",
-        time: "2h ago",
-        cgpa : "7.0",
-        branch : "EEE"
-    },
-    {
-      name: "Shashwat",
-      iconUrl: "/placeholder.svg?height=40&width=40",
-      text: "I have a question about the latest update.",
-      time: "15m ago",
-      cgpa : "7.0",
-      branch : "EEE"
-    },
-    {
-      name: "Vikashh",
-      iconUrl: "/placeholder.svg?height=40&width=40",
-      text: "Goodnight",
-      time: "30m ago",
-      cgpa : "7.0",
-      branch : "EEE"
-    },
-    {
-      name: "Arinjay",
-      iconUrl: "/placeholder.svg?height=40&width=40",
-      text: "Meet ajao",
-      time: "1m ago",
-      cgpa : "7.0",
-      branch : "EEE"
-    },
-    {
-      name: "Arinjay",
-      iconUrl: "/placeholder.svg?height=40&width=40",
-      text: "Nvm cancelled",
-      time: "1m ago",
-      cgpa : "7.0",
-      branch : "EEE"
-    },
-  ]
+	const { data, error } = await supabase
+		.from('requests')
+		.select('name, iconurl, text, time, cgpa, branch');
 
-  return NextResponse.json({
-    requests: mockRequests,
-    totalRequests: mockRequests.length,
-  })
+	if (error) {
+		return NextResponse.json({ error: error.message }, { status: 500 });
+	}
+
+	return NextResponse.json({
+		requests: data,
+		totalRequests: data.length,
+	});
 }
-
