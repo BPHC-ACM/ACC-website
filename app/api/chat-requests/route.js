@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { formatDistanceToNow } from 'date-fns';
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
@@ -14,14 +15,25 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export async function GET() {
 	const { data, error } = await supabase
 		.from('requests')
-		.select('name, iconurl, text, time, cgpa, branch');
+		.select('name, iconurl, text, cgpa, branch, created_at');
 
 	if (error) {
 		return NextResponse.json({ error: error.message }, { status: 500 });
 	}
 
+	const requestsWithRelativeTime = data.map((request) => {
+		const utcDate = new Date(request.created_at);
+
+		const istDate = new Date(utcDate.getTime() + 5.5 * 60 * 60 * 1000);
+
+		return {
+			...request,
+			relativeTime: formatDistanceToNow(istDate, { addSuffix: true }),
+		};
+	});
+
 	return NextResponse.json({
-		requests: data,
-		totalRequests: data.length,
+		requests: requestsWithRelativeTime,
+		totalRequests: requestsWithRelativeTime.length,
 	});
 }
