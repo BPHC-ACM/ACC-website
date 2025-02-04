@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 .sidebar {
     background-color: #0B1215;
     color: white;
@@ -7,44 +10,52 @@
     justify-content: space-between;
     align-items: center;
     padding: 4vh;
-    height: 79vh;
+    height: 90vh;
     top: 8vh;
     overflow-y: auto; 
+    font-family: "Poppins", serif;
+    font-weight: 100;
+    font-style: normal;
   }
   
   .navContainer {
+    margin-top:25px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
   }
   
   .navItemWrapper {
     width: 80%;
     border-radius: 20px;
-    margin: 5px 0;
+    margin: 1px 0;
   }
   
   .navItem {
     background: none;
     border: none;
     color: white;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     cursor: pointer;
-    padding: 15px 30px;
+    padding: 5px 30px;
     font-weight: bold;
     width: 100%;
-    text-align: center;
+    text-align: left;
+
     transition: color 0.3s ease;
   }
   
   .navItem:hover {
     color: #ffffff;
   }
-  
+
   .navItem.active {
     font-weight: bolder;
-    font-size: 1.8rem;
+    font-size: 1.3rem;
+    background-color:#f8fafc;
+    color:#0B1215;
+    border-radius: 20px;
   }
   
   .sidebarFooter {
@@ -56,10 +67,10 @@
   }
   
   .pillButton {
-    background-color: rgba(200, 200, 200, 0.3);
+    background-color:black;
     border: none;
     color: white;
-    font-size: 1.4rem;
+    font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
     padding: 10px 20px;
@@ -67,9 +78,16 @@
     text-align: center;
     border-radius: 50px; 
     margin: 5px 0;
+    display:flex;
+    align-items:center;
+    justify-content:space-evenly;
     transition: background-color 0.2s ease;
   }
-  
+  .userInfo{
+    display:flex;
+    /* flex-direction:column; */
+    gap:100px;
+  }
   .pillButton:hover {
-    background-color: rgba(200, 200, 200, 0.3);
+
   }
