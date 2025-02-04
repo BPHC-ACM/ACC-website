@@ -5,7 +5,14 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import styles from './chat-requests.module.css';
 
-const ChatRequest = ({ name, iconurl, text, relativeTime, cgpa, branch }) => (
+const ChatRequest = ({
+	name,
+	iconurl,
+	subject,
+	relativeTime,
+	cgpa,
+	branch,
+}) => (
 	<motion.div
 		className={styles.chatRequest}
 		initial={{ opacity: 0, y: 20 }}
@@ -27,7 +34,7 @@ const ChatRequest = ({ name, iconurl, text, relativeTime, cgpa, branch }) => (
 					CGPA: {cgpa} | {branch}
 				</span>
 			</div>
-			<p>{text}</p>
+			<p>{subject}</p>
 		</div>
 		<div className={styles.time}>{relativeTime}</div>
 		<div className={styles.actions}>

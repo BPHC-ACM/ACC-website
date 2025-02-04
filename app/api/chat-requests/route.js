@@ -15,17 +15,17 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export async function GET() {
 	const { data, error } = await supabase
 		.from('requests')
-		.select('name, iconurl, text, cgpa, branch, created_at');
+		.select(
+			'name, iconurl, subject, cgpa, branch, created_at, status, details'
+		);
 
-	if (error) {
+	if (error)
 		return NextResponse.json({ error: error.message }, { status: 500 });
-	}
 
 	const requestsWithRelativeTime = data.map((request) => {
-		const utcDate = new Date(request.created_at);
-
-		const istDate = new Date(utcDate.getTime() + 5.5 * 60 * 60 * 1000);
-
+		const istDate = new Date(
+			new Date(request.created_at).getTime() + 5.5 * 60 * 60 * 1000
+		);
 		return {
 			...request,
 			relativeTime: formatDistanceToNow(istDate, { addSuffix: true }),
@@ -34,6 +34,66 @@ export async function GET() {
 
 	return NextResponse.json({
 		requests: requestsWithRelativeTime,
-		totalRequests: requestsWithRelativeTime.length,
+		totalRequests: data.length,
 	});
+}
+
+export async function PATCH(req) {
+	try {
+		const { id, status } = await req.json();
+
+		if (!id || !['accepted', 'denied'].includes(status)) {
+			return NextResponse.json(
+				{ error: 'Invalid request data' },
+				{ status: 400 }
+			);
+		}
+
+		const { error } = await supabase
+			.from('requests')
+			.update({ status })
+			.eq('id', id);
+		if (error) throw error;
+
+		return NextResponse.json({
+			message: `Request ${id} updated to ${status}`,
+		});
+	} catch (err) {
+		return NextResponse.json({ error: err.message }, { status: 500 });
+	}
+}
+
+export async function POST(req) {
+	try {
+		const { name, subject, cgpa, branch, details } = await req.json();
+
+		if (!name || !subject || !cgpa || !branch || !details) {
+			return NextResponse.json(
+				{ error: 'Missing fields' },
+				{ status: 400 }
+			);
+		}
+
+		const iconurl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+			name
+		)}&background=random`;
+
+		const { data, error } = await supabase.from('requests').insert([
+			{
+				name,
+				cgpa,
+				branch,
+				subject,
+				details,
+				iconurl,
+				status: 'pending',
+			},
+		]);
+
+		if (error) throw error;
+
+		return NextResponse.json({ message: 'Request created', request: data });
+	} catch (err) {
+		return NextResponse.json({ error: err.message }, { status: 500 });
+	}
 }
