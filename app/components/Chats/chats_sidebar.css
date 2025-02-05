@@ -1,0 +1,11 @@
+*{
+    margin:0;
+    padding:0;
+ 
+}
+.sidebar{
+    width:20vw;
+    height:80vh;
+    background-color: #706C61;
+    color:white;
+}
