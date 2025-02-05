@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getChatHistory } from "@/app/utils/db";
+import { getChatHistory } from "../../../utils/db";
 
 export async function GET(
   req: Request,

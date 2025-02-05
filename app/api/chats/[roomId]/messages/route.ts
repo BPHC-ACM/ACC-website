@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { saveMessage } from "@/app/utils/db";
-import type { Message } from "@/app/utils/types";
+import { saveMessage } from "../../../../utils/db";
+import type { Message } from "../../../../utils/types";
 
 export async function POST(
   req: Request,
