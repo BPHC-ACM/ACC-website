@@ -95,7 +95,7 @@ const ChatRequest = ({
 			</div></>
 	// </motion.div>
 );
-
+}
 export default function ChatRequests() {
 	const [requests, setRequests] = useState([]);
 	const [totalRequests, setTotalRequests] = useState(0);
@@ -147,4 +147,4 @@ export default function ChatRequests() {
 			</div>
 		</div>
 	);
-}}
+}
