@@ -1,11 +1,12 @@
 import Section from "../section"
+import Forums from "./forum";
 
 export default function Section4() {
   return (
     <Section
       title="Forum"
-      content="This is the content for Forum."
+      content={<Forums />}
+      
     />
   )
 }
-
