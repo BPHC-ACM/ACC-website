@@ -1,11 +1,62 @@
-*{
-    margin:0;
-    padding:0;
- 
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 .sidebar{
+    background-color:#1E1E1E;
+    color:white;
     width:20vw;
     height:80vh;
-    background-color: #706C61;
+    margin-bottom:0px;
+    margin:0px;
+    padding:10px;
+    border-radius:5px;
+    font-family: "Poppins", serif;
+    font-weight: 300;
+    font-style: normal;
+}
+.chats_heading{
+    margin:auto;
+    padding:10px;
+    font-size:2rem;
+    margin-bottom:15px;
+}
+.students-container{
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+
+}
+.searchbox{
+    padding: 5px;
+    margin:auto;
+    margin-bottom:20px;
+    width:80%;
+    height:30px;
+    font-weight: 300;
+    font-size:1.2rem;
+    padding:3px;
+    border-radius:5px;
     color:white;
+}
+.glass{
+    background: linear-gradient(
+			135deg,
+			rgba(255, 255, 255, 0.1),
+			rgba(255, 255, 255, 0)
+		);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.37);
+}
+.chat{
+    display:flex;
+    font-family: "Poppins", serif;
+    font-weight: 300;
+    font-style: normal;
+    align-items:center;
+    gap:20px;
+    font-size:1.2rem;
+}
+.chat div{
+    text-align:left;
 }
