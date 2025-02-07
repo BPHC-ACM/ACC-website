@@ -5,7 +5,7 @@ import { PlusIcon, Search, Loader2, ArrowRight } from "lucide-react";
 import { Input } from "./input";
 import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
-import QuestionDetails from "../Forum/questions/[id]/questionDetails"; // Import QuestionDetails component
+import QuestionDetails from "../Forum/questions/[id]/QuestionDetails"; // Import QuestionDetails component
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL, 
