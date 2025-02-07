@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+}
+.chat-display{
+    background-image:url('/chats_bg.jpeg');
+    height:82vh;
+    width:90vw;
+    border-radius:5px;
+    color:white;
+    font-family: "Poppins", serif;
+    font-weight: 300;
+    font-style: normal;
+}
+/* For WebKit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 8px; /* Adjust width as needed */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: black; /* Matches your background */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: lightgrey; /* Light grey for contrast */
+    border-radius: 4px; /* Smooth edges */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #d3d3d3; /* Slightly brighter on hover */
+  }
+  .glass{
+    background: linear-gradient(
+			135deg,
+			rgba(255, 255, 255, 0.1),
+			rgba(94, 84, 84, 0)
+		);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.37);
+}
+.header{
+    height:8vh;
+    margin:0;
+    padding:0;
+    /* width:100%; */
+    background-color:#222222;
+    border:1px solid black;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:3px;
+}
+.messages-container{
+    margin:3px;
+}
+.defaultmsg{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-family: "Poppins", serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size:1.2rem;
+    opacity:0.9;
+    
+}
+.defaultmsg img{
+    height:120px;
+    opacity:0.9;
+}
+.message{
+    display:flex;
+    flex-direction:column;
+    max-width:100%;
+    
+
+}
+.student-message{
+    text-align:left;
+    background-color:black;
+}
+.professor-message{
+    text-align:right;
+    background-color: white;
+    color:black;
+}

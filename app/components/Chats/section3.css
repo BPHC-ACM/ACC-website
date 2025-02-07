@@ -5,5 +5,7 @@
 }
 .chatsystem{
     background-color:black;
-    
+    display:flex;
+    flex-direction:row;
+    border-radius:5px;
 }

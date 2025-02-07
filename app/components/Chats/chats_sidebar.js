@@ -4,8 +4,8 @@ import styles from "./chats_sidebar.css"
 import {IconUserCircle, IconSearch } from "@tabler/icons-react";
 import { useState } from "react"
 import { motion } from "framer-motion"
-export default function chats_Sidebar({professorId}) {
-    const [selectedRoom, setSelectedRoom] = useState(null);
+export default function chats_Sidebar({professorId, setSelectedRoom, selectedRoom}) {
+    
     const [searchQuery, setSearchQuery] = useState("");
     const filteredRooms = sampleInfo.rooms.filter(
         (room) => room.consultant.id === professorId
