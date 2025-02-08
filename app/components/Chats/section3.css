@@ -1,11 +1,9 @@
-*{
-    margin:0;
-    padding:0;
-    
+* {
+	margin: 0;
+	padding: 0;
 }
-.chatsystem{
-    background-color:black;
-    display:flex;
-    flex-direction:row;
-    border-radius:5px;
+.chatsystem {
+	background-color: black;
+	display: flex;
+	flex-direction: row;
 }

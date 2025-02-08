@@ -1,12 +1,8 @@
 .footer {
-    background-color: #000000;
-    color: white;
-    text-align: center;
-    padding: 0vh;
-    height: 6vh;
-    position: sticky;
-    bottom: 0;
-    z-index: 1000;
-  }
-  
-  
+	color: #000;
+	text-align: center;
+	padding: 0vh;
+	position: sticky;
+	bottom: 0;
+	z-index: 1000;
+}
