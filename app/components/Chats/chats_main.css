@@ -5,6 +5,7 @@
     padding:0;
 }
 .chat-display{
+    position:relative;
     background-image:url('/chats_bg.jpeg');
     height:82vh;
     width:90vw;
@@ -56,6 +57,8 @@
 }
 .messages-container{
     margin:3px;
+    display:flex;
+    flex-direction:column;
 }
 .defaultmsg{
     display:flex;
@@ -66,6 +69,7 @@
     gap:10px;
     font-family: "Poppins", serif;
     font-weight: 500;
+    color:white;
     font-style: normal;
     font-size:1.2rem;
     opacity:0.9;
@@ -78,10 +82,10 @@
 .message{
     display:flex;
     flex-direction:column;
-    max-width:100%;
-    
+    max-width:50%;
 
 }
+
 .student-message{
     text-align:left;
     background-color:black;
@@ -90,4 +94,15 @@
     text-align:right;
     background-color: white;
     color:black;
+}
+.message-input-container{
+    background-color: #222222;
+    color:white;
+    position: absolute;
+    bottom: 0;
+    width:98%;
+    border-radius:5px;
+}
+.message-input{
+    color:white;
 }
