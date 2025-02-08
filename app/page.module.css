@@ -17,6 +17,5 @@
 
 .main {
 	flex: 3;
-	overflow-y: auto;
 	font-family: 'Poppins', Arial, Helvetica, sans-serif;
 }
