@@ -52,13 +52,13 @@
 .header {
 	height: 8vh;
 	margin: 0;
-	padding: 0.5rem 1rem; /* Slightly more padding for better spacing */
+	padding: 0.5rem 1rem;
 	background-color: #e0e0e0;
 	color: #222;
 	display: flex;
 	align-items: center;
-	gap: 1rem; /* Keeps spacing proportional */
-	border-radius: 0 0.5rem 0.5rem 0; /* Smooth edges */
+	gap: 1rem;
+	border-radius: 0 0.5rem 0.5rem 0;
 }
 
 .avatar {
@@ -66,7 +66,7 @@
 	height: 50px;
 	border-radius: 50%;
 	object-fit: cover;
-	background-color: #777; /* Matches UI Avatars API */
+	background-color: #777;
 }
 
 .user-info {
@@ -82,7 +82,7 @@
 
 .user-id {
 	font-size: 0.9rem;
-	color: #555; /* Softer contrast for readability */
+	color: #555;
 }
 
 .messages-container {

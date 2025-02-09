@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 
 export default function ChatsMain({ selectedRoom }) {
 	const [newMessage, setNewMessage] = useState('');
-	const [messages, setMessages] = useState([]); // Start with an empty array
+	const [messages, setMessages] = useState([]);
 	const messagesContainerRef = useRef(null);
 
 	useEffect(() => {
@@ -24,7 +24,7 @@ export default function ChatsMain({ selectedRoom }) {
 			);
 			setMessages(selectedRoomData?.messages || []);
 		}
-	}, [selectedRoom]); // Update messages when selectedRoom changes
+	}, [selectedRoom]);
 
 	if (!selectedRoom) {
 		return (
@@ -60,7 +60,7 @@ export default function ChatsMain({ selectedRoom }) {
 		<div className='chat-display' style={{ width: '78%' }}>
 			<div className='header'>
 				<img
-					src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+					src={`https:
 						student.name
 					)}&background=777&color=fff&size=100`}
 					alt='User Avatar'
