@@ -66,19 +66,18 @@ export default function chats_Sidebar({
 								width: '90%',
 								marginLeft: '0.75rem',
 								cursor: 'pointer',
-								borderRadius: '8px', // Softer rounded corners
+								borderRadius: '8px',
 								display: 'flex',
 								alignItems: 'center',
-								gap: '12px', // Adds space between icon and text
+								gap: '12px',
 								textAlign: 'left',
 								boxShadow:
 									selectedRoom === room.roomid
-										? '0px 4px 8px rgba(0, 0, 0, 0.1)' // Subtle shadow for active chat
+										? '0px 4px 8px rgba(0, 0, 0, 0.1)'
 										: 'none',
 								transition: 'box-shadow 0.2s ease-in-out',
 							}}
 						>
-							{/* Dynamic UI Avatar */}
 							<img
 								src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
 									room.student.name
@@ -92,7 +91,6 @@ export default function chats_Sidebar({
 								}}
 							/>
 
-							{/* Chat Details */}
 							<div style={{ flex: 1 }}>
 								<p
 									style={{
