@@ -44,7 +44,7 @@ export default function ChatsMain({ selectedRoom }) {
 	const consultant = selectedRoomData?.consultant;
 
 	const sendMessage = () => {
-		if (newMessage.trim() === '') return; // Don't send empty messages
+		if (newMessage.trim() === '') return;
 
 		const newMsg = {
 			name: consultant.name,
@@ -52,26 +52,31 @@ export default function ChatsMain({ selectedRoom }) {
 			timestamp: new Date().toISOString(),
 		};
 
-		setMessages((prevMessages) => [...prevMessages, newMsg]); // Append new message to state
-		setNewMessage(''); // Clear input box
+		setMessages((prevMessages) => [...prevMessages, newMsg]);
+		setNewMessage('');
 	};
 
 	return (
 		<div className='chat-display' style={{ width: '78%' }}>
 			<div className='header'>
-				<IconUserCircle size={50} />
-				<div>
-					<p>{student.name}</p>
-					<p>{student.id}</p>
+				<img
+					src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+						student.name
+					)}&background=777&color=fff&size=100`}
+					alt='User Avatar'
+					className='avatar'
+				/>
+				<div className='user-info'>
+					<p className='user-name'>{student.name}</p>
+					<p className='user-id'>{student.id}</p>
 				</div>
 			</div>
 
-			{/* Messages Container */}
 			<div
 				className='messages-container'
 				ref={messagesContainerRef}
 				style={{
-					maxHeight: '80vh',
+					maxHeight: '78vh',
 					overflowY: 'auto',
 					padding: '0.5rem',
 					display: 'flex',
@@ -82,67 +87,60 @@ export default function ChatsMain({ selectedRoom }) {
 					.sort(
 						(a, b) => new Date(a.timestamp) - new Date(b.timestamp)
 					)
-					.map((msg, index) => (
-						<div
-							key={index}
-							className={
-								msg.name === student.name
-									? 'message student-message'
-									: 'message professor-message'
-							}
-							style={{
-								padding: '10px',
-								borderRadius: '10px',
-								marginBottom: '10px',
-								alignSelf:
-									msg.name === student.name
-										? 'flex-start'
-										: 'flex-end',
-								backgroundColor:
-									msg.name === student.name
-										? '#000000'
-										: '#e8e6e6',
-								color:
-									msg.name === student.name
-										? '#ffffff'
-										: '#000000',
-							}}
-						>
-							{msg.content}
-							<br />
-							<span style={{ fontSize: '12px', color: 'gray' }}>
-								{new Date(msg.timestamp).toLocaleString()}
-							</span>
-						</div>
-					))}
+					.map((msg, index) => {
+						const isStudent = msg.name === student.name;
+						return (
+							<div
+								key={index}
+								className={`message ${
+									isStudent
+										? 'student-message'
+										: 'professor-message'
+								}`}
+							>
+								{msg.content}
+
+								<span
+									className='timestamp'
+									style={{
+										left: isStudent ? '0.5rem' : 'auto',
+										right: isStudent ? 'auto' : '0.5rem',
+									}}
+								>
+									{new Date(msg.timestamp).toLocaleString(
+										'en-GB',
+										{
+											day: '2-digit',
+											month: '2-digit',
+											hour: '2-digit',
+											minute: '2-digit',
+											hour12: false,
+										}
+									)}
+								</span>
+
+								<style jsx>{`
+									.message:hover .timestamp {
+										opacity: 1;
+									}
+								`}</style>
+							</div>
+						);
+					})}
 			</div>
 
-			{/* Message Input & Send Button */}
-			<div
-				className='message-input-container'
-				style={{ display: 'flex', padding: '10px' }}
-			>
+			<div className='message-input-container'>
 				<input
 					type='text'
 					value={newMessage}
 					onChange={(e) => setNewMessage(e.target.value)}
 					placeholder='Type a message...'
-					className='message-input glass'
-					style={{
-						flex: 1,
-						padding: '10px',
-						outline: 'none',
-					}}
-					onKeyDown={(e) => e.key === 'Enter' && sendMessage()} // Allow sending with Enter key
+					className='message-input'
+					onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
 				/>
 				<IconSend
 					size={25}
-					color='#e8e6e6'
-					style={{
-						marginLeft: '0.5rem',
-						cursor: 'pointer',
-						paddingTop: '0.5rem',
-					}}
+					className='send-icon'
 					onClick={sendMessage}
 				/>
 			</div>
