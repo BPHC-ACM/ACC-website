@@ -60,7 +60,7 @@ export default function ChatsMain({ selectedRoom }) {
 		<div className='chat-display' style={{ width: '78%' }}>
 			<div className='header'>
 				<img
-					src={`https:
+					src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
 						student.name
 					)}&background=777&color=fff&size=100`}
 					alt='User Avatar'
