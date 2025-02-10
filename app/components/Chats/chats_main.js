@@ -78,7 +78,7 @@ export default function ChatsMain({ selectedRoom }) {
 				style={{
 					maxHeight: '78vh',
 					overflowY: 'auto',
-					padding: '0.5rem',
+					padding: '0.75rem',
 					display: 'flex',
 					flexDirection: 'column',
 				}}

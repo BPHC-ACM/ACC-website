@@ -77,15 +77,16 @@ export default function Sidebar({ setActiveSection }) {
 					<IconUserCircle
 						size={30}
 						style={{
+							minWidth: '30px',
 							paddingRight: '0.5rem',
 							marginLeft: '-0.5rem',
 						}}
 					/>
-					<div className='userInfo'>
-						<div className='name'>
-							<p>BVVSN Prabhakar Rao</p>
+					<div className={styles.userInfo}>
+						<div className={styles.name}>
+							<p className={styles.name}>BVVSN Prabhakar Rao</p>
 						</div>
-						<div className='branch' style={{ opacity: 0.6 }}>
+						<div className={styles.branch}>
 							<p>EEE</p>
 						</div>
 					</div>
