@@ -58,7 +58,7 @@ export default function RedditForum() {
     setQueryTitle("");
     setQueryTags("");
     fetchQueries();
-};
+  };
 
   const postAnswer = async (queryId, answerText) => {
     if (!answerText.trim()) return;
@@ -97,6 +97,11 @@ export default function RedditForum() {
 
   const totalPages = Math.ceil(filteredQueries.length / questionsPerPage);
   const displayedQueries = filteredQueries.slice((page - 1) * questionsPerPage, page * questionsPerPage);
+
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString(); 
+  };
 
   return (
     <div className={styles.container}>
@@ -137,7 +142,7 @@ export default function RedditForum() {
                   <div className={styles.tags}>{q.tags.map((tag, index) => <span key={index} className={styles.tag}>#{tag}</span>)}</div>
                 </div>
                 <p className={styles.cardBody}>{q.query.query}</p>
-                <p className={styles.author}>Asked by: {q.name}</p>
+                <p className={styles.author}>Asked by: {q.name} at {formatTimestamp(q.created_at)}</p>
                 <div className={styles.answers}>{q.answers.map((ans, i) => <div key={i} className={styles.answer}><p>{ans.answer}</p><span>- {ans.name}, {ans.department}</span></div>)}</div>
                 {userRole === "professor" && (
                   <div className={styles.answerInputContainer}>
@@ -149,32 +154,32 @@ export default function RedditForum() {
             ))}
           </div>
           <div className={styles.pagination}>
-  <button
-    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-    disabled={page === 1}
-    className={styles.paginationButton}
-  >
-    <ChevronLeft className={styles.paginationIcon} />
-  </button>
-  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-    <button
-      key={pageNumber}
-      onClick={() => setPage(pageNumber)}
-      className={`${styles.paginationButton} ${
-        page === pageNumber ? styles.active : ""
-      }`}
-    >
-      {pageNumber}
-    </button>
-  ))}
-  <button
-    onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-    disabled={page === totalPages}
-    className={styles.paginationButton}
-  >
-    <ChevronRight className={styles.paginationIcon} />
-  </button>
-</div>
+            <button
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page === 1}
+              className={styles.paginationButton}
+            >
+              <ChevronLeft className={styles.paginationIcon} />
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                onClick={() => setPage(pageNumber)}
+                className={`${styles.paginationButton} ${
+                  page === pageNumber ? styles.active : ""
+                }`}
+              >
+                {pageNumber}
+              </button>
+            ))}
+            <button
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={page === totalPages}
+              className={styles.paginationButton}
+            >
+              <ChevronRight className={styles.paginationIcon} />
+            </button>
+          </div>
         </div>
       )}
     </div>
