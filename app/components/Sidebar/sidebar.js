@@ -75,9 +75,9 @@ export default function Sidebar({ setActiveSection }) {
 					whileTap={{ scale: 0.95 }}
 				>
 					<IconUserCircle
-						size={30}
+						size={40}
 						style={{
-							minWidth: '30px',
+							minWidth: '40px',
 							paddingRight: '0.5rem',
 							marginLeft: '-0.5rem',
 						}}
