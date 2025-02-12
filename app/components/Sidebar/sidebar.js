@@ -53,7 +53,7 @@ export default function Sidebar({ setActiveSection }) {
 						key={index}
 						className={styles.navItemWrapper}
 						whileHover={{
-							backgroundColor: 'rgba(200, 200, 200, 0.1)',
+							backgroundColor: 'rgba(250, 250, 250, 0.1)',
 						}}
 						transition={{ duration: 0.2 }}
 					>
@@ -75,9 +75,9 @@ export default function Sidebar({ setActiveSection }) {
 					whileTap={{ scale: 0.95 }}
 				>
 					<IconUserCircle
-						size={30}
+						size={40}
 						style={{
-							minWidth: '30px',
+							minWidth: '40px',
 							paddingRight: '0.5rem',
 							marginLeft: '-0.5rem',
 						}}

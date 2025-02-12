@@ -17,7 +17,8 @@ export async function GET() {
 		.from('requests')
 		.select(
 			'id, name, iconurl, subject, cgpa, branch, created_at, status, details'
-		);
+		)
+		.eq('status', 'pending');
 
 	if (error)
 		return NextResponse.json({ error: error.message }, { status: 500 });
@@ -82,7 +83,7 @@ export async function POST(req) {
 
 		const iconurl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
 			name
-		)}&background=random`;
+		)}&background=cccccc&color=222222`;
 
 		const { data, error } = await supabase.from('requests').insert([
 			{
