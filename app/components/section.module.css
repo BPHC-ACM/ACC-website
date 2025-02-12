@@ -1,20 +1,17 @@
 .section {
-    padding: 20px;
-    background-color: #F8FAFC;
-    color: black;
-    /* border: 1px solid black;
-    border-radius: 5px; */
-    margin: 20px;
-  }
-  
-  .title {
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .content {
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  
-  
+	padding: 20px;
+	background-color: #f8fafc;
+	color: black;
+	height: 97vh;
+	margin: 20px;
+}
+
+.title {
+	font-size: 2rem;
+	margin-bottom: 20px;
+}
+
+.content {
+	font-size: 1rem;
+	line-height: 1.5;
+}

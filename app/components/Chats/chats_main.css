@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.chat-display {
+	position: relative;
+	background: linear-gradient(to bottom, #f9f9f9, #eaeaea);
+	width: 90vw;
+	color: black;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 300;
+	height: 97vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.chat-display::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255, 255, 255, 0.3);
+	z-index: 1;
+	backdrop-filter: blur(4px);
+}
+
+.chat-display * {
+	position: relative;
+	z-index: 2;
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #bbb;
+	border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #999;
+}
+
+.header {
+	height: 8vh;
+	padding: 0.75rem 1.5rem;
+	background-color: #e5e5e5;
+	color: #222;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.avatar {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	object-fit: cover;
+	background-color: #777;
+	border: 2px solid #ddd;
+}
+
+.user-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.user-name {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #111;
+}
+
+.user-id {
+	font-size: 0.85rem;
+	color: #666;
+}
+
+.messages-container {
+	max-height: 78vh;
+	overflow-y: auto;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.defaultmsg {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 500;
+	color: #333;
+	font-size: 1.2rem;
+	opacity: 0.9;
+	text-align: center;
+}
+
+.defaultmsg img {
+	filter: invert(0.7);
+	height: 9rem;
+	opacity: 0.8;
+}
+
+.message-input-container {
+	display: flex;
+	align-items: center;
+	background: rgba(255, 255, 255, 0.9);
+	color: black;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	border-radius: 0.5rem 0.5rem 0 0;
+	padding: 0.75rem;
+	backdrop-filter: blur(10px);
+	box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.message-input {
+	flex: 1;
+	padding: 0.75rem 1rem;
+	font-size: 1rem;
+	border: 2px solid #ddd;
+	border-radius: 10px;
+	outline: none;
+	background: #ffffff;
+	color: #222;
+	transition: all 0.2s ease-in-out;
+}
+
+.message-input::placeholder {
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.message-input:focus {
+	border-color: #444;
+	background: #f7f7f7;
+}
+
+.send-icon {
+	margin-left: 0.75rem;
+	cursor: pointer;
+	padding: 0.6rem;
+	border-radius: 50%;
+	background: #222;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease-in-out;
+	width: 40px;
+	height: 40px;
+}
+
+.send-icon:hover {
+	background: #111;
+}
+
+.message {
+	padding: 0.75rem 1rem;
+	border-radius: 14px;
+	margin-bottom: 0.75rem;
+	max-width: 65%;
+	word-break: break-word;
+	font-size: 1rem;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+	display: inline-block;
+	position: relative;
+}
+
+.student-message {
+	align-self: flex-start;
+	background: linear-gradient(to right, #222, #333);
+	color: white;
+	padding: 0.85rem 1.2rem;
+}
+
+.professor-message {
+	text-align: right;
+	align-self: flex-end;
+	background: #ffffff;
+	color: #222;
+	padding: 0.85rem 1.2rem;
+	border: 1px solid #ddd;
+}
+
+.timestamp {
+	opacity: 0;
+	transition: opacity 0.2s ease-in-out;
+	position: absolute;
+	bottom: -1.25rem;
+	right: 0;
+	font-size: 0.75rem;
+	color: #888;
+	white-space: nowrap;
+	pointer-events: none;
+}
+
+.message:hover .timestamp {
+	opacity: 1;
+}

@@ -1,22 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 .container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  background-color: #F8FAFC;
-  color: black;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	overflow: hidden;
+	background-color: #f8fafc;
+	color: black;
 }
 
 .content {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
+	display: flex;
+	flex: 1;
+	overflow: hidden;
 }
 
 .main {
-  flex: 3;
-  overflow-y: auto; 
-  height: 82vh;
-  padding: 5px;
+	flex: 3;
+	font-family: 'Poppins', Arial, Helvetica, sans-serif;
 }
-
