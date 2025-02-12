@@ -53,7 +53,7 @@ export default function Sidebar({ setActiveSection }) {
 						key={index}
 						className={styles.navItemWrapper}
 						whileHover={{
-							backgroundColor: 'rgba(200, 200, 200, 0.1)',
+							backgroundColor: 'rgba(250, 250, 250, 0.1)',
 						}}
 						transition={{ duration: 0.2 }}
 					>
