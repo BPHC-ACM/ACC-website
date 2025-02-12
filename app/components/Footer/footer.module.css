@@ -1,0 +1,8 @@
+.footer {
+	color: #000;
+	text-align: center;
+	padding: 0vh;
+	position: sticky;
+	bottom: 0;
+	z-index: 1000;
+}

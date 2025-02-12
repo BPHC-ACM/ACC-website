@@ -1,0 +1,162 @@
+{
+  "rooms": [
+    {
+      "roomid": "101",
+      "student": { "id": "S001", "name": "Alice Johnson" },
+      "consultant": { "id": "P001", "name": "Dr. Robert Smith" },
+      "messages": [
+        {
+          "timestamp": "2025-02-05T10:00:00Z",
+          "name": "Alice Johnson",
+          "content": "Hello, Professor! I need help with my assignment.Hello, Professor! I need help with my assignment.Hello, Professor! I need help with my assignment.Hello, Professor! I need help with my assignment.Hello, Professor! I need help with my assignment."
+        },
+        {
+          "timestamp": "2025-02-05T10:00:00Z",
+          "name": "Alice Johnson",
+          "content": "HI"
+        },
+        {
+          "timestamp": "2025-02-05T10:00:00Z",
+          "name": "Alice Johnson",
+          "content": "Hello, Professor! I need help with my assignment."
+        },
+        {
+          "timestamp": "2025-02-05T10:00:00Z",
+          "name": "Alice Johnson",
+          "content": "Hello, Professor! I need help with my assignment."
+        },
+        {
+          "timestamp": "2025-02-05T10:00:00Z",
+          "name": "Alice Johnson",
+          "content": "Hello, Professor! I need help with my assignment."
+        },
+        {
+          "timestamp": "2025-02-05T10:01:00Z",
+          "name": "Dr. Robert Smith",
+          "content": "Sure, Alice. What topic are you working on?"
+        },
+        {
+          "timestamp": "2025-02-05T10:01:00Z",
+          "name": "Alice Johnson",
+          "content": "Hello, Professor! I need help with my assignment."
+        },
+        {
+          "timestamp": "2025-02-05T10:00:01Z",
+          "name": "Dr. Robert Smith",
+          "content": "Sure, Alice. What topic are you working on?"
+        },
+        {
+          "timestamp": "2025-02-05T10:01:00Z",
+          "name": "Dr. Robert Smith",
+          "content": "Sure, Alice. What topic are you working on?"
+        },
+        {
+          "timestamp": "2025-02-05T10:01:00Z",
+          "name": "Dr. Robert Smith",
+          "content": "Sure, Alice. What topic are you working on?"
+        },
+        {
+          "timestamp": "2025-02-05T10:01:00Z",
+          "name": "Dr. Robert Smith",
+          "content": "Sure, Alice. What topic are you working on?"
+        }
+      ]
+    },
+    {
+      "roomid": "102",
+      "student": { "id": "S002", "name": "John Doe" },
+      "consultant": { "id": "P002", "name": "Dr. Emily Brown" },
+      "messages": [
+        {
+          "timestamp": "2025-02-05T11:00:00Z",
+          "name": "John Doe",
+          "content": "Professor, can you explain this concept again?"
+        },
+        {
+          "timestamp": "2025-02-05T11:02:00Z",
+          "name": "Dr. Emily Brown",
+          "content": "Of course, John. Let me simplify it for you."
+        }
+      ]
+    },
+    {
+      "roomid": "103",
+      "student": { "id": "S003", "name": "Michael Lee" },
+      "consultant": { "id": "P003", "name": "Dr. Sarah Johnson" },
+      "messages": [
+        {
+          "timestamp": "2025-02-05T12:00:00Z",
+          "name": "Michael Lee",
+          "content": "Hi Professor, I have some doubts regarding probability theory."
+        },
+        {
+          "timestamp": "2025-02-05T12:02:00Z",
+          "name": "Dr. Sarah Johnson",
+          "content": "Sure, Michael! What specifically do you need help with?"
+        }
+      ]
+    },
+    {
+      "roomid": "104",
+      "student": { "id": "S004", "name": "Sophia Martinez" },
+      "consultant": { "id": "P001", "name": "Dr. Robert Smith" },
+      "messages": [
+        {
+          "timestamp": "2025-02-05T13:00:00Z",
+          "name": "Sophia Martinez",
+          "content": "Professor, I have questions about machine learning."
+        },
+        {
+          "timestamp": "2025-02-05T13:02:00Z",
+          "name": "Dr. Robert Smith",
+          "content": "Absolutely, Sophia! What part do you need help with?"
+        }
+      ]
+    }
+  ],
+  "professors": [
+    {
+      "id": "P001",
+      "name": "Dr. Robert Smith",
+      "department": "Computer Science",
+      "expertise": "Artificial Intelligence",
+      "roomids": ["101", "104"]
+    },
+    {
+      "id": "P002",
+      "name": "Dr. Emily Brown",
+      "department": "Mathematics",
+      "expertise": "Algebra and Calculus",
+      "roomids": ["102"]
+    },
+    {
+      "id": "P003",
+      "name": "Dr. Sarah Johnson",
+      "department": "Statistics",
+      "expertise": "Probability Theory",
+      "roomids": ["103"]
+    }
+  ],
+  "students": [
+    {
+      "id": "S001",
+      "name": "Alice Johnson",
+      "roomids": ["101"]
+    },
+    {
+      "id": "S002",
+      "name": "John Doe",
+      "roomids": ["102"]
+    },
+    {
+      "id": "S003",
+      "name": "Michael Lee",
+      "roomids": ["103"]
+    },
+    {
+      "id": "S004",
+      "name": "Sophia Martinez",
+      "roomids": ["104"]
+    }
+  ]
+}

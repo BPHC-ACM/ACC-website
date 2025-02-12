@@ -1,13 +1,14 @@
-'use client'
+'use client';
 
-import { useState } from "react"
-import { AnimatePresence } from "framer-motion"
-import Section1 from "./section1"       //Dashboard
-import Section2 from "./section2"       //Requests
-import Section3 from "./section3"       //Chats
-import Section4 from "./section4"       //Forum
-import Sidebar from "./sidebar"
-import styles from "../page.module.css"
+import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import Section1 from './Dashboard/section1'; //Dashboard
+import Section2 from './Requests/section2'; //Requests
+import Section3 from './Chats/section3'; //Chats
+import Section4 from './Forum/section4'; //Forum
+import Sidebar from './Sidebar/sidebar';
+import styles from '../page.module.css';
+import Footer from './Footer/footer';
 
 export default function HomeContent() {
   const [activeSection, setActiveSection] = useState("section1")
@@ -27,12 +28,13 @@ export default function HomeContent() {
     }
   }
 
-  return (
-    <div className={styles.content}>
-      <Sidebar setActiveSection={setActiveSection} />
-      <main className={styles.main}>
-        <AnimatePresence mode="wait">{renderSection()}</AnimatePresence>
-      </main>
-    </div>
-  )
+	return (
+		<div className={styles.content}>
+			<Sidebar setActiveSection={setActiveSection} />
+			<main className={styles.main}>
+				<AnimatePresence mode='wait'>{renderSection()}</AnimatePresence>
+				<Footer />
+			</main>
+		</div>
+	);
 }
