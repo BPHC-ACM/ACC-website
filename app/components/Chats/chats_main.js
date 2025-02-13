@@ -1,14 +1,15 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { IconUserCircle, IconSend } from '@tabler/icons-react';
+import { IconSend } from '@tabler/icons-react';
 import styles from './chats_main.css';
-import sampleInfo from './sampleinfo.json';
 import { useState, useEffect, useRef } from 'react';
 
 export default function ChatsMain({ selectedRoom }) {
 	const [newMessage, setNewMessage] = useState('');
 	const [messages, setMessages] = useState([]);
+	const [userName, setUserName] = useState('');
 	const messagesContainerRef = useRef(null);
+	const socketRef = useRef(null);
 
 	useEffect(() => {
 		if (messagesContainerRef.current) {
@@ -21,11 +22,81 @@ export default function ChatsMain({ selectedRoom }) {
 
 	useEffect(() => {
 		if (selectedRoom) {
-			const selectedRoomData = sampleInfo.rooms.find(
-				(room) => room.roomid === selectedRoom
-			);
-			setMessages(selectedRoomData?.messages || []);
+			// Fetch user data (including user name) when a room is selected
+			fetch(`/api/chats/${selectedRoom}/username`)
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then((data) => {
+					setUserName(data.userName);
+				})
+				.catch((error) => {
+					console.error('Error fetching user data:', error);
+				});
+
+			// Fetch chat data from the server
+			fetch(`/api/chats/${selectedRoom}/messages`)
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then((data) => {
+					setMessages(data.messages || []);
+				})
+				.catch((error) => {
+					console.error('Error fetching chat data:', error);
+				});
 		}
+	}, [selectedRoom]);
+
+	useEffect(() => {
+		if (!selectedRoom) return;
+
+		// Ensure old socket is closed before creating a new one
+		if (socketRef.current) {
+			socketRef.current.close();
+		}
+
+		const socket = new WebSocket('ws://localhost:4000');
+		socketRef.current = socket;
+
+		socket.onopen = () => {
+			console.log(`Connected to room ${selectedRoom}`);
+			// Send initial join message if needed
+			socket.send(JSON.stringify({ type: 'join', room: selectedRoom }));
+		};
+
+		socket.onmessage = (event) => {
+			try {
+				const receivedMessage = JSON.parse(event.data);
+				setMessages((prevMessages) => [
+					...prevMessages,
+					receivedMessage,
+				]);
+			} catch (error) {
+				console.error('Error parsing WebSocket message:', error);
+			}
+		};
+
+		socket.onerror = (error) => {
+			console.error('WebSocket error:', error);
+		};
+
+		socket.onclose = () => {
+			console.log(`Disconnected from room ${selectedRoom}`);
+		};
+
+		return () => {
+			if (socketRef.current) {
+				socketRef.current.close();
+				socketRef.current = null;
+			}
+		};
 	}, [selectedRoom]);
 
 	if (!selectedRoom) {
@@ -39,23 +110,36 @@ export default function ChatsMain({ selectedRoom }) {
 		);
 	}
 
-	const selectedRoomData = sampleInfo.rooms.find(
-		(room) => room.roomid === selectedRoom
-	);
-	const student = selectedRoomData?.student;
-	const consultant = selectedRoomData?.consultant;
-
 	const sendMessage = () => {
 		if (newMessage.trim() === '') return;
 
-		const newMsg = {
-			name: consultant.name,
+		const messageData = {
+			room: selectedRoom,
+			name: 'You',
 			content: newMessage,
 			timestamp: new Date().toISOString(),
 		};
 
-		setMessages((prevMessages) => [...prevMessages, newMsg]);
-		setNewMessage('');
+		fetch(`/api/chats/${selectedRoom}/messages`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(messageData),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(messages);
+				setMessages((prevMessages) => [...prevMessages, messageData]); // Add message to local state
+				setNewMessage(''); // Clear input field
+			})
+			.catch((error) => {
+				console.error('Error sending message:', error);
+			});
+
+		if (socketRef.current?.readyState === WebSocket.OPEN) {
+			socketRef.current.send(JSON.stringify(messageData));
+		} else {
+			console.error('WebSocket not connected');
+		}
 	};
 
 	return (
@@ -77,14 +161,13 @@ export default function ChatsMain({ selectedRoom }) {
 						<div className='header'>
 							<img
 								src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-									student.name
+									userName
 								)}&background=777&color=fff&size=100`}
 								alt='User Avatar'
 								className='avatar'
 							/>
 							<div className='user-info'>
-								<p className='user-name'>{student.name}</p>
-								<p className='user-id'>{student.id}</p>
+								<p className='user-name'>{userName}</p>
 							</div>
 						</div>
 						<div
@@ -92,7 +175,6 @@ export default function ChatsMain({ selectedRoom }) {
 							ref={messagesContainerRef}
 							style={{
 								maxHeight: '81vh',
-								overflowY: 'auto',
 								padding: '0.75rem',
 								display: 'flex',
 								flexDirection: 'column',
@@ -105,25 +187,24 @@ export default function ChatsMain({ selectedRoom }) {
 										new Date(b.timestamp)
 								)
 								.map((msg, index) => {
-									const isStudent = msg.name === student.name;
+									const isUser = msg.name === 'You';
 									return (
 										<div
 											key={index}
 											className={`message ${
-												isStudent
-													? 'student-message'
-													: 'professor-message'
+												isUser
+													? 'user-message'
+													: 'other-message'
 											}`}
 										>
 											{msg.content}
-
 											<span
 												className='timestamp'
 												style={{
-													left: isStudent
+													left: isUser
 														? '0.5rem'
 														: 'auto',
-													right: isStudent
+													right: isUser
 														? 'auto'
 														: '0.5rem',
 												}}
@@ -138,7 +219,6 @@ export default function ChatsMain({ selectedRoom }) {
 													hour12: false,
 												})}
 											</span>
-
 											<style jsx>{`
 												.message:hover .timestamp {
 													opacity: 1;
@@ -164,7 +244,7 @@ export default function ChatsMain({ selectedRoom }) {
 								className='send-icon'
 								onClick={sendMessage}
 							/>
-						</div>{' '}
+						</div>
 					</motion.div>
 				) : (
 					<motion.div
