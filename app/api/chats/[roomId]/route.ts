@@ -1,14 +1,23 @@
-import { NextResponse } from "next/server";
-import { getChatHistory } from "../../../utils/db";
+import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { roomId: string } }
-) {
-  try {
-    const messages = await getChatHistory(params.roomId);
-    return NextResponse.json({ messages });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+const supabaseUrl = process.env.SUPABASE_DB_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+export async function GET(req, { params }) {
+	const { roomId } = params;
+
+	const { data, error } = await supabase
+		.from('chats')
+		.select('messages')
+		.eq('roomid', roomId)
+		.single();
+
+	if (error) {
+		console.error('Supabase Error:', error);
+		return NextResponse.json({ messages: [] }, { status: 200 });
+	}
+
+	return NextResponse.json({ messages: data ? data.messages : [] });
 }

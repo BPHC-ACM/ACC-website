@@ -2,14 +2,25 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { formatDistanceToNow } from 'date-fns';
 
-const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseUrl = process.env.SUPABASE_DB_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET() {
 	const { data, error } = await supabase
 		.from('requests')
-		.select('id, name, iconurl, subject, created_at, status, details')
+		.select(
+			`
+      id,
+      student_id,
+      consultant_id,
+      subject,
+      details,
+      status,
+      created_at,
+      students (name, branch, cgpa)
+    `
+		)
 		.in('status', ['accepted', 'declined']);
 
 	if (error)
@@ -22,6 +33,9 @@ export async function GET() {
 		return {
 			...request,
 			relativeTime: formatDistanceToNow(istDate, { addSuffix: true }),
+			name: request.students.name,
+			branch: request.students.branch,
+			cgpa: request.students.cgpa,
 		};
 	});
 

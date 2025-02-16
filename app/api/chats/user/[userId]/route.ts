@@ -1,14 +1,39 @@
-import { NextResponse } from "next/server";
-import { getRoomsForUser } from "../../../../utils/db";
+import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { userId: string } }
-) {
-  try {
-    const rooms = await getRoomsForUser(params.userId);
-    return NextResponse.json({ rooms });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+const supabaseUrl = process.env.SUPABASE_DB_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+export async function GET(req: any, { params }: any) {
+	const { userId } = params;
+
+	const { data, error } = await supabase
+		.from('chats')
+		.select(
+			`
+      roomid,
+      consultant_id,
+      student_id,
+      messages,
+      created_at,
+      students (name, branch)
+    `
+		)
+		.eq('consultant_id', userId);
+
+	if (error)
+		return NextResponse.json({ error: error.message }, { status: 500 });
+
+	const roomsWithStudentName = data.map((room: any) => ({
+		roomid: room.roomid,
+		consultant_id: room.consultant_id,
+		student_id: room.student_id,
+		student_name: room.students?.name || 'Unknown',
+		branch: room.students?.branch || '',
+		messages: room.messages,
+		created_at: room.created_at,
+	}));
+
+	return NextResponse.json({ rooms: roomsWithStudentName });
 }
