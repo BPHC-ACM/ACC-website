@@ -25,14 +25,19 @@ const ChatRequestSkeleton = () => (
 const ChatRequest = ({
 	id,
 	name,
-	iconurl,
 	subject,
 	branch,
 	cgpa,
 	details,
 	relativeTime,
+	student_id,
+	consultant_id,
 	onClick,
 }) => {
+	const iconurl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+		name
+	)}&background=cccccc&color=222222`;
+
 	return (
 		<motion.div
 			className={styles.chatRequest}
@@ -40,16 +45,21 @@ const ChatRequest = ({
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.3 }}
 			onClick={() =>
-				onClick({ id, name, iconurl, subject, branch, cgpa, details })
+				onClick({
+					id,
+					name,
+					iconurl,
+					subject,
+					branch,
+					cgpa,
+					details,
+					student_id,
+					consultant_id,
+				})
 			}
 		>
 			<div className={styles.avatar}>
-				<Image
-					src={iconurl || '/placeholder.svg'}
-					alt={name}
-					width={40}
-					height={40}
-				/>
+				<Image src={iconurl} alt={name} width={40} height={40} />
 			</div>
 			<div className={styles.content}>
 				<h3 className={styles.name}>{name}</h3>
@@ -62,7 +72,6 @@ const ChatRequest = ({
 
 const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 	if (!request) return null;
-
 	const [loadingStatus, setLoadingStatus] = useState(null);
 
 	const handleStatusUpdate = async (newStatus) => {
@@ -76,7 +85,12 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 			const response = await fetch('/api/chat-requests', {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ id: request.id, status: newStatus }),
+				body: JSON.stringify({
+					id: request.id,
+					status: newStatus,
+					consultant_id: request.consultant_id,
+					student_id: request.student_id,
+				}),
 			});
 
 			const data = await response.json();
@@ -94,7 +108,12 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 	};
 
 	return (
-		<div className={styles.modalBackground} onClick={onClose}>
+		<div
+			className={styles.modalBackground}
+			onClick={(e) => {
+				if (e.target === e.currentTarget) onClose();
+			}}
+		>
 			<div
 				className={styles.modalContainer}
 				onClick={(e) => e.stopPropagation()}
@@ -105,7 +124,9 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 
 				<div className={styles.modalRow}>
 					<Image
-						src={request.iconurl || '/placeholder.svg'}
+						src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+							request.name
+						)}&background=cccccc&color=222222`}
 						alt={request.name}
 						width={60}
 						height={60}
@@ -117,7 +138,7 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 							<p className={styles.modalSubHeader}>
 								{request.branch ? `${request.branch}` : ''}
 								{request.branch && request.cgpa ? ' | ' : ''}
-								{request.cgpa !== undefined
+								{typeof request.cgpa === 'number'
 									? `CGPA: ${request.cgpa.toFixed(1)}`
 									: ''}
 							</p>
@@ -142,9 +163,16 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
 						onClick={() => handleStatusUpdate('declined')}
-						disabled={loadingStatus === 'declined'}
+						disabled={loadingStatus !== null}
 					>
-						Decline
+						{loadingStatus === 'declined' ? (
+							<>
+								<span className={styles.loader}></span>{' '}
+								Declining...
+							</>
+						) : (
+							'Decline'
+						)}
 					</motion.button>
 
 					<motion.button
@@ -152,9 +180,16 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
 						onClick={() => handleStatusUpdate('accepted')}
-						disabled={loadingStatus === 'accepted'}
+						disabled={loadingStatus !== null}
 					>
-						Accept
+						{loadingStatus === 'accepted' ? (
+							<>
+								<span className={styles.loader}></span>{' '}
+								Accepting...
+							</>
+						) : (
+							'Accept'
+						)}
 					</motion.button>
 				</div>
 			</div>
@@ -162,7 +197,29 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 	);
 };
 
+const NotificationPopup = ({ message, type, onClose }) => {
+	useEffect(() => {
+		const timer = setTimeout(onClose, 3000);
+		return () => clearTimeout(timer);
+	}, [onClose]);
+
+	return (
+		<motion.div
+			className={`${styles.notificationPopup} ${
+				type === 'success'
+					? styles.notificationSuccess
+					: styles.notificationError
+			}`}
+			initial={{ opacity: 0, y: 10 }}
+			animate={{ opacity: 1, y: 0 }}
+			exit={{ opacity: 0, y: 10 }}
+		>
+			{message}
+		</motion.div>
+	);
+};
 export default function ChatRequests() {
+	const [notification, setNotification] = useState(null);
 	const [requests, setRequests] = useState([]);
 	const [totalRequests, setTotalRequests] = useState(0);
 	const [loading, setLoading] = useState(true);
@@ -171,10 +228,13 @@ export default function ChatRequests() {
 	const [pastRequests, setPastRequests] = useState([]);
 
 	const fetchPastRequests = async () => {
+		if (pastRequests.length > 0) {
+			setShowPastRequests(true);
+			return;
+		}
 		try {
 			const response = await fetch('/api/chat-requests/past');
 			if (!response.ok) throw new Error('Failed to fetch past requests');
-
 			const data = await response.json();
 			setPastRequests(data.requests);
 			setShowPastRequests(true);
@@ -217,6 +277,16 @@ export default function ChatRequests() {
 						: request
 				)
 		);
+
+		setNotification({
+			message:
+				newStatus === 'accepted'
+					? 'Chat request accepted!'
+					: 'Chat request declined.',
+			type: newStatus === 'accepted' ? 'success' : 'error',
+		});
+
+		setTimeout(() => setNotification(null), 3000);
 	};
 
 	return (
@@ -230,6 +300,15 @@ export default function ChatRequests() {
 					Past Requests
 				</button>
 			</div>
+
+			{notification && (
+				<NotificationPopup
+					message={notification.message}
+					type={notification.type}
+					onClose={() => setNotification(null)}
+				/>
+			)}
+
 			<div className={styles.requestsContainer}>
 				{loading
 					? Array.from({ length: 3 }).map((_, index) => (
@@ -240,7 +319,8 @@ export default function ChatRequests() {
 								key={request.id}
 								id={request.id}
 								name={request.name}
-								iconurl={request.iconurl}
+								student_id={request.student_id}
+								consultant_id={request.consultant_id}
 								subject={request.subject}
 								branch={request.branch}
 								cgpa={request.cgpa}
@@ -284,10 +364,14 @@ export default function ChatRequests() {
 										className={styles.requestCard}
 									>
 										<div className={styles.requestHeader}>
-											<img
-												src={request.iconurl}
+											<Image
+												src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+													request.name
+												)}&background=cccccc&color=222222`}
 												alt={request.name}
 												className={styles.avatar}
+												width={40}
+												height={40}
 											/>
 											<div className={styles.requestInfo}>
 												<h4 className={styles.name}>
@@ -302,7 +386,6 @@ export default function ChatRequests() {
 												{request.status}
 											</span>
 										</div>
-
 										<div className={styles.requestDetails}>
 											<p className={styles.subject}>
 												{request.subject}

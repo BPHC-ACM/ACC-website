@@ -1,7 +1,6 @@
 'use client';
-import sampleInfo from './sampleinfo.json';
 import styles from './chats_sidebar.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export default function ChatsSidebar({
@@ -10,16 +9,38 @@ export default function ChatsSidebar({
 	selectedRoom,
 }) {
 	const [searchQuery, setSearchQuery] = useState('');
+	const [rooms, setRooms] = useState([]);
 
-	const filteredRooms = sampleInfo.rooms.filter(
-		(room) => room.consultant.id === professorId
-	);
+	useEffect(() => {
+		const fetchChatRooms = async () => {
+			try {
+				const response = await fetch(`/api/chats/user/${professorId}`);
+				const data = await response.json();
+				if (data.rooms) {
+					setRooms(data.rooms);
+				} else {
+					console.error('No rooms data found');
+					setRooms([]);
+				}
+			} catch (error) {
+				console.error('Error fetching chat rooms:', error);
+				setRooms([]);
+			}
+		};
+
+		fetchChatRooms();
+	}, [professorId]);
+
+	const filteredRooms = rooms
+		? rooms.filter((room) => room.consultant_id === professorId)
+		: [];
+
 	const searchedRooms = filteredRooms.filter(
 		(room) =>
-			room.student.name
+			room.student_name
 				.toLowerCase()
 				.includes(searchQuery.toLowerCase()) ||
-			room.student.id.toLowerCase().includes(searchQuery.toLowerCase())
+			room.student_id.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
 	return (
@@ -53,15 +74,15 @@ export default function ChatsSidebar({
 						>
 							<img
 								src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-									room.student.name
+									room.student_name
 								)}&background=cccccc&color=222222`}
-								alt={room.student.name}
+								alt={room.student_name}
 								className='chat-avatar'
 							/>
 
 							<div className='chat-info'>
-								<p className='chat-name'>{room.student.name}</p>
-								<p className='chat-id'>{room.student.id}</p>
+								<p className='chat-name'>{room.student_name}</p>
+								<p className='chat-id'>{room.branch}</p>
 							</div>
 						</motion.button>
 					))}

@@ -84,7 +84,8 @@ export default function Sidebar({ setActiveSection }) {
 					/>
 					<div className={styles.userInfo}>
 						<div className={styles.name}>
-						<p className={styles.name}>Prof. Sudha Radhika</p>						</div>
+							<p className={styles.name}>Prof. Sudha Radhika</p>
+						</div>
 						<div className={styles.branch}>
 							<p>EEE</p>
 						</div>
