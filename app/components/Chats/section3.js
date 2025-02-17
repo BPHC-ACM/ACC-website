@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Section from '../section';
 import ChatsSidebar from './chats_sidebar';
 import ChatsMain from './chats_main.js';
 import { connectWebSocket } from '../../utils/chat_socket';
@@ -24,7 +23,7 @@ export default function Section3() {
 	return (
 		<div className='chatsystem'>
 			<ChatsSidebar
-				professorId='fedac3b1-b250-4b56-961b-9700f796ed13'
+				professorId='23442b1f-e236-460f-b076-51d290a72916'
 				setSelectedRoom={setSelectedRoom}
 				selectedRoom={selectedRoom}
 			/>
