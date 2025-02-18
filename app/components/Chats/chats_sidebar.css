@@ -112,3 +112,57 @@
 	color: #777;
 	margin-top: 10px;
 }
+
+.chat-skeleton {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	padding: 12px 15px;
+	width: 90%;
+	margin: 0.25rem 1rem;
+	border-radius: 10px;
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.chat-avatar-skeleton {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: #ddd;
+	animation: pulse 1.5s infinite ease-in-out;
+}
+
+.chat-info-skeleton {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.chat-name-skeleton,
+.chat-id-skeleton {
+	height: 12px;
+	border-radius: 4px;
+	background: #ddd;
+	animation: pulse 1.5s infinite ease-in-out;
+}
+
+.chat-name-skeleton {
+	width: 60%;
+}
+
+.chat-id-skeleton {
+	width: 40%;
+}
+
+@keyframes pulse {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+	100% {
+		opacity: 1;
+	}
+}

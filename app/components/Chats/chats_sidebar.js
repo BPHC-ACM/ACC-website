@@ -10,6 +10,7 @@ export default function ChatsSidebar({
 }) {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [rooms, setRooms] = useState([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchChatRooms = async () => {
@@ -25,6 +26,8 @@ export default function ChatsSidebar({
 			} catch (error) {
 				console.error('Error fetching chat rooms:', error);
 				setRooms([]);
+			} finally {
+				setLoading(false);
 			}
 		};
 
@@ -43,6 +46,18 @@ export default function ChatsSidebar({
 			room.student_id.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
+	function ChatSkeleton() {
+		return (
+			<div className='chat-skeleton'>
+				<div className='chat-avatar-skeleton'></div>
+				<div className='chat-info-skeleton'>
+					<div className='chat-name-skeleton'></div>
+					<div className='chat-id-skeleton'></div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className='sidebar'>
 			<h2 className='chats-heading'>Chats</h2>
@@ -55,7 +70,18 @@ export default function ChatsSidebar({
 				className='searchbox'
 			/>
 
-			{searchedRooms.length > 0 ? (
+			{loading ? (
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ duration: 0.5 }}
+					className='students-container'
+				>
+					{[...Array(3)].map((_, index) => (
+						<ChatSkeleton key={index} />
+					))}
+				</motion.div>
+			) : searchedRooms.length > 0 ? (
 				<motion.div
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
