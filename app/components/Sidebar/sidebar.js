@@ -40,13 +40,7 @@ export default function Sidebar({ setActiveSection }) {
 
 	return (
 		<nav className={styles.sidebar}>
-			<Image
-				src='/acc-logo.png'
-				width={162}
-				height={150}
-				alt='ACC Logo'
-				priority={true}
-			/>
+			<img src='/acc-logo.png' width={162} height={150} alt='ACC Logo' />
 			<div className={styles.navContainer}>
 				{sections.map((section, index) => (
 					<motion.div
