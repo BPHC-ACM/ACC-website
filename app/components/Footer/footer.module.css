@@ -1,8 +1,12 @@
 .footer {
-	color: #000;
+	position: fixed;
+	bottom: 3px; /* Moves it slightly lower */
+	left: calc(20% + 40%); /* Centers it in the remaining 4/5 */
+	transform: translateX(-50%); /* Ensures perfect centering */
 	text-align: center;
-	padding: 0vh;
-	position: sticky;
-	bottom: 0;
+	font-size: 14px;
+	color: black;
+	background: transparent;
 	z-index: 1000;
-}
+  }
+  

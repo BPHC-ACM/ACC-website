@@ -1,0 +1,288 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+  }
+  
+  .pageTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1a1a1b;
+  }
+  
+  .roleToggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .roleToggle button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #f6f7f8;
+    color: #1c1c1c;
+    font-size: 14px;
+  }
+  
+  .roleToggle button.activeRole {
+    background: #0079d3;
+    color: white;
+  }
+  
+  .roleToggle button:hover {
+    background: #e1e1e1;
+  }
+  
+  .roleToggle button.activeRole:hover {
+    background: #0061a8;
+  }
+  
+  .inputContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .inputContainer input,
+  .inputContainer textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  
+  .inputContainer textarea {
+    resize: vertical;
+  }
+  
+  .askButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0079d3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .askButton:hover {
+    background: #0061a8;
+  }
+  
+  .searchContainer {
+    margin-bottom: 20px;
+  }
+  
+  .searchWrapper {
+    display: flex;
+    align-items: center;
+    background: #f6f7f8;
+    border-radius: 4px;
+    padding: 8px;
+  }
+  
+  .searchIcon {
+    margin-right: 8px;
+    color: #878a8c;
+  }
+  
+  .searchInput {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+  }
+  
+  .queryList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .card {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cardHeader {
+    margin-bottom: 12px;
+  }
+  
+  .cardTitle {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    color: #1a1a1b;
+  }
+  
+  .tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  .tag {
+    background: #f6f7f8;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #1c1c1c;
+  }
+  
+  .cardBody {
+    margin: 0;
+    color: #1c1c1c;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .author {
+    font-size: 12px;
+    color: #787c7e;
+    margin-top: 8px;
+  }
+  
+  .answers {
+    margin-top: 16px;
+  }
+  
+  .answer {
+    background: #f6f7f8;
+    border-radius: 4px;
+    padding: 8px;
+    margin-top: 8px;
+  }
+  
+  .answer p {
+    margin: 0;
+    font-size: 14px;
+    color: #1c1c1c;
+  }
+  
+  .answer span {
+    font-size: 12px;
+    color: #787c7e;
+  }
+  
+  .answerInputContainer {
+    margin-top: 16px;
+  }
+  
+  .answerInput {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .answerInput:focus {
+    outline: none;
+    border-color: #0079d3;
+  }
+  
+  .answerButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0079d3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .answerButton:hover {
+    background: #0061a8;
+  }
+  
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #878a8c;
+    font-size: 14px;
+  }
+  
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .error {
+    color: #ff4500;
+    font-size: 14px;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  
+  .paginationButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    color: #1c1c1c;
+  }
+  
+  .paginationButton:hover {
+    background: #f6f7f8;
+  }
+  
+  .paginationButton.active {
+    background: #0079d3;
+    color: white;
+    border-color: #0079d3;
+  }
+  
+  .paginationButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .paginationButton:disabled:hover {
+    background: white;
+  }
+  
+  .paginationIcon {
+    width: 16px;
+    height: 16px;
+  }
