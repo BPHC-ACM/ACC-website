@@ -11,22 +11,22 @@ import styles from '../page.module.css';
 import Footer from './Footer/footer';
 
 export default function HomeContent() {
-  const [activeSection, setActiveSection] = useState("section1")
+	const [activeSection, setActiveSection] = useState('section1');
 
-  const renderSection = () => {
-    switch (activeSection) {
-      case "section1":
-        return <Section1 key="section1" />
-      case "section2":
-        return <Section2 key="section2" />
-      case "section3":
-        return <Section3 key="section3" />
-      case "section4":
-        return <Section4 key="section4" />
-      default:
-        return <Section1 key="section1" />
-    }
-  }
+	const renderSection = () => {
+		switch (activeSection) {
+			case 'section1':
+				return <Section1 key='section1' />;
+			case 'section2':
+				return <Section2 key='section2' />;
+			case 'section3':
+				return <Section3 key='section3' />;
+			case 'section4':
+				return <Section4 key='section4' />;
+			default:
+				return <Section1 key='section1' />;
+		}
+	};
 
 	return (
 		<div className={styles.content}>

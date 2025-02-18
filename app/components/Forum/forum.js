@@ -1,12 +1,21 @@
 'use client';
 import styles from './forum.module.css';
 import { useState, useEffect } from 'react';
-import { PlusIcon, Search } from 'lucide-react';
+import {
+	PlusIcon,
+	CirclePlusIcon,
+	MessageSquareIcon,
+	SendIcon,
+	Search,
+	MessageSquareDiffIcon,
+} from 'lucide-react';
 
 export default function Forum() {
-	const [queryText, setQueryText] = useState('');
-	const [queryTitle, setQueryTitle] = useState('');
-	const [queryTags, setQueryTags] = useState('');
+	const [query, setQuery] = useState({
+		title: '',
+		text: '',
+		tags: '',
+	});
 	const [queries, setQueries] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -35,9 +44,9 @@ export default function Forum() {
 		if (!queryText.trim() || !queryTitle.trim()) return;
 
 		const newQuery = {
-			title: queryTitle,
-			query: queryText,
-			tags: queryTags,
+			title: query.title,
+			query: query.text,
+			tags: query.tags,
 		};
 
 		try {
@@ -49,9 +58,7 @@ export default function Forum() {
 			const data = await response.json();
 			if (!data.success) throw new Error(data.error);
 
-			setQueryText('');
-			setQueryTitle('');
-			setQueryTags('');
+			setQuery({ title: '', text: '', tags: '' });
 			fetchQueries();
 		} catch (error) {
 			console.error(error);
@@ -107,43 +114,100 @@ export default function Forum() {
 				<div className={styles.queryList}>
 					{filteredQueries.map((query) => (
 						<div key={query.id} className={styles.thread}>
-							<h3>{query.title}</h3>
-							<p>{query.query}</p>
-							<div className={styles.answers}>
+							<div className={styles.threadHeader}>
+								<img
+									src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+										query.name
+									)}&background=777&color=fff&size=100`}
+									alt='User Avatar'
+									className={styles.avatar}
+								/>
+								<div className={styles.threadInfo}>
+									<h3>{query.title}</h3>
+									<p className={styles.meta}>
+										{query.name}{' '}
+										<span className={styles.studentId}>
+											{query.student_id}
+										</span>
+									</p>
+								</div>
+							</div>
+
+							<p className={styles.threadText}>{query.query}</p>
+
+							<div className={styles.threadReplies}>
 								{query.answers.map((answer) => (
 									<div
-										key={answer.timestamp}
+										key={answer.id}
 										className={styles.answer}
 									>
-										<p>{answer.answer}</p>
-										<span>Answered by {answer.name}</span>
+										<img
+											src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+												answer.name
+											)}&background=999&color=fff&size=80`}
+											alt='User Avatar'
+											className={styles.answerAvatar}
+										/>
+										<div className={styles.answerContent}>
+											<h4 className={styles.answerAuthor}>
+												{answer.name}
+											</h4>
+											<p>{answer.answer}</p>
+										</div>
 									</div>
 								))}
 							</div>
 
-							<div className={styles.answerInput}>
-								<input
-									type='text'
-									placeholder='Your answer...'
-									value={answerInputs[query.id] || ''}
-									onChange={(e) =>
-										setAnswerInputs((prev) => ({
-											...prev,
-											[query.id]: e.target.value,
-										}))
-									}
-								/>
+							<div className={styles.threadActions}>
 								<button
+									className={styles.commentButton}
 									onClick={() =>
-										postAnswer(
-											query.id,
-											answerInputs[query.id] || ''
-										)
+										setAnswerInputs((prev) => {
+											const isOpen = query.id in prev;
+											if (isOpen) {
+												const newState = { ...prev };
+												delete newState[query.id];
+												return newState;
+											}
+											return { ...prev, [query.id]: '' };
+										})
 									}
 								>
-									Post Answer
+									<MessageSquareIcon fontSize='small' />
+								</button>
+								<button
+									className={styles.plusButton}
+									onClick={() => {}}
+								>
+									<CirclePlusIcon />
 								</button>
 							</div>
+
+							{answerInputs.hasOwnProperty(query.id) && (
+								<div className={styles.answerInputContainer}>
+									<input
+										type='text'
+										placeholder='Your answer...'
+										value={answerInputs[query.id]}
+										onChange={(e) =>
+											setAnswerInputs((prev) => ({
+												...prev,
+												[query.id]: e.target.value,
+											}))
+										}
+									/>
+									<button
+										onClick={() =>
+											postAnswer(
+												query.id,
+												answerInputs[query.id].trim()
+											)
+										}
+									>
+										<SendIcon />
+									</button>
+								</div>
+							)}
 						</div>
 					))}
 				</div>
@@ -154,13 +218,24 @@ export default function Forum() {
 				<input
 					type='text'
 					placeholder='Title...'
-					value={queryTitle}
-					onChange={(e) => setQueryTitle(e.target.value)}
+					value={query.title}
+					onChange={(e) =>
+						setQuery((prev) => ({ ...prev, title: e.target.value }))
+					}
 				/>
 				<textarea
 					placeholder='Description...'
-					value={queryText}
-					onChange={(e) => setQueryText(e.target.value)}
+					value={query.text}
+					onChange={(e) =>
+						setQuery((prev) => ({ ...prev, text: e.target.value }))
+					}
+				/>
+				<textarea
+					placeholder='Tags... (comma separated)'
+					value={query.tags}
+					onChange={(e) =>
+						setQuery((prev) => ({ ...prev, tags: e.target.value }))
+					}
 				/>
 				<button onClick={postQuery}>
 					<PlusIcon /> Post
