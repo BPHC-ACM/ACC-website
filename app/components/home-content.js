@@ -9,6 +9,7 @@ import Section4 from './Forum/section4'; //Forum
 import Sidebar from './Sidebar/sidebar';
 import styles from '../page.module.css';
 import Footer from './Footer/footer';
+import ScrollToTop from './ScrollToTop/scroll-to-top';
 
 export default function HomeContent() {
 	const [activeSection, setActiveSection] = useState('section1');
@@ -34,6 +35,7 @@ export default function HomeContent() {
 			<main className={styles.main}>
 				<AnimatePresence mode='wait'>{renderSection()}</AnimatePresence>
 				<Footer />
+				<ScrollToTop selector={'main'} />
 			</main>
 		</div>
 	);

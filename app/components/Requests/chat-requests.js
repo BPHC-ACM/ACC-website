@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import styles from './chat-requests.module.css';
+import ScrollToTop from '../ScrollToTop/scroll-to-top';
 
 const ChatRequestSkeleton = () => (
 	<motion.div
@@ -405,6 +406,7 @@ export default function ChatRequests() {
 					</div>
 				</div>
 			)}
+			<ScrollToTop selector={'[class*="requestsContainer"]'} />
 		</div>
 	);
 }

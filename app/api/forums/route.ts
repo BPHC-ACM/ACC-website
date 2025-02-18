@@ -55,9 +55,9 @@ export async function POST(req: Request) {
 			name: 'Student',
 			title,
 			query,
-			tags: tags.split(',').map((tag: string) => tag.trim()),
+			tags: tags.map((tag: string) => tag.trim()),
 			created_at: new Date().toISOString(),
-			student_id: '2023A8H',
+			identifier: 'ADMIN',
 		};
 
 		const { error } = await supabase.from('queries').insert([newQuery]);
@@ -87,7 +87,7 @@ export async function PATCH(req: Request) {
 		const newAnswer = {
 			query_id,
 			name: 'Professor',
-			department: 'CS',
+			department: 'CSIS',
 			answer,
 			timestamp: new Date().toISOString(),
 		};

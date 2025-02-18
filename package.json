@@ -10,20 +10,22 @@
 		"server": "npx tsx server.ts"
 	},
 	"dependencies": {
+		"@emotion/react": "^11.14.0",
+		"@emotion/styled": "^11.14.0",
+		"@mui/material": "^6.4.4",
 		"@supabase/supabase-js": "^2.48.1",
 		"@tabler/icons-react": "^3.29.0",
 		"date-fns": "^4.1.0",
 		"dotenv": "^16.4.7",
 		"express": "^4.21.2",
 		"framer-motion": "^12.0.6",
+		"lucide-react": "^0.475.0",
 		"next": "^15.1.6",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"socket.io": "^4.8.1",
 		"uuid": "^11.0.5",
-		"ws": "^8.18.0",
-		"lucide-react": "^0.475.0"
-
+		"ws": "^8.18.0"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",

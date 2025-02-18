@@ -1,18 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 .forumLayout {
-	display: flex;
+	font-family: 'Poppins', sans-serif;
+	display: grid;
+	grid-template-columns: 2.25fr 1fr;
 	gap: 20px;
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 20px;
-	font-family: Arial, sans-serif;
+	padding-bottom: 3rem;
+	align-items: flex-start;
+	justify-items: stretch;
 }
 
 /* Left Section: Threads */
 .threadSection {
 	flex: 2;
 	background-color: #ffffff;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	border: 1px solid #ddd;
 	padding: 20px;
 	border-radius: 8px;
+	height: fit-content;
 }
 
 .pageTitle {
@@ -65,7 +71,7 @@
 
 .thread h3 {
 	font-size: 18px;
-	font-weight: bold;
+	font-weight: 600;
 	color: #1a1a1b;
 	margin-bottom: 8px;
 }
@@ -88,65 +94,43 @@
 	margin-top: 8px;
 }
 
-.answer p {
+.answer h5 {
+	font-weight: 600;
 	margin: 0;
 	font-size: 14px;
 	color: #1c1c1c;
 }
 
 .answer span {
+	font-weight: 400;
 	font-size: 12px;
-	color: #787c7e;
 }
 
-/* Right Section: New Post */
 .postSection {
-	flex: 1;
 	background: white;
-	padding: 16px;
-	height: 40rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	border: 1px solid #ccc;
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	border: 1px solid #ddd;
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 16px;
+	width: 100%;
+	align-self: start;
 }
 
 .postSection h2 {
-	font-size: 20px;
+	font-size: 22px;
 	font-weight: bold;
-	color: #1a1a1b;
+	color: #333;
+	text-align: center;
 }
 
-.postSection input,
-.postSection textarea {
-	padding: 8px;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	font-size: 14px;
-}
-
-.postSection textarea {
-	resize: vertical;
-}
-
-.postSection button {
+.tagContainer {
 	display: flex;
-	align-items: center;
-	justify-content: center;
+	flex-wrap: wrap;
 	gap: 8px;
-	background: #0079d3;
-	color: white;
-	border: none;
-	border-radius: 4px;
-	padding: 8px 16px;
-	cursor: pointer;
-	font-size: 14px;
-}
-
-.postSection button:hover {
-	background: #0061a8;
+	padding-top: 4px;
 }
 
 .threadHeader {
@@ -171,10 +155,10 @@
 	font-size: 14px;
 }
 
-.studentId {
+.identifier {
 	background: #ddd;
 	padding: 2px 6px;
-	border-radius: 4px;
+	border-radius: 10px;
 	font-size: 12px;
 }
 
@@ -186,12 +170,13 @@
 
 .answer {
 	display: flex;
+	flex-direction: column;
 	align-items: flex-start;
 	gap: 10px;
 	margin-top: 12px;
 	padding: 10px;
 	border-radius: 8px;
-	background: #f0f0f0;
+	background: #f9f9f9;
 }
 
 .answerAvatar {
@@ -284,4 +269,44 @@
 
 .answerInputContainer button:hover {
 	background: #0056b3;
+}
+
+.skeletonThread {
+	background: #f3f3f3;
+	border-radius: 8px;
+	padding: 12px;
+	margin-bottom: 12px;
+}
+
+.skeletonHeader {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.skeletonAvatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: #ddd;
+}
+
+.skeletonText {
+	height: 14px;
+	background: #ddd;
+	border-radius: 4px;
+	margin-top: 8px;
+	animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+	0% {
+		opacity: 0.6;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.6;
+	}
 }
