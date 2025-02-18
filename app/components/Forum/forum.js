@@ -204,7 +204,7 @@ export default function Forum() {
 											)
 										}
 									>
-										<SendIcon />
+										<SendIcon size={20} />
 									</button>
 								</div>
 							)}
