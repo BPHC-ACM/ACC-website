@@ -8,8 +8,12 @@ const nextConfig = {
 			},
 		],
 		dangerouslyAllowSVG: true,
-		contentSecurityPolicy:
-			"default-src 'self'; img-src *; script-src 'none'; sandbox;",
+		contentSecurityPolicy: `
+		default-src 'self';
+		img-src *;
+		script-src 'self' 'unsafe-eval' 'unsafe-inline';
+		sandbox;
+	  `,
 	},
 };
 
