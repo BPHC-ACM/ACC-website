@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import { saveMessage } from '../../../../utils/db';
 import type { Message } from '../../../../utils/types';
 
-const supabaseUrl = process.env.SUPABASE_DB_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(
