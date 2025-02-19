@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	images: {
+		domains: ['ui-avatars.com'],
 		remotePatterns: [
 			{
 				protocol: 'https',
@@ -10,7 +11,7 @@ const nextConfig = {
 		dangerouslyAllowSVG: true,
 		contentSecurityPolicy: `
 		default-src 'self';
-		img-src *;
+		img-src * data: blob:;
 		script-src 'self' 'unsafe-eval' 'unsafe-inline';
 		sandbox;
 	  `,

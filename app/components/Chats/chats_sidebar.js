@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export default function ChatsSidebar({
-	professorId,
+	consultantId,
 	setSelectedRoom,
 	selectedRoom,
 }) {
@@ -15,7 +15,7 @@ export default function ChatsSidebar({
 	useEffect(() => {
 		const fetchChatRooms = async () => {
 			try {
-				const response = await fetch(`/api/chats/user/${professorId}`);
+				const response = await fetch(`/api/chats/user/${consultantId}`);
 				const data = await response.json();
 				if (data.rooms) {
 					setRooms(data.rooms);
@@ -32,10 +32,10 @@ export default function ChatsSidebar({
 		};
 
 		fetchChatRooms();
-	}, [professorId]);
+	}, [consultantId]);
 
 	const filteredRooms = rooms
-		? rooms.filter((room) => room.consultant_id === professorId)
+		? rooms.filter((room) => room.consultant_id === consultantId)
 		: [];
 
 	const searchedRooms = filteredRooms.filter(

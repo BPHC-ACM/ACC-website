@@ -23,7 +23,7 @@ export default function Section3() {
 	return (
 		<div className='chatsystem'>
 			<ChatsSidebar
-				professorId='23442b1f-e236-460f-b076-51d290a72916'
+				consultantId='23442b1f-e236-460f-b076-51d290a72916'
 				setSelectedRoom={setSelectedRoom}
 				selectedRoom={selectedRoom}
 			/>

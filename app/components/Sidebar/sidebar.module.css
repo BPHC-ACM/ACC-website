@@ -75,7 +75,7 @@
 	color: white;
 	font-size: 0.9rem;
 	cursor: pointer;
-	padding: 10px 20px;
+	padding: 8px 20px;
 	width: 100%;
 	max-width: 100%;
 	text-align: left;
@@ -84,6 +84,36 @@
 	display: flex;
 	align-items: center;
 	transition: background-color 0.2s ease;
+}
+
+.userContainer {
+	position: relative;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.logoutButton {
+	position: absolute;
+	top: -60px;
+	transform: translateX(-50%);
+	background-color: #222;
+	border: none;
+	color: white;
+	font-size: 0.9rem;
+	cursor: pointer;
+	padding: 10px 20px;
+	width: 100%;
+	text-align: left;
+	border-radius: 50px;
+	margin: 5px 0;
+	display: flex;
+	align-items: center;
+	transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.logoutButton span {
+	margin-left: 0.5rem;
 }
 
 .name {
@@ -95,7 +125,9 @@
 }
 
 .userInfo {
+	font-family: 'Poppins', sans-serif;
 	flex: 1;
+	margin-left: 0.125rem;
 	overflow: hidden; /* This prevents child elements from expanding beyond their container */
 	display: flex;
 	flex-direction: column;
