@@ -2,7 +2,6 @@ let socket = null;
 
 export const connectWebSocket = () => {
 	if (socket && socket.readyState === WebSocket.OPEN) {
-		console.log('WebSocket already connected');
 		return;
 	}
 
@@ -10,10 +9,6 @@ export const connectWebSocket = () => {
 
 	socket.onopen = () => {
 		console.log('Connected to WebSocket server');
-	};
-
-	socket.onmessage = (event) => {
-		console.log('Message received from server:', event.data);
 	};
 
 	socket.onclose = () => {
