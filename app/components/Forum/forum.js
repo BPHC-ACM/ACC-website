@@ -333,7 +333,10 @@ export default function Forum() {
 
 				<Button
 					variant='contained'
-					color='primary'
+					sx={{
+						backgroundColor: '#333',
+						'&:hover': { backgroundColor: '#222' },
+					}}
 					fullWidth
 					startIcon={<PlusIcon />}
 					onClick={postQuery}
