@@ -34,22 +34,30 @@
 .searchWrapper {
 	display: flex;
 	align-items: center;
-	background: #f6f7f8;
-	border-radius: 4px;
-	padding: 8px;
+	background: #f0f2f5;
+	border-radius: 8px;
+	padding: 10px 14px;
+	transition: all 0.2s ease-in-out;
+}
+
+.searchWrapper:hover {
+	background: #e9ecef;
 }
 
 .searchIcon {
-	margin-right: 8px;
-	color: #878a8c;
+	margin-right: 10px;
+	color: #6c757d;
+	font-size: 20px;
 }
 
 .searchInput {
+	font-family: 'Poppins', sans-serif;
 	flex: 1;
 	border: none;
 	background: transparent;
 	outline: none;
-	font-size: 14px;
+	font-size: 16px;
+	color: #333;
 }
 
 /* Question Threads */
@@ -101,6 +109,7 @@
 
 .answer span {
 	font-weight: 400;
+	margin-left: 2px;
 	font-size: 12px;
 }
 
@@ -161,7 +170,7 @@
 }
 
 .threadReplies {
-	margin-left: 20px;
+	margin-left: 18px;
 	border-left: 2px solid #ddd;
 	padding-left: 12px;
 }
@@ -196,6 +205,7 @@
 .threadActions {
 	display: flex;
 	gap: 8px;
+	justify-content: space-between;
 	margin-top: 8px;
 }
 
@@ -252,7 +262,7 @@
 }
 
 .answerInputContainer button {
-	background: #007bff;
+	background: #222;
 	color: white;
 	border: none;
 	padding: 8px 12px;
@@ -307,4 +317,30 @@
 	100% {
 		opacity: 0.6;
 	}
+}
+
+.tagList {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+}
+
+.tagChip {
+	font-family: 'Poppins', sans-serif !important;
+	font-size: 12px !important;
+	height: 20px !important;
+	padding: 14px 0px !important;
+	background-color: #f3f3f3 !important;
+	color: #222 !important;
+	border-radius: 15px !important;
+	border: 2px solid #222 !important;
+	font-weight: 500;
+	transition: all 0.2s ease-in-out;
+}
+
+.tagList > .tagChip:hover {
+	background-color: #333 !important;
+	color: #fff !important;
+	cursor: pointer;
 }

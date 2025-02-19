@@ -126,7 +126,7 @@ export default function Forum() {
 						<input
 							className={styles.searchInput}
 							type='text'
-							placeholder='Search questions...'
+							placeholder='Search'
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 						/>
@@ -217,12 +217,16 @@ export default function Forum() {
 									>
 										<MessageSquareIcon fontSize='small' />
 									</button>
-									<button
-										className={styles.plusButton}
-										onClick={() => {}}
-									>
-										<CirclePlusIcon />
-									</button>
+
+									<div className={styles.tagList}>
+										{query.tags.map((tag, index) => (
+											<Chip
+												key={index}
+												label={`#${tag}`}
+												className={styles.tagChip}
+											/>
+										))}
+									</div>
 								</div>
 
 								{answerInputs.hasOwnProperty(query.id) && (
@@ -297,8 +301,8 @@ export default function Forum() {
 						if (e.key === 'Enter' && tagInput.trim()) {
 							const newTag = tagInput
 								.trim()
-								.toLowerCase()
-								.replace(/\b\w/g, (char) => char.toUpperCase());
+								.replace(/\s+/g, '-')
+								.toLowerCase();
 
 							if (!query.tags.includes(newTag)) {
 								setQuery((prev) => ({
@@ -315,7 +319,8 @@ export default function Forum() {
 					{query.tags.map((tag, index) => (
 						<Chip
 							key={index}
-							label={tag}
+							className={styles.tagChip}
+							label={`#${tag}`}
 							onDelete={() =>
 								setQuery((prev) => ({
 									...prev,
