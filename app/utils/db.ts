@@ -1,5 +1,13 @@
 import { supabase } from './supabaseClient';
-import { Message, Room } from './types'; // Ensure Room type is imported
+import {
+	Message,
+	Chat,
+	Student,
+	Consultant,
+	Query,
+	Answer,
+	Request as ChatRequest,
+} from './types';
 
 // Save a new message into the messages array of the chats table
 export async function saveMessage(message: Message) {
@@ -47,17 +55,15 @@ export async function getChatHistory(roomid: string): Promise<Message[]> {
 	return data.messages as Message[];
 }
 
-// Get all rooms a user is part of (as student, professor, or coordinator)
-export async function getRoomsForUser(userId: string): Promise<Room[]> {
+// Get all rooms a user is part of (as student or consultant)
+export async function getRoomsForUser(userId: string): Promise<Chat[]> {
 	const { data, error } = await supabase
-		.from('rooms')
+		.from('chats')
 		.select('*')
-		.or(
-			`student.eq.${userId},professor.eq.${userId},coordinator.eq.${userId}`
-		);
+		.or(`student_id.eq.${userId},consultant_id.eq.${userId}`);
 
 	if (error) {
 		throw new Error(`Failed to fetch rooms: ${error.message}`);
 	}
-	return data as Room[];
+	return data as Chat[];
 }
