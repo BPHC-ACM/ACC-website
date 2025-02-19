@@ -1,0 +1,27 @@
+.pillButton {
+	background-color: #222;
+	border: none;
+	color: white;
+	font-size: 0.9rem;
+	cursor: pointer;
+	padding: 5px 20px;
+	width: 100%;
+	max-width: 100%;
+	text-align: left;
+	border-radius: 50px;
+	margin: 5px 0;
+	display: flex;
+	align-items: center;
+	transition: background-color 0.2s ease;
+}
+
+.pillButton img {
+	margin-left: -0.35rem;
+	padding: 0.5rem;
+}
+
+.name {
+	margin-left: 0.25rem;
+	font-size: 1rem;
+	font-family: 'Poppins', sans-serif;
+}
