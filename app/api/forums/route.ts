@@ -86,7 +86,7 @@ export async function PATCH(req: Request) {
 
 		const newAnswer = {
 			query_id,
-			name: 'Professor',
+			name: 'Consultant',
 			department: 'CSIS',
 			answer,
 			timestamp: new Date().toISOString(),
