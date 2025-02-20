@@ -41,7 +41,7 @@ export async function GET() {
 // Post a new query
 export async function POST(req: Request) {
 	try {
-		const { title, query, tags } = await req.json();
+		const { title, query, tags, id, name, identifier } = await req.json();
 
 		if (!title.trim() || !query.trim()) {
 			return NextResponse.json(
@@ -52,12 +52,12 @@ export async function POST(req: Request) {
 
 		const newQuery = {
 			id: crypto.randomUUID(),
-			name: 'Student',
+			name: name,
 			title,
 			query,
 			tags: tags.map((tag: string) => tag.trim()),
 			created_at: new Date().toISOString(),
-			identifier: 'ADMIN',
+			identifier,
 		};
 
 		const { error } = await supabase.from('queries').insert([newQuery]);

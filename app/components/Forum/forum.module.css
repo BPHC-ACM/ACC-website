@@ -236,7 +236,6 @@
 	padding: 8px;
 	border-radius: 8px;
 	margin-top: 10px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	animation: fadeIn 0.2s ease-in-out;
 }
 
@@ -256,27 +255,28 @@
 	border: none;
 	padding: 10px;
 	font-size: 14px;
-	border-radius: 8px;
+	border-radius: 4px;
 	outline: none;
 	background: white;
 }
 
-.answerInputContainer button {
-	background: #444;
-	color: white;
+.sendButton {
+	background: transparent;
+	color: black;
 	border: none;
 	padding: 8px 12px;
 	margin-left: 8px;
 	border-radius: 8px;
 	cursor: pointer;
-	transition: background 0.2s ease;
+	transition: all 0.35s ease;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
-.answerInputContainer button:hover {
+.sendButton:hover {
 	background: #222;
+	color: white;
 }
 
 .skeletonThread {
@@ -343,4 +343,29 @@
 	background-color: #333 !important;
 	color: #fff !important;
 	cursor: pointer;
+}
+
+.loginbutton {
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+}
+
+.pillbutton {
+	width: 15rem;
+}
+
+.pillbutton button {
+	background-color: #fff !important;
+}
+
+.loginbutton p {
+	font-size: 1rem;
+	color: #222;
+}
+
+.pillbutton button:hover {
+	background-color: #eee !important;
+	transition: background-color 0.2s ease-in-out;
 }

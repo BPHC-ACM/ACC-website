@@ -8,6 +8,7 @@ interface User {
 	name: string;
 	role: 'student' | 'consultant' | 'unknown';
 	id: string;
+	identifier?: string;
 }
 
 const UserContext = createContext<{ user: User | null; loading: boolean }>({
@@ -33,20 +34,38 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			}
 
 			const email = data.user.email ?? '';
-			const name = data.user.user_metadata?.full_name ?? 'Unknown';
-			const role = email.includes('bits-pilani.ac.in')
-				? email.startsWith('f20')
-					? 'student'
-					: 'consultant'
-				: 'unknown';
+			const developerEmail = process.env.NEXT_PUBLIC_DEVELOPER_EMAIL;
 
-			let studentId: string;
+			if (developerEmail === email) {
+				setUser({
+					email: 'email@domain.com',
+					name: 'Developer',
+					role: 'consultant',
+					id: '7a61c68e-0e82-4b57-bbc6-e28b79561d1f',
+					identifier: 'DEV',
+				});
+				setLoading(false);
+				return;
+			}
+
+			if (!email.endsWith('bits-pilani.ac.in')) {
+				console.warn('Unauthorized email:', email);
+				await supabase.auth.signOut();
+				setLoading(false);
+				return;
+			}
+
+			const name = data.user.user_metadata?.full_name ?? 'Unknown';
+			const role = email.startsWith('f20') ? 'student' : 'consultant';
+
+			let userId: string | null = null;
+			let identifier: string | null = null;
 
 			if (role === 'student') {
 				const { data: studentExists, error: studentError } =
 					await supabase
 						.from('students')
-						.select('id')
+						.select('id, identifier')
 						.eq('email', email)
 						.maybeSingle();
 
@@ -58,11 +77,25 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 				}
 
 				if (!studentExists?.id) {
+					identifier = `20XXXXH`;
+
+					const formattedname = name
+						.toLowerCase()
+						.split(' ')
+						.map(
+							(word: string) =>
+								word.charAt(0).toUpperCase() + word.slice(1)
+						)
+						.join(' ');
 					const { data: newStudent, error: insertError } =
 						await supabase
 							.from('students')
-							.insert({ email, name })
-							.select('id')
+							.insert({
+								email,
+								formattedname,
+								identifier,
+							})
+							.select('id, identifier')
 							.single();
 
 					if (insertError) {
@@ -71,14 +104,48 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 							insertError.message
 						);
 					} else {
-						studentId = newStudent.id;
+						userId = newStudent.id;
+						identifier = newStudent.identifier;
 					}
 				} else {
-					studentId = studentExists.id;
+					userId = studentExists.id;
+					identifier = studentExists.identifier;
+				}
+			} else if (role === 'consultant') {
+				const { data: consultantExists, error: consultantError } =
+					await supabase
+						.from('consultants')
+						.select('id, department')
+						.eq('email', email)
+						.maybeSingle();
+
+				if (consultantError) {
+					console.error(
+						'Error checking consultant:',
+						consultantError.message
+					);
+				}
+
+				if (consultantExists?.id) {
+					userId = consultantExists.id;
+					identifier = consultantExists.department;
 				}
 			}
 
-			setUser({ email, name, role, id: studentId });
+			setUser({
+				email,
+				name,
+				role,
+				id: userId ?? 'unknown',
+				identifier,
+			});
+			console.log({
+				email,
+				name,
+				role,
+				id: userId ?? 'unknown',
+				identifier,
+			});
 			setLoading(false);
 		};
 

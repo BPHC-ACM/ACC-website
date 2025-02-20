@@ -1,13 +1,8 @@
 'use client';
 import styles from './forum.module.css';
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import {
-	PlusIcon,
-	CirclePlusIcon,
-	MessageSquareIcon,
-	SendIcon,
-	Search,
-} from 'lucide-react';
+import { PlusIcon, MessageSquareIcon, SendIcon, Search } from 'lucide-react';
+import LoginButton from '../loginbutton';
 import { TextField, Button, Chip, Box } from '@mui/material';
 
 export function SkeletonThread() {
@@ -26,7 +21,7 @@ export function SkeletonThread() {
 	);
 }
 
-export default function Forum() {
+export default function Forum({ user }) {
 	const [query, setQuery] = useState({
 		title: '',
 		text: '',
@@ -38,7 +33,6 @@ export default function Forum() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [answerInputs, setAnswerInputs] = useState({});
 	const [tagInput, setTagInput] = useState('');
-
 	const fetchQueries = useCallback(async () => {
 		try {
 			const response = await fetch('/api/forums');
@@ -66,6 +60,9 @@ export default function Forum() {
 			title: query.title,
 			query: query.text,
 			tags: query.tags,
+			identifier: user.identifier,
+			id: user.id,
+			name: user.name,
 		};
 
 		try {
@@ -102,7 +99,7 @@ export default function Forum() {
 			console.error(error);
 		}
 	};
-
+	console.log(user);
 	const filteredQueries = useMemo(() => {
 		if (!searchQuery.trim()) return queries;
 
@@ -233,29 +230,52 @@ export default function Forum() {
 									<div
 										className={styles.answerInputContainer}
 									>
-										<input
-											type='text'
-											placeholder='Your answer...'
-											value={answerInputs[query.id]}
-											onChange={(e) =>
-												setAnswerInputs((prev) => ({
-													...prev,
-													[query.id]: e.target.value,
-												}))
-											}
-										/>
-										<button
-											onClick={() =>
-												postAnswer(
-													query.id,
-													answerInputs[
-														query.id
-													]?.trim()
-												)
-											}
-										>
-											<SendIcon size={20} />
-										</button>
+										{user ? (
+											<>
+												<input
+													type='text'
+													placeholder='Your answer...'
+													value={
+														answerInputs[query.id]
+													}
+													onChange={(e) =>
+														setAnswerInputs(
+															(prev) => ({
+																...prev,
+																[query.id]:
+																	e.target
+																		.value,
+															})
+														)
+													}
+												/>
+												<button
+													className={
+														styles.sendButton
+													}
+													onClick={() =>
+														postAnswer(
+															query.id,
+															answerInputs[
+																query.id
+															]?.trim()
+														)
+													}
+												>
+													<SendIcon size={20} />
+												</button>
+											</>
+										) : (
+											<div className={styles.loginbutton}>
+												<div
+													className={
+														styles.pillbutton
+													}
+												>
+													<LoginButton />
+												</div>
+											</div>
+										)}
 									</div>
 								)}
 							</div>
@@ -267,82 +287,102 @@ export default function Forum() {
 			<Box className={styles.postSection}>
 				<h2>Ask a Question</h2>
 
-				<TextField
-					label='Title'
-					variant='outlined'
-					fullWidth
-					value={query.title}
-					onChange={(e) =>
-						setQuery((prev) => ({ ...prev, title: e.target.value }))
-					}
-					inputProps={{ maxLength: 100 }}
-				/>
-
-				<TextField
-					label='Description'
-					variant='outlined'
-					fullWidth
-					multiline
-					minRows={4}
-					value={query.text}
-					onChange={(e) =>
-						setQuery((prev) => ({ ...prev, text: e.target.value }))
-					}
-					inputProps={{ maxLength: 500 }}
-				/>
-
-				<TextField
-					label='Add Tags (Press Enter)'
-					variant='outlined'
-					fullWidth
-					value={tagInput}
-					onChange={(e) => setTagInput(e.target.value)}
-					onKeyDown={(e) => {
-						if (e.key === 'Enter' && tagInput.trim()) {
-							const newTag = tagInput
-								.trim()
-								.replace(/\s+/g, '-')
-								.toLowerCase();
-
-							if (!query.tags.includes(newTag)) {
+				{user ? (
+					<>
+						<TextField
+							label='Title'
+							variant='outlined'
+							required
+							fullWidth
+							value={query.title}
+							onChange={(e) =>
 								setQuery((prev) => ({
 									...prev,
-									tags: [...prev.tags, newTag],
-								}));
-							}
-							setTagInput('');
-						}
-					}}
-				/>
-
-				<Box className={styles.tagContainer}>
-					{query.tags.map((tag, index) => (
-						<Chip
-							key={index}
-							className={styles.tagChip}
-							label={`#${tag}`}
-							onDelete={() =>
-								setQuery((prev) => ({
-									...prev,
-									tags: prev.tags.filter((t) => t !== tag),
+									title: e.target.value,
 								}))
 							}
+							inputProps={{ maxLength: 100 }}
 						/>
-					))}
-				</Box>
 
-				<Button
-					variant='contained'
-					sx={{
-						backgroundColor: '#333',
-						'&:hover': { backgroundColor: '#222' },
-					}}
-					fullWidth
-					startIcon={<PlusIcon />}
-					onClick={postQuery}
-				>
-					Post Question
-				</Button>
+						<TextField
+							label='Description'
+							variant='outlined'
+							fullWidth
+							multiline
+							required
+							minRows={4}
+							value={query.text}
+							onChange={(e) =>
+								setQuery((prev) => ({
+									...prev,
+									text: e.target.value,
+								}))
+							}
+							inputProps={{ maxLength: 500 }}
+						/>
+
+						<TextField
+							label='Add Tags (Press Enter)'
+							variant='outlined'
+							fullWidth
+							value={tagInput}
+							onChange={(e) => setTagInput(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter' && tagInput.trim()) {
+									const newTag = tagInput
+										.trim()
+										.replace(/\s+/g, '-')
+										.toLowerCase();
+
+									if (!query.tags.includes(newTag)) {
+										setQuery((prev) => ({
+											...prev,
+											tags: [...prev.tags, newTag],
+										}));
+									}
+									setTagInput('');
+								}
+							}}
+						/>
+
+						<Box className={styles.tagContainer}>
+							{query.tags.map((tag, index) => (
+								<Chip
+									key={index}
+									className={styles.tagChip}
+									label={`#${tag}`}
+									onDelete={() =>
+										setQuery((prev) => ({
+											...prev,
+											tags: prev.tags.filter(
+												(t) => t !== tag
+											),
+										}))
+									}
+								/>
+							))}
+						</Box>
+
+						<Button
+							variant='contained'
+							sx={{
+								backgroundColor: '#333',
+								'&:hover': { backgroundColor: '#222' },
+							}}
+							fullWidth
+							startIcon={<PlusIcon />}
+							onClick={postQuery}
+						>
+							Post Question
+						</Button>
+					</>
+				) : (
+					<div className={styles.loginbutton}>
+						<div className={styles.pillbutton}>
+							<LoginButton />
+						</div>
+					</div>
+				)}
 			</Box>
 		</div>
 	);
