@@ -17,7 +17,7 @@ export default function Section({ title, content }) {
 			animate='visible'
 			exit='exit'
 			variants={variants}
-			transition={{ duration: 0.2 }}
+			transition={{ duration: 0.25 }}
 		>
 			<h2 className={styles.title}>{title}</h2>
 			<div className={styles.content}>{content}</div>

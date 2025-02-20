@@ -234,7 +234,7 @@ export default function Forum({ user }) {
 											<>
 												<input
 													type='text'
-													placeholder='Your answer...'
+													placeholder='Add an answer'
 													value={
 														answerInputs[query.id]
 													}
@@ -289,11 +289,10 @@ export default function Forum({ user }) {
 
 				{user ? (
 					<>
-						<TextField
-							label='Title'
-							variant='outlined'
+						<input
+							type='text'
+							placeholder='Title*'
 							required
-							fullWidth
 							value={query.title}
 							onChange={(e) =>
 								setQuery((prev) => ({
@@ -301,16 +300,14 @@ export default function Forum({ user }) {
 									title: e.target.value,
 								}))
 							}
-							inputProps={{ maxLength: 100 }}
+							maxLength={100}
+							className={styles.inputField}
 						/>
 
-						<TextField
-							label='Description'
-							variant='outlined'
-							fullWidth
-							multiline
+						<textarea
+							placeholder='Description*'
 							required
-							minRows={4}
+							rows={4}
 							value={query.text}
 							onChange={(e) =>
 								setQuery((prev) => ({
@@ -318,13 +315,13 @@ export default function Forum({ user }) {
 									text: e.target.value,
 								}))
 							}
-							inputProps={{ maxLength: 500 }}
+							maxLength={500}
+							className={styles.inputField}
 						/>
 
-						<TextField
-							label='Add Tags (Press Enter)'
-							variant='outlined'
-							fullWidth
+						<input
+							type='text'
+							placeholder='Add Tags (Press Enter)'
 							value={tagInput}
 							onChange={(e) => setTagInput(e.target.value)}
 							onKeyDown={(e) => {
@@ -343,6 +340,7 @@ export default function Forum({ user }) {
 									setTagInput('');
 								}
 							}}
+							className={styles.inputField}
 						/>
 
 						<Box className={styles.tagContainer}>
@@ -363,18 +361,13 @@ export default function Forum({ user }) {
 							))}
 						</Box>
 
-						<Button
-							variant='contained'
-							sx={{
-								backgroundColor: '#333',
-								'&:hover': { backgroundColor: '#222' },
-							}}
-							fullWidth
-							startIcon={<PlusIcon />}
-							onClick={postQuery}
+						<button
+							className={styles.postButton}
+							onClick={() => postQuery()}
 						>
+							<PlusIcon />
 							Post Question
-						</Button>
+						</button>
 					</>
 				) : (
 					<div className={styles.loginbutton}>

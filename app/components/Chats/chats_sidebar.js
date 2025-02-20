@@ -70,7 +70,7 @@ export default function ChatsSidebar({
 				<motion.div
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
-					transition={{ duration: 0.5 }}
+					transition={{ duration: 0.25 }}
 					className='students-container'
 				>
 					{[...Array(3)].map((_, index) => (
@@ -81,7 +81,7 @@ export default function ChatsSidebar({
 				<motion.div
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
-					transition={{ duration: 0.5 }}
+					transition={{ duration: 0.25 }}
 					className='students-container'
 				>
 					{searchedRooms.map((room) => (

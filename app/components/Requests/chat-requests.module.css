@@ -34,7 +34,7 @@
 	align-items: center;
 	padding: 15px 20px;
 	border-bottom: 1px solid #eee;
-	transition: background-color 0.3s ease;
+	transition: background-color 0.25s ease;
 }
 
 .chatRequest:last-child {
@@ -101,7 +101,7 @@
 	border-radius: 5px;
 	cursor: pointer;
 	font-size: 0.9rem;
-	transition: background-color 0.3s ease;
+	transition: background-color 0.25s ease;
 }
 
 .acceptButton {
@@ -269,7 +269,7 @@
 	border: none;
 	font-size: 1.7rem;
 	color: #666;
-	transition: color 0.2s ease;
+	transition: color 0.25s ease;
 }
 
 .closeButton:hover {
@@ -286,7 +286,7 @@
 	font-family: 'Poppins';
 	color: white;
 	font-weight: 500;
-	transition: all 0.3s ease-in-out;
+	transition: all 0.25s ease-in-out;
 }
 
 .acceptButton {
@@ -318,7 +318,7 @@
 	border-radius: 25rem;
 	height: 2.75rem;
 	cursor: pointer;
-	transition: all 0.3s ease;
+	transition: all 0.25s ease;
 }
 
 .pastRequestsButton:hover {

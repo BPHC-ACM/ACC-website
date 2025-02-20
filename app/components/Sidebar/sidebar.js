@@ -101,7 +101,7 @@ export default function Sidebar({ setActiveSection }) {
 						whileHover={{
 							backgroundColor: 'rgba(250, 250, 250, 0.1)',
 						}}
-						transition={{ duration: 0.2 }}
+						transition={{ duration: 0.25 }}
 					>
 						<motion.button
 							className={`${styles.navItem} ${
@@ -127,7 +127,7 @@ export default function Sidebar({ setActiveSection }) {
 								initial={{ opacity: 0, y: 10 }}
 								animate={{ opacity: 1, y: 0 }}
 								exit={{ opacity: 0, y: 10 }}
-								transition={{ duration: 0.2 }}
+								transition={{ duration: 0.25 }}
 								onClick={handleLogout}
 								whileTap={{ scale: 0.95 }}
 							>

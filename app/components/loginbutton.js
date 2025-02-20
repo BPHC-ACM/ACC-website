@@ -34,7 +34,7 @@ const LoginButton = () => {
 			exit={{ opacity: 0, y: 10 }}
 			whileHover={{ backgroundColor: '#fff', color: '#222' }}
 			style={{ transformOrigin: 'center' }}
-			transition={{ duration: 0.2 }}
+			transition={{ duration: 0.25 }}
 			whileTap={{ scale: 0.95 }}
 			onClick={handleLogin}
 		>

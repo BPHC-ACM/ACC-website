@@ -45,7 +45,7 @@
 	width: 100%;
 	text-align: left;
 	font-family: 'Poppins', serif;
-	transition: color 0.3s ease;
+	transition: color 0.25s ease;
 }
 
 .navItem:hover {
@@ -84,7 +84,7 @@
 	margin: 5px 0;
 	display: flex;
 	align-items: center;
-	transition: background-color 0.2s ease;
+	transition: background-color 0.25s ease;
 }
 
 .userContainer {
@@ -110,7 +110,7 @@
 	margin: 5px 0;
 	display: flex;
 	align-items: center;
-	transition: background-color 0.2s ease, opacity 0.2s ease;
+	transition: background-color 0.25s ease, opacity 0.25s ease;
 }
 
 .logoutButton span {
