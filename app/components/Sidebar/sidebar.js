@@ -11,7 +11,7 @@ import {
 	IconMessages,
 	IconBubbleText,
 	IconHome2,
-	IconUserCircle,
+	IconBooks,
 	IconLogout,
 } from '@tabler/icons-react';
 
@@ -24,26 +24,40 @@ export default function Sidebar({ setActiveSection }) {
 	const [activeButton, setActiveButton] = useState(null);
 	const { user, loading } = useUser();
 	const [showLogout, setShowLogout] = useState(false);
-	const [branch, setBranch] = useState(null);
+	const [identifier, setBranch] = useState(null);
 
 	useEffect(() => {
-		const fetchBranch = async () => {
+		const fetchIdentifier = async () => {
+			console.log(user);
 			if (user && user.email) {
+				const table =
+					user.role === 'student' ? 'students' : 'consultants';
+				const column =
+					user.role === 'student' ? 'identifier' : 'department';
+
 				const { data, error } = await supabase
-					.from('students')
-					.select('branch')
+					.from(table)
+					.select(column)
 					.eq('email', user.email)
 					.single();
 
-				if (data) setBranch(data.branch);
+				if (error) {
+					console.error(
+						`Error fetching ${column} from ${table}:`,
+						error.message
+					);
+					return;
+				}
+
+				if (data) setBranch(data[column]);
 			}
 		};
 
-		fetchBranch();
+		fetchIdentifier();
 	}, [user]);
 
-	const handleClick = (index) => {
-		setActiveSection(`section${index + 1}`);
+	const handleClick = (sectionName, index) => {
+		setActiveSection(sectionName);
 		setActiveButton(index);
 	};
 
@@ -58,16 +72,21 @@ export default function Sidebar({ setActiveSection }) {
 			icon: <IconHome2 size={24} className='navIcon' />,
 		},
 		{
-			name: 'Requests',
-			icon: <IconBubbleText size={24} className='navIcon' />,
-		},
-		{
 			name: 'Messages',
 			icon: <IconMessages size={24} className='navIcon' />,
 		},
 		{
 			name: 'Community',
 			icon: <IconUsers size={24} className='navIcon' />,
+		},
+		{
+			name: user?.role === 'consultant' ? 'Requests' : 'Resources',
+			icon:
+				user?.role === 'consultant' ? (
+					<IconBubbleText size={24} className='navIcon' />
+				) : (
+					<IconBooks size={24} className='navIcon' />
+				),
 		},
 	];
 
@@ -88,7 +107,9 @@ export default function Sidebar({ setActiveSection }) {
 							className={`${styles.navItem} ${
 								activeButton === index ? styles.active : ''
 							}`}
-							onClick={() => handleClick(index)}
+							onClick={() =>
+								handleClick(section.name.toLowerCase(), index)
+							}
 							whileTap={{ scale: 0.95 }}
 						>
 							{section.icon} {section.name}
@@ -119,11 +140,18 @@ export default function Sidebar({ setActiveSection }) {
 							whileTap={{ scale: 0.95 }}
 							onClick={() => setShowLogout(!showLogout)}
 						>
-							<IconUserCircle
-								size={40}
+							<img
+								src={`/api/avatar?name=${encodeURIComponent(
+									user.name || ''
+								)}`}
+								alt={user.name}
+								width={40}
+								height={40}
 								style={{
-									minWidth: '40px',
-									paddingRight: '0.5rem',
+									width: '36px',
+									height: '36px',
+									borderRadius: '50%',
+									marginRight: '0.5rem',
 									marginLeft: '-0.5rem',
 								}}
 							/>
@@ -131,8 +159,8 @@ export default function Sidebar({ setActiveSection }) {
 								<div className={styles.name}>
 									<p className={styles.name}>{user.name}</p>
 								</div>
-								<div className={styles.branch}>
-									<p>{branch || ''}</p>
+								<div className={styles.identifier}>
+									<p>{identifier || ''}</p>
 								</div>
 							</div>
 						</motion.button>

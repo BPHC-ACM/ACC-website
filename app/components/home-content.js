@@ -1,11 +1,12 @@
 'use client';
-
+import { useUser } from 'app/userContext';
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Section1 from './Dashboard/section1';
 import Section2 from './Requests/section2';
 import Section3 from './Chats/section3';
 import Section4 from './Forum/section4';
+import Section5 from './Resources/section5';
 import Sidebar from './Sidebar/sidebar';
 import styles from '../page.module.css';
 import Footer from './Footer/footer';
@@ -13,19 +14,22 @@ import ScrollToTop from './ScrollToTop/scroll-to-top';
 
 export default function HomeContent() {
 	const [activeSection, setActiveSection] = useState('section1');
+	const { user, loading } = useUser();
 
 	const renderSection = () => {
 		switch (activeSection) {
-			case 'section1':
-				return <Section1 key='section1' />;
-			case 'section2':
-				return <Section2 key='section2' />;
-			case 'section3':
-				return <Section3 key='section3' />;
-			case 'section4':
-				return <Section4 key='section4' />;
+			case 'dashboard':
+				return <Section1 key='dashboard' />;
+			case 'messages':
+				return <Section3 key='messages' />;
+			case 'community':
+				return <Section4 key='community' />;
+			case 'requests':
+				return <Section2 key='requests' />;
+			case 'resources':
+				return <Section5 key='resources' />;
 			default:
-				return <Section1 key='section1' />;
+				return <Section1 key='dashboard' />;
 		}
 	};
 
