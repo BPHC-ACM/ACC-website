@@ -22,7 +22,7 @@ export async function GET(req) {
       details,
       status,
       created_at,
-      students (name, branch, cgpa)
+      students (name, identifier, cgpa)
     `
 		)
 		.eq('status', 'pending');
@@ -44,7 +44,7 @@ export async function GET(req) {
 			...request,
 			relativeTime: formatDistanceToNow(istDate, { addSuffix: true }),
 			name: request.students.name,
-			branch: request.students.branch,
+			identifier: request.students.identifier,
 			cgpa: request.students.cgpa,
 		};
 	});

@@ -12,6 +12,7 @@
 	overflow-y: auto;
 	font-weight: 100;
 	font-style: normal;
+	z-index: 8;
 }
 
 .navContainer {
@@ -134,7 +135,7 @@
 	min-width: 0; /* Ensures flex doesn't force it to grow */
 }
 
-.branch {
+.identifier {
 	font-size: 0.8rem;
 	color: #ccc;
 	opacity: 0.6;

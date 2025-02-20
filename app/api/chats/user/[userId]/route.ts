@@ -17,7 +17,7 @@ export async function GET(req: any, { params }: any) {
       student_id,
       messages,
       created_at,
-      students:student_id (name, branch),
+      students:student_id (name, identifier),
       consultants:consultant_id (name, department)
     `
 		)
@@ -36,7 +36,7 @@ export async function GET(req: any, { params }: any) {
 				? room.students?.name || 'Unknown'
 				: room.consultants?.name || 'Unknown',
 			identifier: isConsultant
-				? room.students?.branch || ''
+				? room.students?.identifier || ''
 				: room.consultants?.department || '',
 			messages: room.messages,
 			created_at: room.created_at,

@@ -32,7 +32,7 @@ export async function GET(
 	const isConsultant = userId === consultant_id;
 	const targetId = isConsultant ? student_id : consultant_id;
 	const targetTable = isConsultant ? 'students' : 'consultants';
-	const targetColumn = isConsultant ? 'name, branch' : 'name, department';
+	const targetColumn = isConsultant ? 'name, identifier' : 'name, department';
 
 	// Fetch details of the opposite participant
 	const { data: targetData, error: targetError } = await supabase
@@ -52,6 +52,8 @@ export async function GET(
 	return NextResponse.json({
 		userName: targetData.name,
 		info:
-			'branch' in targetData ? targetData.branch : targetData.department, // Branch for students, Department for consultants
+			'identifier' in targetData
+				? targetData.identifier
+				: targetData.department,
 	});
 }

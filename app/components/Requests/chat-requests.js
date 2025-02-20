@@ -27,7 +27,7 @@ const ChatRequest = ({
 	id,
 	name,
 	subject,
-	branch,
+	identifier,
 	cgpa,
 	details,
 	relativeTime,
@@ -49,7 +49,7 @@ const ChatRequest = ({
 					name,
 					iconurl,
 					subject,
-					branch,
+					identifier,
 					cgpa,
 					details,
 					student_id,
@@ -139,10 +139,14 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 					/>
 					<div>
 						<h3 className={styles.modalHeader}>{request.name}</h3>
-						{(request.branch || request.cgpa) && (
+						{(request.identifier || request.cgpa) && (
 							<p className={styles.modalSubHeader}>
-								{request.branch ? `${request.branch}` : ''}
-								{request.branch && request.cgpa ? ' | ' : ''}
+								{request.identifier
+									? `${request.identifier}`
+									: ''}
+								{request.identifier && request.cgpa
+									? ' | '
+									: ''}
 								{typeof request.cgpa === 'number'
 									? `CGPA: ${request.cgpa.toFixed(1)}`
 									: ''}
@@ -348,7 +352,7 @@ export default function ChatRequests({ userId }) {
 								student_id={request.student_id}
 								consultant_id={request.consultant_id}
 								subject={request.subject}
-								branch={request.branch}
+								identifier={request.identifier}
 								cgpa={request.cgpa}
 								details={request.details}
 								relativeTime={request.relativeTime}
