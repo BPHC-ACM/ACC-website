@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import Section1 from './Dashboard/section1'; //Dashboard
-import Section2 from './Requests/section2'; //Requests
-import Section3 from './Chats/section3'; //Chats
-import Section4 from './Forum/section4'; //Forum
+import Section1 from './Dashboard/section1';
+import Section2 from './Requests/section2';
+import Section3 from './Chats/section3';
+import Section4 from './Forum/section4';
 import Sidebar from './Sidebar/sidebar';
 import styles from '../page.module.css';
 import Footer from './Footer/footer';

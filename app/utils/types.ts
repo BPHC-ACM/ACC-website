@@ -15,7 +15,7 @@ export interface Consultant {
 
 export interface Message {
 	timestamp: string;
-	name: string;
+	id: string;
 	content: string;
 	roomid: string;
 }

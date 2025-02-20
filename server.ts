@@ -23,8 +23,6 @@ const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
 wss.on('connection', (ws) => {
-	console.log('🔗 Client connected');
-
 	ws.on('error', (error) => {
 		console.error('WebSocket error:', error);
 	});

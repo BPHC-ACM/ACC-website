@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useUser } from '../../usercontext';
+import { useUser } from '../../userContext';
 import { createClient } from '@supabase/supabase-js';
 import LoginButton from '../loginbutton';
 import styles from './sidebar.module.css';
