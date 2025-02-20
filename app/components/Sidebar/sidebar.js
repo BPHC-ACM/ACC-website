@@ -54,7 +54,7 @@ export default function Sidebar({ setActiveSection }) {
 
 	const sections = [
 		{
-			name: 'Dashboard',
+			name: 'Home',
 			icon: <IconHome2 size={24} className='navIcon' />,
 		},
 		{
