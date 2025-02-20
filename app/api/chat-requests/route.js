@@ -7,8 +7,11 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export async function GET() {
-	const { data, error } = await supabase
+export async function GET(req) {
+	const { searchParams } = new URL(req.url);
+	const consultant_id = searchParams.get('consultant_id');
+
+	let query = supabase
 		.from('requests')
 		.select(
 			`
@@ -23,6 +26,12 @@ export async function GET() {
     `
 		)
 		.eq('status', 'pending');
+
+	if (consultant_id) {
+		query = query.eq('consultant_id', consultant_id);
+	}
+
+	const { data, error } = await query;
 
 	if (error)
 		return NextResponse.json({ error: error.message }, { status: 500 });
@@ -50,17 +59,20 @@ export async function PATCH(req) {
 	try {
 		const { id, status, consultant_id, student_id } = await req.json();
 
-		if (!id || !['accepted', 'declined'].includes(status)) {
+		if (
+			!id ||
+			!['accepted', 'declined'].includes(status) ||
+			!consultant_id
+		) {
 			return NextResponse.json(
 				{ error: 'Invalid request data' },
 				{ status: 400 }
 			);
 		}
 
-		// Update the request status
 		const { error: updateError } = await supabase
 			.from('requests')
-			.update({ status })
+			.update({ status, consultant_id })
 			.eq('id', id);
 
 		if (updateError) {
@@ -71,17 +83,16 @@ export async function PATCH(req) {
 			);
 		}
 
-		// If the request is accepted, create a chat room
 		if (status === 'accepted') {
-			if (!consultant_id || !student_id) {
+			if (!student_id) {
 				return NextResponse.json(
-					{ error: 'Consultant ID or Student ID is missing' },
+					{ error: 'Student ID is missing' },
 					{ status: 400 }
 				);
 			}
 
 			const chatRoom = {
-				roomid: uuidv4(), // Generate a valid UUID for the room ID
+				roomid: uuidv4(),
 				consultant_id,
 				student_id,
 				messages: [],

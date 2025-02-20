@@ -3,6 +3,7 @@ import ChatsSidebar from './chats_sidebar';
 import ChatsMain from './chats_main.js';
 import { connectWebSocket } from '../../utils/chat_socket';
 import { useUser } from 'app/userContext';
+import LoginButton from '../loginbutton';
 import styles from './section3.css';
 
 export default function Section3() {
@@ -19,7 +20,14 @@ export default function Section3() {
 		};
 	}, []);
 
-	if (!user?.id) return <p>Error: User not found</p>;
+	if (!user?.id)
+		return (
+			<div className='loginbutton'>
+				<div className='pill'>
+					<LoginButton />
+				</div>
+			</div>
+		);
 
 	return (
 		<div className='chatsystem'>

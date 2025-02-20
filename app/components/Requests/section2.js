@@ -1,21 +1,23 @@
-// import Section from "./section"
-
-// export default function Section2() {
-//   return (
-//     <Section
-//       title="Requests"
-//       content="This is the content for Requests."
-//     />
-//   )
-// }
-import ChatRequests from "./chat-requests"
-import styles from "./section2.module.css"
+import ChatRequests from './chat-requests';
+import styles from './section2.module.css';
+import { useUser } from 'app/userContext';
+import LoginButton from '../loginbutton';
 
 export default function Section2() {
-  return (
-    <div className={styles.section}>
-      <ChatRequests />
-    </div>
-  )
-}
+	const { user, loading } = useUser();
 
+	if (!user?.id)
+		return (
+			<div className={styles.loginbutton}>
+				<div className={styles.pill}>
+					<LoginButton />
+				</div>
+			</div>
+		);
+
+	return (
+		<div className={styles.section}>
+			<ChatRequests userId={user.id} />
+		</div>
+	);
+}

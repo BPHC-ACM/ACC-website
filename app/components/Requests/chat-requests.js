@@ -223,7 +223,7 @@ const NotificationPopup = ({ message, type, onClose }) => {
 		</motion.div>
 	);
 };
-export default function ChatRequests() {
+export default function ChatRequests({ userId }) {
 	const [notification, setNotification] = useState(null);
 	const [requests, setRequests] = useState([]);
 	const [totalRequests, setTotalRequests] = useState(0);
@@ -238,7 +238,9 @@ export default function ChatRequests() {
 			return;
 		}
 		try {
-			const response = await fetch('/api/chat-requests/past');
+			const response = await fetch(
+				`/api/chat-requests/past?consultant_id=${userId}`
+			);
 			if (!response.ok) throw new Error('Failed to fetch past requests');
 			const data = await response.json();
 			setPastRequests(data.requests);
@@ -251,7 +253,9 @@ export default function ChatRequests() {
 	useEffect(() => {
 		const fetchChatRequests = async () => {
 			try {
-				const response = await fetch('/api/chat-requests');
+				const response = await fetch(
+					`/api/chat-requests?consultant_id=${userId}`
+				);
 				const data = await response.json();
 				setRequests(data.requests);
 				setTotalRequests(data.totalRequests);
@@ -262,36 +266,53 @@ export default function ChatRequests() {
 			}
 		};
 
-		fetchChatRequests();
-	}, []);
+		if (userId) fetchChatRequests();
+	}, [userId]);
 
-	const handleStatusChange = (id, newStatus) => {
-		setRequests((prevRequests) =>
-			prevRequests
-				.filter(
-					(request) =>
-						!(
-							request.id === id &&
-							(newStatus === 'accepted' ||
-								newStatus === 'declined')
-						)
-				)
-				.map((request) =>
-					request.id === id
-						? { ...request, status: newStatus }
-						: request
-				)
-		);
+	const handleStatusChange = async (id, newStatus) => {
+		try {
+			const response = await fetch('/api/chat-requests', {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					id,
+					status: newStatus,
+					consultant_id: userId,
+				}),
+			});
 
-		setNotification({
-			message:
-				newStatus === 'accepted'
-					? 'Chat request accepted!'
-					: 'Chat request declined.',
-			type: newStatus === 'accepted' ? 'success' : 'error',
-		});
+			if (!response.ok)
+				throw new Error('Failed to update request status');
 
-		setTimeout(() => setNotification(null), 3000);
+			setRequests((prevRequests) =>
+				prevRequests
+					.filter(
+						(request) =>
+							!(
+								request.id === id &&
+								(newStatus === 'accepted' ||
+									newStatus === 'declined')
+							)
+					)
+					.map((request) =>
+						request.id === id
+							? { ...request, status: newStatus }
+							: request
+					)
+			);
+
+			setNotification({
+				message:
+					newStatus === 'accepted'
+						? 'Chat request accepted!'
+						: 'Chat request declined.',
+				type: newStatus === 'accepted' ? 'success' : 'error',
+			});
+
+			setTimeout(() => setNotification(null), 3000);
+		} catch (error) {
+			console.error('Error updating request status:', error);
+		}
 	};
 
 	return (

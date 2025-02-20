@@ -6,3 +6,15 @@
 	display: flex;
 	flex-direction: row;
 }
+
+.loginbutton {
+	display: flex;
+	height: 98vh;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+}
+
+.pill {
+	width: 15rem;
+}
