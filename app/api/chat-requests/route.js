@@ -3,9 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import { formatDistanceToNow } from 'date-fns';
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+	process.env.SUPABASE_URL,
+	process.env.SUPABASE_ANON_KEY
+);
 
 export async function GET(req) {
 	const { searchParams } = new URL(req.url);
@@ -55,6 +56,55 @@ export async function GET(req) {
 	});
 }
 
+export async function POST(req) {
+	try {
+		const { student_id, consultant_id, subject, details, request_type } =
+			await req.json();
+
+		if (!student_id || !consultant_id || !subject || !details) {
+			return NextResponse.json(
+				{ error: 'Missing required fields' },
+				{ status: 400 }
+			);
+		}
+
+		if (!['academic', 'career'].includes(request_type)) {
+			return NextResponse.json(
+				{ error: 'Invalid request type' },
+				{ status: 400 }
+			);
+		}
+
+		const id = uuidv4();
+
+		const { data, error } = await supabase
+			.from('requests')
+			.insert([
+				{
+					student_id,
+					consultant_id,
+					subject,
+					details,
+					status: 'pending',
+				},
+			])
+			.select();
+
+		if (error) throw error;
+
+		return NextResponse.json({
+			message: 'Request created successfully',
+			request: data[0],
+		});
+	} catch (err) {
+		console.error('Error creating request:', err);
+		return NextResponse.json(
+			{ error: 'Failed to create request' },
+			{ status: 500 }
+		);
+	}
+}
+
 export async function PATCH(req) {
 	try {
 		const { id, status, consultant_id, student_id } = await req.json();
@@ -91,71 +141,53 @@ export async function PATCH(req) {
 				);
 			}
 
-			const chatRoom = {
-				roomid: uuidv4(),
-				consultant_id,
-				student_id,
-				messages: [],
-			};
-
-			const { error: chatRoomError } = await supabase
+			const { data: existingRoom, error: fetchError } = await supabase
 				.from('chats')
-				.insert([chatRoom]);
+				.select('roomid')
+				.eq('consultant_id', consultant_id)
+				.eq('student_id', student_id)
+				.maybeSingle();
 
-			if (chatRoomError) {
-				console.error(
-					'Supabase Chat Room Insert Error:',
-					chatRoomError
-				);
-				console.error('Chat Room Data:', chatRoom);
+			if (fetchError) {
+				console.error('Supabase Chat Room Fetch Error:', fetchError);
 				return NextResponse.json(
-					{
-						error: 'Failed to create chat room',
-						details: chatRoomError,
-					},
+					{ error: 'Failed to verify chat room existence' },
 					{ status: 500 }
 				);
 			}
-		}
 
+			if (!existingRoom) {
+				const chatRoom = {
+					roomid: uuidv4(),
+					consultant_id,
+					student_id,
+					messages: [],
+				};
+
+				const { error: chatRoomError } = await supabase
+					.from('chats')
+					.insert([chatRoom]);
+
+				if (chatRoomError) {
+					console.error(
+						'Supabase Chat Room Insert Error:',
+						chatRoomError
+					);
+					return NextResponse.json(
+						{ error: 'Failed to create chat room' },
+						{ status: 500 }
+					);
+				}
+			}
+		}
 		return NextResponse.json({
 			message: `Request ${id} updated to ${status}`,
 		});
 	} catch (err) {
-		console.error('Unexpected Error:', err);
-		return NextResponse.json({ error: err.message }, { status: 500 });
-	}
-}
-
-export async function POST(req) {
-	try {
-		const { student_id, consultant_id, subject, details } =
-			await req.json();
-
-		if (!student_id || !consultant_id || !subject || !details) {
-			return NextResponse.json(
-				{ error: 'Missing fields' },
-				{ status: 400 }
-			);
-		}
-
-		const id = uuidv4();
-
-		const { data, error } = await supabase.from('requests').insert([
-			{
-				id,
-				student_id,
-				consultant_id,
-				subject,
-				details,
-				status: 'pending',
-			},
-		]);
-
-		if (error) throw error;
-
-		return NextResponse.json({ message: 'Request created', request: data });
-	} catch (err) {
-		return NextResponse.json({ error: err.message }, { status: 500 });
+		console.error('Unexpected error:', err);
+		return NextResponse.json(
+			{ error: 'Failed to process request' },
+			{ status: 500 }
+		);
 	}
 }

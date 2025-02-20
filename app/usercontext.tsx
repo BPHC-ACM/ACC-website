@@ -139,13 +139,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 				id: userId ?? 'unknown',
 				identifier,
 			});
-			console.log({
-				email,
-				name,
-				role,
-				id: userId ?? 'unknown',
-				identifier,
-			});
 			setLoading(false);
 		};
 

@@ -88,7 +88,7 @@
 }
 
 .messages-container {
-	max-height: 78vh;
+	max-height: 81vh;
 	padding: 1rem;
 	display: flex;
 	flex-direction: column;
@@ -197,6 +197,26 @@
 	color: #222;
 	padding: 0.85rem 1.2rem;
 	border: 1px solid #ddd;
+}
+
+.chat-display {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.messages-container {
+	overflow-y: auto;
+	scrollbar-width: thin;
+}
+
+.messages-container::-webkit-scrollbar {
+	width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 3px;
 }
 
 .timestamp {

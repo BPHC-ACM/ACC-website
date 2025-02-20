@@ -28,7 +28,6 @@ export default function Sidebar({ setActiveSection }) {
 
 	useEffect(() => {
 		const fetchIdentifier = async () => {
-			console.log(user);
 			if (user && user.email) {
 				const table =
 					user.role === 'student' ? 'students' : 'consultants';

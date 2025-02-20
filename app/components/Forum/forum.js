@@ -99,7 +99,6 @@ export default function Forum({ user }) {
 			console.error(error);
 		}
 	};
-	console.log(user);
 	const filteredQueries = useMemo(() => {
 		if (!searchQuery.trim()) return queries;
 

@@ -134,6 +134,7 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 						)}`}
 						alt={request.name}
 						width={60}
+						unoptimized
 						height={60}
 						className={styles.modalAvatar}
 					/>
@@ -282,6 +283,8 @@ export default function ChatRequests({ userId }) {
 					id,
 					status: newStatus,
 					consultant_id: userId,
+					student_id: requests.find((req) => req.id === id)
+						?.student_id,
 				}),
 			});
 
@@ -399,6 +402,7 @@ export default function ChatRequests({ userId }) {
 													request.name || ''
 												)}`}
 												alt={request.name}
+												unoptimized
 												className={styles.avatar}
 												width={40}
 												height={40}

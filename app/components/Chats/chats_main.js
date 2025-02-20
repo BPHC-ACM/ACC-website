@@ -21,11 +21,24 @@ export default function ChatsMain({ selectedRoom, userId }) {
 	}, [messages, selectedRoom]);
 
 	useEffect(() => {
+		if (messagesContainerRef.current) {
+			setTimeout(() => {
+				messagesContainerRef.current.scrollTop =
+					messagesContainerRef.current.scrollHeight;
+			}, 10);
+		}
+	}, [messages, selectedRoom]);
+
+	useEffect(() => {
+		setUserName('');
+
 		if (selectedRoom) {
 			fetch(`/api/chats/${selectedRoom}/${userId}`)
 				.then((response) => {
 					if (!response.ok) {
-						throw new Error('Network response was not ok');
+						throw new Error(
+							`Network response was not ok: ${response.status}`
+						);
 					}
 					return response.json();
 				})
@@ -34,23 +47,10 @@ export default function ChatsMain({ selectedRoom, userId }) {
 				})
 				.catch((error) => {
 					console.error('Error fetching user data:', error);
-				});
-
-			fetch(`/api/chats/${selectedRoom}/messages`)
-				.then((response) => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
-					}
-					return response.json();
-				})
-				.then((data) => {
-					setMessages(data.messages || []);
-				})
-				.catch((error) => {
-					console.error('Error fetching chat data:', error);
+					setUserName('Unknown User');
 				});
 		}
-	}, [selectedRoom]);
+	}, [selectedRoom, userId]);
 
 	useEffect(() => {
 		if (!selectedRoom) return;
@@ -63,16 +63,22 @@ export default function ChatsMain({ selectedRoom, userId }) {
 		socketRef.current = socket;
 
 		socket.onopen = () => {
-			socket.send(JSON.stringify({ type: 'join', room: selectedRoom }));
+			socket.send(
+				JSON.stringify({
+					type: 'join',
+					room: selectedRoom,
+				})
+			);
 		};
 
 		socket.onmessage = (event) => {
 			try {
 				const receivedMessage = JSON.parse(event.data);
-				setMessages((prevMessages) => [
-					...prevMessages,
-					receivedMessage,
-				]);
+				if (receivedMessage.room === selectedRoom) {
+					setMessages((prevMessages) => {
+						return [...prevMessages, receivedMessage];
+					});
+				}
 			} catch (error) {
 				console.error('Error parsing WebSocket message:', error);
 			}
@@ -82,8 +88,8 @@ export default function ChatsMain({ selectedRoom, userId }) {
 			console.error('WebSocket error:', error);
 		};
 
-		socket.onclose = () => {
-			console.log(`Disconnected from room ${selectedRoom}`);
+		socket.onclose = (event) => {
+			console.log('WebSocket closed:', event.code, event.reason);
 		};
 
 		return () => {
@@ -124,16 +130,14 @@ export default function ChatsMain({ selectedRoom, userId }) {
 			.then((data) => {
 				setMessages((prevMessages) => [...prevMessages, messageData]);
 				setNewMessage('');
+
+				if (socketRef.current?.readyState === WebSocket.OPEN) {
+					socketRef.current.send(JSON.stringify(messageData));
+				}
 			})
 			.catch((error) => {
 				console.error('Error sending message:', error);
 			});
-
-		if (socketRef.current?.readyState === WebSocket.OPEN) {
-			socketRef.current.send(JSON.stringify(messageData));
-		} else {
-			console.error('WebSocket not connected');
-		}
 	};
 
 	return (
@@ -168,7 +172,8 @@ export default function ChatsMain({ selectedRoom, userId }) {
 							className='messages-container'
 							ref={messagesContainerRef}
 							style={{
-								maxHeight: '81vh',
+								flex: 1,
+								overflow: 'auto',
 								padding: '0.75rem',
 								display: 'flex',
 								flexDirection: 'column',

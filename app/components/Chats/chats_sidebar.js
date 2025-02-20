@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import styles from './chats_sidebar.css';
+import RequestButton from '../RequestButton/RequestButton';
 
 export default function ChatsSidebar({
+	userRole,
 	userId,
 	setSelectedRoom,
 	selectedRoom,
@@ -56,7 +58,12 @@ export default function ChatsSidebar({
 
 	return (
 		<div className='sidebar'>
-			<h2 className='chats-heading'>Chats</h2>
+			<h2 className='chats-heading'>
+				Chats
+				{userRole === 'student' ? (
+					<RequestButton studentId={userId} />
+				) : null}
+			</h2>
 
 			<input
 				type='text'

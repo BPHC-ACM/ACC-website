@@ -8,7 +8,7 @@ import styles from './section3.css';
 
 export default function Section3() {
 	const [selectedRoom, setSelectedRoom] = useState(null);
-	const { user, loading } = useUser();
+	const { user } = useUser();
 
 	useEffect(() => {
 		const socket = connectWebSocket();
@@ -35,6 +35,7 @@ export default function Section3() {
 				userId={user.id}
 				setSelectedRoom={setSelectedRoom}
 				selectedRoom={selectedRoom}
+				userRole={user.role}
 			/>
 			<ChatsMain selectedRoom={selectedRoom} userId={user.id} />
 		</div>
