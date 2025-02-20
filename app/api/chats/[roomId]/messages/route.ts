@@ -13,16 +13,18 @@ export async function POST(
 ) {
 	try {
 		const body = await req.json();
-		if (!body.name || !body.content) {
+		if (!body.id || !body.content) {
 			return NextResponse.json(
 				{ error: 'Missing fields' },
 				{ status: 400 }
 			);
 		}
 
+		const { roomId } = await params;
+
 		const message: Message = {
-			roomid: params.roomId,
-			name: body.name,
+			roomid: roomId,
+			id: body.id,
 			content: body.content,
 			timestamp: new Date().toISOString(),
 		};

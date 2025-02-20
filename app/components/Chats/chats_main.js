@@ -4,7 +4,7 @@ import { IconSend } from '@tabler/icons-react';
 import styles from './chats_main.css';
 import { useState, useEffect, useRef } from 'react';
 
-export default function ChatsMain({ selectedRoom }) {
+export default function ChatsMain({ selectedRoom, userId }) {
 	const [newMessage, setNewMessage] = useState('');
 	const [messages, setMessages] = useState([]);
 	const [userName, setUserName] = useState('');
@@ -22,8 +22,7 @@ export default function ChatsMain({ selectedRoom }) {
 
 	useEffect(() => {
 		if (selectedRoom) {
-			// Fetch user data (including user name) when a room is selected
-			fetch(`/api/chats/${selectedRoom}/username`)
+			fetch(`/api/chats/${selectedRoom}/${userId}`)
 				.then((response) => {
 					if (!response.ok) {
 						throw new Error('Network response was not ok');
@@ -37,7 +36,6 @@ export default function ChatsMain({ selectedRoom }) {
 					console.error('Error fetching user data:', error);
 				});
 
-			// Fetch chat data from the server
 			fetch(`/api/chats/${selectedRoom}/messages`)
 				.then((response) => {
 					if (!response.ok) {
@@ -57,7 +55,6 @@ export default function ChatsMain({ selectedRoom }) {
 	useEffect(() => {
 		if (!selectedRoom) return;
 
-		// Ensure old socket is closed before creating a new one
 		if (socketRef.current) {
 			socketRef.current.close();
 		}
@@ -66,8 +63,6 @@ export default function ChatsMain({ selectedRoom }) {
 		socketRef.current = socket;
 
 		socket.onopen = () => {
-			console.log(`Connected to room ${selectedRoom}`);
-			// Send initial join message if needed
 			socket.send(JSON.stringify({ type: 'join', room: selectedRoom }));
 		};
 
@@ -115,7 +110,7 @@ export default function ChatsMain({ selectedRoom }) {
 
 		const messageData = {
 			room: selectedRoom,
-			name: 'You',
+			id: userId,
 			content: newMessage,
 			timestamp: new Date().toISOString(),
 		};
@@ -127,9 +122,8 @@ export default function ChatsMain({ selectedRoom }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log(messages);
-				setMessages((prevMessages) => [...prevMessages, messageData]); // Add message to local state
-				setNewMessage(''); // Clear input field
+				setMessages((prevMessages) => [...prevMessages, messageData]);
+				setNewMessage('');
 			})
 			.catch((error) => {
 				console.error('Error sending message:', error);
@@ -160,9 +154,9 @@ export default function ChatsMain({ selectedRoom }) {
 					>
 						<div className='header'>
 							<img
-								src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-									userName
-								)}&background=777&color=fff&size=100`}
+								src={`/api/avatar?name=${encodeURIComponent(
+									userName || ''
+								)}`}
 								alt='User Avatar'
 								className='avatar'
 							/>
@@ -187,7 +181,7 @@ export default function ChatsMain({ selectedRoom }) {
 										new Date(b.timestamp)
 								)
 								.map((msg, index) => {
-									const isUser = msg.name === 'You';
+									const isUser = msg.id === userId;
 									return (
 										<div
 											key={index}

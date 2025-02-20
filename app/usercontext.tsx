@@ -7,6 +7,7 @@ interface User {
 	email: string;
 	name: string;
 	role: 'student' | 'consultant' | 'unknown';
+	id: string;
 }
 
 const UserContext = createContext<{ user: User | null; loading: boolean }>({
@@ -14,11 +15,10 @@ const UserContext = createContext<{ user: User | null; loading: boolean }>({
 	loading: true,
 });
 
-const SUPABASE_URL = 'https://xvkdwcqxqirohnpleteu.supabase.co';
-const SUPABASE_ANON_KEY =
-	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a2R3Y3F4cWlyb2hucGxldGV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg2NTA3NTgsImV4cCI6MjA1NDIyNjc1OH0.vQ5C9_onYsma85zA4402q4udtSnilu5uEmmA5d7qMGg';
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient(
+	process.env.NEXT_PUBLIC_SUPABASE_URL!,
+	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
@@ -40,6 +40,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 					: 'consultant'
 				: 'unknown';
 
+			let studentId: string;
+
 			if (role === 'student') {
 				const { data: studentExists, error: studentError } =
 					await supabase
@@ -55,12 +57,28 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 					);
 				}
 
-				if (!studentExists) {
-					await supabase.from('students').insert({ email, name });
+				if (!studentExists?.id) {
+					const { data: newStudent, error: insertError } =
+						await supabase
+							.from('students')
+							.insert({ email, name })
+							.select('id')
+							.single();
+
+					if (insertError) {
+						console.error(
+							'Error inserting student:',
+							insertError.message
+						);
+					} else {
+						studentId = newStudent.id;
+					}
+				} else {
+					studentId = studentExists.id;
 				}
 			}
 
-			setUser({ email, name, role });
+			setUser({ email, name, role, id: studentId });
 			setLoading(false);
 		};
 

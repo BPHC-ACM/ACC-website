@@ -17,23 +17,31 @@ export async function GET(req: any, { params }: any) {
       student_id,
       messages,
       created_at,
-      students (name, branch)
+      students:student_id (name, branch),
+      consultants:consultant_id (name, department)
     `
 		)
-		.eq('consultant_id', userId);
+		.or(`consultant_id.eq.${userId},student_id.eq.${userId}`);
 
 	if (error)
 		return NextResponse.json({ error: error.message }, { status: 500 });
 
-	const roomsWithStudentName = data.map((room: any) => ({
-		roomid: room.roomid,
-		consultant_id: room.consultant_id,
-		student_id: room.student_id,
-		student_name: room.students?.name || 'Unknown',
-		branch: room.students?.branch || '',
-		messages: room.messages,
-		created_at: room.created_at,
-	}));
+	const roomsWithNames = data.map((room: any) => {
+		const isConsultant = room.consultant_id === userId;
+		return {
+			roomid: room.roomid,
+			consultant_id: room.consultant_id,
+			student_id: room.student_id,
+			name: isConsultant
+				? room.students?.name || 'Unknown'
+				: room.consultants?.name || 'Unknown',
+			identifier: isConsultant
+				? room.students?.branch || ''
+				: room.consultants?.department || '',
+			messages: room.messages,
+			created_at: room.created_at,
+		};
+	});
 
-	return NextResponse.json({ rooms: roomsWithStudentName });
+	return NextResponse.json({ rooms: roomsWithNames });
 }

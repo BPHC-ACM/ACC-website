@@ -1,10 +1,10 @@
 'use client';
-import styles from './chats_sidebar.css';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import styles from './chats_sidebar.css';
 
 export default function ChatsSidebar({
-	consultantId,
+	userId,
 	setSelectedRoom,
 	selectedRoom,
 }) {
@@ -13,9 +13,11 @@ export default function ChatsSidebar({
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		if (!userId) return;
+
 		const fetchChatRooms = async () => {
 			try {
-				const response = await fetch(`/api/chats/user/${consultantId}`);
+				const response = await fetch(`/api/chats/user/${userId}`);
 				const data = await response.json();
 				if (data.rooms) {
 					setRooms(data.rooms);
@@ -32,18 +34,12 @@ export default function ChatsSidebar({
 		};
 
 		fetchChatRooms();
-	}, [consultantId]);
+	}, [userId]);
 
-	const filteredRooms = rooms
-		? rooms.filter((room) => room.consultant_id === consultantId)
-		: [];
-
-	const searchedRooms = filteredRooms.filter(
+	const searchedRooms = rooms.filter(
 		(room) =>
-			room.student_name
-				.toLowerCase()
-				.includes(searchQuery.toLowerCase()) ||
-			room.student_id.toLowerCase().includes(searchQuery.toLowerCase())
+			room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			room.identifier.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
 	function ChatSkeleton() {
@@ -99,22 +95,22 @@ export default function ChatsSidebar({
 							onClick={() => setSelectedRoom(room.roomid)}
 						>
 							<img
-								src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-									room.student_name
-								)}&background=cccccc&color=222222`}
-								alt={room.student_name}
+								src={`/api/avatar?name=${encodeURIComponent(
+									room.name || ''
+								)}`}
+								alt={room.name}
 								className='chat-avatar'
 							/>
 
 							<div className='chat-info'>
-								<p className='chat-name'>{room.student_name}</p>
-								<p className='chat-id'>{room.branch}</p>
+								<p className='chat-name'>{room.name}</p>
+								<p className='chat-id'>{room.identifier}</p>
 							</div>
 						</motion.button>
 					))}
 				</motion.div>
 			) : (
-				<p className='no-users'>No user found.</p>
+				<p className='no-users'>No chats found.</p>
 			)}
 		</div>
 	);
