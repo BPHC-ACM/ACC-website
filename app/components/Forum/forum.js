@@ -145,9 +145,9 @@ export default function Forum() {
 							<div key={query.id} className={styles.thread}>
 								<div className={styles.threadHeader}>
 									<img
-										src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-											query.name
-										)}&background=777&color=fff&size=100`}
+										src={`/api/avatar?name=${encodeURIComponent(
+											query.name || ''
+										)}`}
 										alt='User Avatar'
 										className={styles.avatar}
 									/>

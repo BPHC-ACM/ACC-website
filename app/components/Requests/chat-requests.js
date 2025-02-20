@@ -35,9 +35,7 @@ const ChatRequest = ({
 	consultant_id,
 	onClick,
 }) => {
-	const iconurl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-		name
-	)}&background=cccccc&color=222222`;
+	const iconurl = `/api/avatar?name=${encodeURIComponent(name || '')}`;
 
 	return (
 		<motion.div
@@ -60,7 +58,13 @@ const ChatRequest = ({
 			}
 		>
 			<div className={styles.avatar}>
-				<Image src={iconurl} alt={name} width={40} height={40} />
+				<Image
+					src={iconurl}
+					alt={name}
+					width={40}
+					height={40}
+					unoptimized
+				/>
 			</div>
 			<div className={styles.content}>
 				<h3 className={styles.name}>{name}</h3>
@@ -125,9 +129,9 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 
 				<div className={styles.modalRow}>
 					<Image
-						src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-							request.name
-						)}&background=cccccc&color=222222`}
+						src={`/api/avatar?name=${encodeURIComponent(
+							request.name || ''
+						)}`}
 						alt={request.name}
 						width={60}
 						height={60}
@@ -366,9 +370,9 @@ export default function ChatRequests() {
 									>
 										<div className={styles.requestHeader}>
 											<Image
-												src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-													request.name
-												)}&background=cccccc&color=222222`}
+												src={`/api/avatar?name=${encodeURIComponent(
+													request.name || ''
+												)}`}
 												alt={request.name}
 												className={styles.avatar}
 												width={40}
