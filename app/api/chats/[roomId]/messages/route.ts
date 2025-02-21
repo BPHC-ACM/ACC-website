@@ -17,7 +17,7 @@ export async function POST(req: Request, { params }) {
 			);
 		}
 
-		const { roomId } = params;
+		const { roomId } = await params;
 
 		const message: Message = {
 			roomid: roomId,
@@ -36,7 +36,7 @@ export async function POST(req: Request, { params }) {
 }
 
 export async function GET(req: Request, { params }) {
-	const { roomId } = params;
+	const { roomId } = await params;
 
 	const { data, error } = await supabase
 		.from('chats')

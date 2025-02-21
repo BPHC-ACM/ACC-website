@@ -6,7 +6,7 @@ const supabaseKey = process.env.SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET(request: NextRequest, { params }) {
-	const { roomId, userId } = params;
+	const { roomId, userId } = await params;
 
 	// Fetch consultant_id and student_id based on roomId
 	const { data, error } = await supabase
