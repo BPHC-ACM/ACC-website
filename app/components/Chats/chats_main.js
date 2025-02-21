@@ -11,6 +11,7 @@ export default function ChatsMain({ selectedRoom, userId }) {
 	const messagesContainerRef = useRef(null);
 	const socketRef = useRef(null);
 
+	// Scroll to bottom whenever messages change or room changes
 	useEffect(() => {
 		if (messagesContainerRef.current) {
 			requestAnimationFrame(() => {
@@ -20,11 +21,13 @@ export default function ChatsMain({ selectedRoom, userId }) {
 		}
 	}, [messages, selectedRoom]);
 
+	// Reset and fetch user data and messages when selected room changes
 	useEffect(() => {
 		setUserName('');
 		setMessages([]);
 
 		if (selectedRoom) {
+			// Fetch user data
 			fetch(`/api/chats/${selectedRoom}/${userId}`)
 				.then((response) => {
 					if (!response.ok) {
@@ -42,11 +45,16 @@ export default function ChatsMain({ selectedRoom, userId }) {
 					setUserName('Unknown User');
 				});
 
+			// Fetch messages
 			fetch(`/api/chats/${selectedRoom}/messages`)
 				.then((response) => response.json())
 				.then((data) => {
 					if (data.messages && Array.isArray(data.messages)) {
-						setMessages(addMessageInOrder(data.messages));
+						// Sort messages by timestamp before setting state
+						const sortedMessages = sortMessagesByTimestamp(
+							data.messages
+						);
+						setMessages(sortedMessages);
 					}
 				})
 				.catch((error) => {
@@ -55,14 +63,16 @@ export default function ChatsMain({ selectedRoom, userId }) {
 		}
 	}, [selectedRoom, userId]);
 
-	const addMessageInOrder = (messagesArray) => {
-		return messagesArray.sort((a, b) => {
-			const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
-			const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+	// Helper function to sort messages by timestamp
+	const sortMessagesByTimestamp = (messagesArray) => {
+		return [...messagesArray].sort((a, b) => {
+			const timeA = new Date(a.timestamp || 0).getTime();
+			const timeB = new Date(b.timestamp || 0).getTime();
 			return timeA - timeB;
 		});
 	};
 
+	// WebSocket connection setup
 	useEffect(() => {
 		if (!selectedRoom) return;
 
@@ -86,9 +96,11 @@ export default function ChatsMain({ selectedRoom, userId }) {
 			try {
 				const receivedMessage = JSON.parse(event.data);
 				if (receivedMessage.room === selectedRoom) {
-					setMessages((prevMessages) =>
-						addMessageInOrder([...prevMessages, receivedMessage])
-					);
+					// Insert the new message in the correct position based on timestamp
+					setMessages((prevMessages) => {
+						const newMessages = [...prevMessages, receivedMessage];
+						return sortMessagesByTimestamp(newMessages);
+					});
 				}
 			} catch (error) {
 				console.error('Error parsing WebSocket message:', error);
@@ -111,6 +123,7 @@ export default function ChatsMain({ selectedRoom, userId }) {
 		};
 	}, [selectedRoom]);
 
+	// Default view when no room is selected
 	if (!selectedRoom) {
 		return (
 			<div className='chat-display' style={{ width: '78%' }}>
@@ -122,6 +135,7 @@ export default function ChatsMain({ selectedRoom, userId }) {
 		);
 	}
 
+	// Send message function
 	const sendMessage = () => {
 		if (newMessage.trim() === '') return;
 		const timestamp = new Date().toISOString();
@@ -140,10 +154,14 @@ export default function ChatsMain({ selectedRoom, userId }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				setMessages((prevMessages) =>
-					addMessageInOrder([...prevMessages, messageData])
-				);
+				// Add the new message and ensure messages remain sorted
+				setMessages((prevMessages) => {
+					const newMessages = [...prevMessages, messageData];
+					return sortMessagesByTimestamp(newMessages);
+				});
 				setNewMessage('');
+
+				// Send to WebSocket if open
 				if (socketRef.current?.readyState === WebSocket.OPEN) {
 					socketRef.current.send(JSON.stringify(messageData));
 				}
@@ -196,7 +214,7 @@ export default function ChatsMain({ selectedRoom, userId }) {
 								const isUser = msg.id === userId;
 								return (
 									<div
-										key={index}
+										key={`${msg.id}-${msg.timestamp}-${index}`}
 										className={`message ${
 											isUser
 												? 'user-message'
