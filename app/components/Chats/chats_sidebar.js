@@ -46,7 +46,7 @@ export default function ChatsSidebar({
 
 	function ChatSkeleton() {
 		return (
-			<div className='chat-skeleton'>
+			<div className='chat-skeleton skeleton-item'>
 				<div className='chat-avatar-skeleton'></div>
 				<div className='chat-info-skeleton'>
 					<div className='chat-name-skeleton'></div>
@@ -80,7 +80,7 @@ export default function ChatsSidebar({
 					transition={{ duration: 0.25 }}
 					className='students-container'
 				>
-					{[...Array(3)].map((_, index) => (
+					{[...Array(12)].map((_, index) => (
 						<ChatSkeleton key={index} />
 					))}
 				</motion.div>

@@ -131,11 +131,11 @@ export default function Forum({ user }) {
 
 				<div className={styles.queryList}>
 					{loading ? (
-						<>
-							<SkeletonThread />
-							<SkeletonThread />
-							<SkeletonThread />
-						</>
+						<div className={styles.skeletonThreadWrapper}>
+							{[...Array(6)].map((_, index) => (
+								<SkeletonThread key={index} />
+							))}
+						</div>
 					) : (
 						filteredQueries.map((query) => (
 							<div key={query.id} className={styles.thread}>
