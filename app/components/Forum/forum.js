@@ -94,7 +94,12 @@ export default function Forum({ user }) {
 			const response = await fetch('/api/forums', {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query_id: queryId, answer: answerText }),
+				body: JSON.stringify({
+					query_id: queryId,
+					answer: answerText,
+					name: user.name,
+					identifier: user.identifier,
+				}),
 			});
 			const data = await response.json();
 			if (!data.success) throw new Error(data.error);

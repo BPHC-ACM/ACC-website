@@ -141,12 +141,11 @@ export async function PATCH(req) {
 				);
 			}
 
-			const { data: existingRoom, error: fetchError } = await supabase
+			const { data: existingRooms, error: fetchError } = await supabase
 				.from('chats')
 				.select('roomid')
 				.eq('consultant_id', consultant_id)
-				.eq('student_id', student_id)
-				.maybeSingle();
+				.eq('student_id', student_id);
 
 			if (fetchError) {
 				console.error('Supabase Chat Room Fetch Error:', fetchError);
@@ -156,7 +155,7 @@ export async function PATCH(req) {
 				);
 			}
 
-			if (!existingRoom) {
+			if (!existingRooms || existingRooms.length === 0) {
 				const chatRoom = {
 					roomid: uuidv4(),
 					consultant_id,

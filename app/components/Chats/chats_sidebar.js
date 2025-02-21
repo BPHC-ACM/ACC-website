@@ -80,7 +80,7 @@ export default function ChatsSidebar({
 					transition={{ duration: 0.25 }}
 					className='students-container'
 				>
-					{[...Array(12)].map((_, index) => (
+					{[...Array(8)].map((_, index) => (
 						<ChatSkeleton key={index} />
 					))}
 				</motion.div>

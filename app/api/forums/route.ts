@@ -75,7 +75,7 @@ export async function POST(req: Request) {
 // Post a new answer
 export async function PATCH(req: Request) {
 	try {
-		const { query_id, answer } = await req.json();
+		const { query_id, answer, name, identifier } = await req.json();
 
 		if (!answer.trim()) {
 			return NextResponse.json(
@@ -86,8 +86,8 @@ export async function PATCH(req: Request) {
 
 		const newAnswer = {
 			query_id,
-			name: 'Consultant',
-			department: 'CSIS',
+			name,
+			identifier,
 			answer,
 			timestamp: new Date().toISOString(),
 		};
