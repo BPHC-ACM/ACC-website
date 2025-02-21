@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import ChatsSidebar from './chats_sidebar';
 import ChatsMain from './chats_main.js';
 import { connectWebSocket } from '../../utils/chat_socket';
-import { useUser } from '../../userContext';
+import { useUser } from '@/context/userContext';
 import LoginButton from '../loginbutton';
 import styles from './section3.css';
 

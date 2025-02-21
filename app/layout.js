@@ -1,4 +1,4 @@
-import { UserProvider } from './userContext';
+import { UserProvider } from '@/context/userContext';
 
 export default function RootLayout({ children }) {
 	return (
