@@ -71,7 +71,7 @@ export default function ChatsMain({ selectedRoom, userId }) {
 			socketRef.current.close();
 		}
 
-		const socket = new WebSocket('ws://localhost:4000');
+		const socket = new WebSocket('ws://acc-website.onrender.com');
 		socketRef.current = socket;
 
 		socket.onopen = () => {
