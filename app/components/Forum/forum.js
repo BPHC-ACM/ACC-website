@@ -3,7 +3,7 @@ import styles from './forum.module.css';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { PlusIcon, MessageSquareIcon, SendIcon, Search } from 'lucide-react';
 import LoginButton from '../loginbutton';
-import { TextField, Button, Chip, Box } from '@mui/material';
+import { TextField, Button, Chip, Box, Pagination } from '@mui/material';
 
 export function SkeletonThread() {
 	return (
@@ -33,6 +33,10 @@ export default function Forum({ user }) {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [answerInputs, setAnswerInputs] = useState({});
 	const [tagInput, setTagInput] = useState('');
+
+	const [page, setPage] = useState(1);
+	const ITEMS_PER_PAGE = 5;
+
 	const fetchQueries = useCallback(async () => {
 		try {
 			const response = await fetch('/api/forums');
@@ -76,6 +80,8 @@ export default function Forum({ user }) {
 
 			setQuery({ title: '', text: '', tags: [] });
 			fetchQueries();
+			// Reset to first page when posting a new query
+			setPage(1);
 		} catch (error) {
 			console.error(error);
 		}
@@ -99,6 +105,7 @@ export default function Forum({ user }) {
 			console.error(error);
 		}
 	};
+
 	const filteredQueries = useMemo(() => {
 		if (!searchQuery.trim()) return queries;
 
@@ -110,6 +117,26 @@ export default function Forum({ user }) {
 				q.tags.some((tag) => tag.toLowerCase().includes(lowerSearch))
 		);
 	}, [queries, searchQuery]);
+
+	// Pagination logic
+	const pageCount = Math.ceil(filteredQueries.length / ITEMS_PER_PAGE);
+	const paginatedQueries = useMemo(() => {
+		const startIndex = (page - 1) * ITEMS_PER_PAGE;
+		return filteredQueries.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+	}, [filteredQueries, page]);
+
+	// Reset to page 1 when search changes
+	useEffect(() => {
+		setPage(1);
+	}, [searchQuery]);
+
+	const handlePageChange = (event, value) => {
+		setPage(value);
+		// Scroll to top of thread section when changing pages
+		document
+			.querySelector(`.${styles.threadSection}`)
+			?.scrollIntoView({ behavior: 'smooth' });
+	};
 
 	return (
 		<div className={styles.forumLayout}>
@@ -132,12 +159,12 @@ export default function Forum({ user }) {
 				<div className={styles.queryList}>
 					{loading ? (
 						<div className={styles.skeletonThreadWrapper}>
-							{[...Array(6)].map((_, index) => (
+							{[...Array(ITEMS_PER_PAGE)].map((_, index) => (
 								<SkeletonThread key={index} />
 							))}
 						</div>
-					) : (
-						filteredQueries.map((query) => (
+					) : paginatedQueries.length > 0 ? (
+						paginatedQueries.map((query) => (
 							<div key={query.id} className={styles.thread}>
 								<div className={styles.threadHeader}>
 									<img
@@ -279,8 +306,27 @@ export default function Forum({ user }) {
 								)}
 							</div>
 						))
+					) : (
+						<div className={styles.noResults}>
+							<p>
+								No questions found. Try a different search term.
+							</p>
+						</div>
 					)}
 				</div>
+
+				{!loading && filteredQueries.length > 0 && (
+					<div className={styles.paginationContainer}>
+						<Pagination
+							count={pageCount}
+							page={page}
+							onChange={handlePageChange}
+							variant='outlined'
+							shape='rounded'
+							size='medium'
+						/>
+					</div>
+				)}
 			</Box>
 
 			<Box className={styles.postSection}>
