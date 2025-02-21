@@ -21,10 +21,14 @@ const supabase = createClient(
 );
 
 export default function Sidebar({ setActiveSection }) {
-	const [activeButton, setActiveButton] = useState(null);
+	const [activeButton, setActiveButton] = useState(0);
 	const { user, loading } = useUser();
 	const [showLogout, setShowLogout] = useState(false);
 	const [identifier, setBranch] = useState(null);
+
+	useEffect(() => {
+		setActiveSection('dashboard');
+	}, []);
 
 	useEffect(() => {
 		const fetchIdentifier = async () => {
