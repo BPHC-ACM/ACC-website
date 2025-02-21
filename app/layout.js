@@ -1,3 +1,5 @@
+import { UserProvider } from './userContext';
+
 export default function RootLayout({ children }) {
 	return (
 		<html lang='en'>
@@ -7,7 +9,9 @@ export default function RootLayout({ children }) {
 					rel='stylesheet'
 				/>
 			</head>
-			<body>{children}</body>
+			<body>
+				<UserProvider>{children}</UserProvider>
+			</body>
 		</html>
 	);
 }
