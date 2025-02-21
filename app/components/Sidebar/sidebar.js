@@ -1,5 +1,5 @@
 'use client';
-
+import { useUser } from '@/context/userContext';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
