@@ -400,6 +400,13 @@
 	font-weight: 500;
 }
 
+.paginationContainer {
+	display: flex;
+	justify-content: center;
+	margin-top: 1rem;
+	padding: 1rem 0;
+}
+
 .notificationPopup {
 	position: fixed;
 	bottom: 20px;

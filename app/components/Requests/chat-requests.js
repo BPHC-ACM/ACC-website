@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import styles from './chat-requests.module.css';
 import ScrollToTop from '../ScrollToTop/scroll-to-top';
+import { Pagination } from '@mui/material';
 
 const ChatRequestSkeleton = () => (
 	<motion.div
@@ -230,6 +231,8 @@ const NotificationPopup = ({ message, type, onClose }) => {
 };
 export default function ChatRequests({ userId }) {
 	const [notification, setNotification] = useState(null);
+	const itemsPerPage = 3;
+	const [page, setPage] = useState(1);
 	const [requests, setRequests] = useState([]);
 	const [totalRequests, setTotalRequests] = useState(0);
 	const [loading, setLoading] = useState(true);
@@ -343,25 +346,31 @@ export default function ChatRequests({ userId }) {
 			)}
 
 			<div className={styles.requestsContainer}>
-				{loading
-					? Array.from({ length: 3 }).map((_, index) => (
-							<ChatRequestSkeleton key={index} />
-					  ))
-					: requests.map((request) => (
-							<ChatRequest
-								key={request.id}
-								id={request.id}
-								name={request.name}
-								student_id={request.student_id}
-								consultant_id={request.consultant_id}
-								subject={request.subject}
-								identifier={request.identifier}
-								cgpa={request.cgpa}
-								details={request.details}
-								relativeTime={request.relativeTime}
-								onClick={setSelectedRequest}
-							/>
-					  ))}
+				{loading ? (
+					Array.from({ length: 3 }).map((_, index) => (
+						<ChatRequestSkeleton key={index} />
+					))
+				) : requests.length > 0 ? (
+					requests.map((request) => (
+						<ChatRequest
+							key={request.id}
+							id={request.id}
+							name={request.name}
+							student_id={request.student_id}
+							consultant_id={request.consultant_id}
+							subject={request.subject}
+							identifier={request.identifier}
+							cgpa={request.cgpa}
+							details={request.details}
+							relativeTime={request.relativeTime}
+							onClick={setSelectedRequest}
+						/>
+					))
+				) : (
+					<div className={styles.noRequests}>
+						<p>No pending requests at the moment</p>
+					</div>
+				)}
 			</div>
 
 			{selectedRequest && (
@@ -389,53 +398,103 @@ export default function ChatRequests({ userId }) {
 							&times;
 						</button>
 
-						<div className={styles.pastRequestsList}>
-							{pastRequests.length > 0 ? (
-								pastRequests.map((request) => (
-									<div
-										key={request.id}
-										className={styles.requestCard}
-									>
-										<div className={styles.requestHeader}>
-											<Image
-												src={`/api/avatar?name=${encodeURIComponent(
-													request.name || ''
-												)}`}
-												alt={request.name}
-												unoptimized
-												className={styles.avatar}
-												width={40}
-												height={40}
-											/>
-											<div className={styles.requestInfo}>
-												<h4 className={styles.name}>
-													{request.name}
-												</h4>
-											</div>
-											<span
-												className={`${
-													styles.statusTag
-												} ${styles[request.status]}`}
+						{pastRequests.length > 0 ? (
+							<>
+								<div className={styles.pastRequestsList}>
+									{/* Show only current page items */}
+									{pastRequests
+										.slice(
+											(page - 1) * itemsPerPage,
+											page * itemsPerPage
+										)
+										.map((request) => (
+											<div
+												key={request.id}
+												className={styles.requestCard}
 											>
-												{request.status}
-											</span>
-										</div>
-										<div className={styles.requestDetails}>
-											<p className={styles.subject}>
-												{request.subject}
-											</p>
-											<span className={styles.time}>
-												{request.relativeTime}
-											</span>
-										</div>
-									</div>
-								))
-							) : (
-								<p className={styles.noRequests}>
-									No past requests found.
-								</p>
-							)}
-						</div>
+												<div
+													className={
+														styles.requestHeader
+													}
+												>
+													<Image
+														src={`/api/avatar?name=${encodeURIComponent(
+															request.name || ''
+														)}`}
+														alt={request.name}
+														unoptimized
+														className={
+															styles.avatar
+														}
+														width={40}
+														height={40}
+													/>
+													<div
+														className={
+															styles.requestInfo
+														}
+													>
+														<h4
+															className={
+																styles.name
+															}
+														>
+															{request.name}
+														</h4>
+													</div>
+													<span
+														className={`${
+															styles.statusTag
+														} ${
+															styles[
+																request.status
+															]
+														}`}
+													>
+														{request.status}
+													</span>
+												</div>
+												<div
+													className={
+														styles.requestDetails
+													}
+												>
+													<p
+														className={
+															styles.subject
+														}
+													>
+														{request.subject}
+													</p>
+													<span
+														className={styles.time}
+													>
+														{request.relativeTime}
+													</span>
+												</div>
+											</div>
+										))}
+								</div>
+								{/* Pagination */}
+								<div className={styles.paginationContainer}>
+									<Pagination
+										count={Math.ceil(
+											pastRequests.length / itemsPerPage
+										)}
+										page={page}
+										onChange={(e, newPage) =>
+											setPage(newPage)
+										}
+										color='primary'
+										size='medium'
+									/>
+								</div>
+							</>
+						) : (
+							<p className={styles.noRequests}>
+								No past requests found.
+							</p>
+						)}
 					</div>
 				</div>
 			)}
