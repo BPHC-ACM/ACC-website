@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 
 export default function ChatsMain({ selectedRoom, userId }) {
 	const [newMessage, setNewMessage] = useState('');
+	const [sentMessageIds, setSentMessageIds] = useState(new Set());
 	const [messages, setMessages] = useState([]);
 	const [userName, setUserName] = useState('');
 	const messagesContainerRef = useRef(null);
@@ -126,13 +127,16 @@ export default function ChatsMain({ selectedRoom, userId }) {
 	const sendMessage = () => {
 		if (newMessage.trim() === '') return;
 
+		const messageId = `${userId}-${Date.now()}`;
 		const messageData = {
+			messageId,
 			room: selectedRoom,
 			id: userId,
 			content: newMessage,
 			timestamp: new Date().toISOString(),
 		};
 
+		setSentMessageIds((prev) => new Set(prev).add(messageId));
 		fetch(`/api/chats/${selectedRoom}/messages`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -151,6 +155,38 @@ export default function ChatsMain({ selectedRoom, userId }) {
 				console.error('Error sending message:', error);
 			});
 	};
+
+	useEffect(() => {
+		const handleWebSocketMessage = (event) => {
+			try {
+				const data = JSON.parse(event.data);
+
+				if (data.messageId && sentMessageIds.has(data.messageId)) {
+					return;
+				}
+
+				setMessages((prevMessages) => [...prevMessages, data]);
+			} catch (error) {
+				console.error('Error processing WebSocket message:', error);
+			}
+		};
+
+		if (socketRef.current) {
+			socketRef.current.addEventListener(
+				'message',
+				handleWebSocketMessage
+			);
+		}
+
+		return () => {
+			if (socketRef.current) {
+				socketRef.current.removeEventListener(
+					'message',
+					handleWebSocketMessage
+				);
+			}
+		};
+	}, [sentMessageIds]);
 
 	return (
 		<div className='chat-display' style={{ width: '78%' }}>
