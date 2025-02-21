@@ -5,7 +5,7 @@ export const connectWebSocket = () => {
 		return;
 	}
 
-	socket = new WebSocket('ws://acc-website.onrender.com');
+	socket = new WebSocket('wss://acc-website.onrender.com');
 
 	socket.onopen = () => {
 		console.log('Connected to WebSocket server');
