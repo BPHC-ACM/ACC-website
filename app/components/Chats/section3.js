@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect } from 'react';
 import ChatsSidebar from './chats_sidebar';
 import ChatsMain from './chats_main.js';

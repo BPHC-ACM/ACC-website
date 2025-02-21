@@ -1,4 +1,4 @@
-import Footer from '../Footer/footer';
+'use client';
 import Section from '../section';
 import Forums from './forum';
 import { useUser } from '@/context/userContext';

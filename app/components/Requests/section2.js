@@ -1,3 +1,4 @@
+'use client';
 import ChatRequests from './chat-requests';
 import styles from './section2.module.css';
 import { useUser } from '@/context/userContext';
