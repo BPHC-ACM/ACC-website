@@ -92,7 +92,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 							.from('students')
 							.insert({
 								email,
-								formattedname,
+								name: formattedname,
 								identifier,
 							})
 							.select('id, identifier')
