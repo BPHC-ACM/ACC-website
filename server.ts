@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-	origin: 'http://localhost:3000',
+	origin: 'https://academic-councelling-cell.vercel.app/',
 	credentials: true,
 	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 	allowedHeaders: ['Content-Type', 'Authorization'],
@@ -64,9 +64,4 @@ wss.on('connection', (ws) => {
 	ws.on('error', (error) => {
 		console.error('WebSocket error:', error);
 	});
-});
-
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => {
-	console.log(`Server running on http://localhost:${PORT}`);
 });
