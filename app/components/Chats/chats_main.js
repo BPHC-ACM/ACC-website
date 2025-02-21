@@ -21,15 +21,6 @@ export default function ChatsMain({ selectedRoom, userId }) {
 	}, [messages, selectedRoom]);
 
 	useEffect(() => {
-		if (messagesContainerRef.current) {
-			setTimeout(() => {
-				messagesContainerRef.current.scrollTop =
-					messagesContainerRef.current.scrollHeight;
-			}, 10);
-		}
-	}, [messages, selectedRoom]);
-
-	useEffect(() => {
 		setUserName('');
 		setMessages([]);
 
@@ -55,7 +46,7 @@ export default function ChatsMain({ selectedRoom, userId }) {
 				.then((response) => response.json())
 				.then((data) => {
 					if (data.messages && Array.isArray(data.messages)) {
-						setMessages(data.messages);
+						setMessages(addMessageInOrder(data.messages));
 					}
 				})
 				.catch((error) => {
@@ -63,6 +54,14 @@ export default function ChatsMain({ selectedRoom, userId }) {
 				});
 		}
 	}, [selectedRoom, userId]);
+
+	const addMessageInOrder = (messagesArray) => {
+		return messagesArray.sort((a, b) => {
+			const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+			const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+			return timeA - timeB;
+		});
+	};
 
 	useEffect(() => {
 		if (!selectedRoom) return;
@@ -87,9 +86,9 @@ export default function ChatsMain({ selectedRoom, userId }) {
 			try {
 				const receivedMessage = JSON.parse(event.data);
 				if (receivedMessage.room === selectedRoom) {
-					setMessages((prevMessages) => {
-						return [...prevMessages, receivedMessage];
-					});
+					setMessages((prevMessages) =>
+						addMessageInOrder([...prevMessages, receivedMessage])
+					);
 				}
 			} catch (error) {
 				console.error('Error parsing WebSocket message:', error);
@@ -125,12 +124,13 @@ export default function ChatsMain({ selectedRoom, userId }) {
 
 	const sendMessage = () => {
 		if (newMessage.trim() === '') return;
+		const timestamp = new Date().toISOString();
 
 		const messageData = {
 			room: selectedRoom,
 			id: userId,
 			content: newMessage,
-			timestamp: new Date().toISOString(),
+			timestamp: timestamp,
 		};
 
 		fetch(`/api/chats/${selectedRoom}/messages`, {
@@ -140,9 +140,10 @@ export default function ChatsMain({ selectedRoom, userId }) {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				setMessages((prevMessages) => [...prevMessages, messageData]);
+				setMessages((prevMessages) =>
+					addMessageInOrder([...prevMessages, messageData])
+				);
 				setNewMessage('');
-
 				if (socketRef.current?.readyState === WebSocket.OPEN) {
 					socketRef.current.send(JSON.stringify(messageData));
 				}
@@ -191,53 +192,47 @@ export default function ChatsMain({ selectedRoom, userId }) {
 								flexDirection: 'column',
 							}}
 						>
-							{messages
-								.sort(
-									(a, b) =>
-										new Date(a.timestamp) -
-										new Date(b.timestamp)
-								)
-								.map((msg, index) => {
-									const isUser = msg.id === userId;
-									return (
-										<div
-											key={index}
-											className={`message ${
-												isUser
-													? 'user-message'
-													: 'other-message'
-											}`}
+							{messages.map((msg, index) => {
+								const isUser = msg.id === userId;
+								return (
+									<div
+										key={index}
+										className={`message ${
+											isUser
+												? 'user-message'
+												: 'other-message'
+										}`}
+									>
+										{msg.content}
+										<span
+											className='timestamp'
+											style={{
+												left: isUser
+													? '0.5rem'
+													: 'auto',
+												right: isUser
+													? 'auto'
+													: '0.5rem',
+											}}
 										>
-											{msg.content}
-											<span
-												className='timestamp'
-												style={{
-													left: isUser
-														? '0.5rem'
-														: 'auto',
-													right: isUser
-														? 'auto'
-														: '0.5rem',
-												}}
-											>
-												{new Date(
-													msg.timestamp
-												).toLocaleString('en-GB', {
-													day: '2-digit',
-													month: '2-digit',
-													hour: '2-digit',
-													minute: '2-digit',
-													hour12: false,
-												})}
-											</span>
-											<style jsx>{`
-												.message:hover .timestamp {
-													opacity: 1;
-												}
-											`}</style>
-										</div>
-									);
-								})}
+											{new Date(
+												msg.timestamp
+											).toLocaleString('en-GB', {
+												day: '2-digit',
+												month: '2-digit',
+												hour: '2-digit',
+												minute: '2-digit',
+												hour12: false,
+											})}
+										</span>
+										<style jsx>{`
+											.message:hover .timestamp {
+												opacity: 1;
+											}
+										`}</style>
+									</div>
+								);
+							})}
 						</div>
 						<div className='message-input-container'>
 							<input
