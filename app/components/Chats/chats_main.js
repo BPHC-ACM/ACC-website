@@ -31,8 +31,10 @@ export default function ChatsMain({ selectedRoom, userId }) {
 
 	useEffect(() => {
 		setUserName('');
+		setMessages([]);
 
 		if (selectedRoom) {
+			// Fetch user data
 			fetch(`/api/chats/${selectedRoom}/${userId}`)
 				.then((response) => {
 					if (!response.ok) {
@@ -48,6 +50,18 @@ export default function ChatsMain({ selectedRoom, userId }) {
 				.catch((error) => {
 					console.error('Error fetching user data:', error);
 					setUserName('Unknown User');
+				});
+
+			// Fetch historical messages
+			fetch(`/api/chats/${selectedRoom}/messages`)
+				.then((response) => response.json())
+				.then((data) => {
+					if (data.messages && Array.isArray(data.messages)) {
+						setMessages(data.messages);
+					}
+				})
+				.catch((error) => {
+					console.error('Error fetching messages:', error);
 				});
 		}
 	}, [selectedRoom, userId]);
