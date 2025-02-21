@@ -10,7 +10,7 @@ import {
 	IconUsers,
 	IconMessages,
 	IconBubbleText,
-	IconHome2,
+	IconSchool,
 	IconBooks,
 	IconLogout,
 } from '@tabler/icons-react';
@@ -68,7 +68,7 @@ export default function Sidebar({ setActiveSection }) {
 	const sections = [
 		{
 			name: 'Dashboard',
-			icon: <IconHome2 size={24} className='navIcon' />,
+			icon: <IconSchool size={24} className='navIcon' />,
 		},
 		{
 			name: 'Messages',

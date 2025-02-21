@@ -368,7 +368,7 @@ export default function ChatRequests({ userId }) {
 					))
 				) : (
 					<div className={styles.noRequests}>
-						<p>No pending requests at the moment</p>
+						<p>No pending requests at the moment.</p>
 					</div>
 				)}
 			</div>
