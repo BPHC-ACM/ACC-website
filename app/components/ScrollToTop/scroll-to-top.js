@@ -4,38 +4,44 @@ import { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 import styles from './ScrollToTop.module.css';
 
-export default function ScrollToTop({ selector }) {
+export default function ScrollToTop({ selector = 'main' }) {
 	const [isVisible, setIsVisible] = useState(false);
+	const [isHovered, setIsHovered] = useState(false);
 
 	useEffect(() => {
-		const mainElement = document.querySelector(selector);
-		if (!mainElement) {
-			return;
-		}
+		const element = document.querySelector(selector);
+		if (!element) return;
 
 		const toggleVisibility = () => {
-			setIsVisible(mainElement.scrollTop > 300);
+			setIsVisible(element.scrollTop > 300);
 		};
 
-		mainElement.addEventListener('scroll', toggleVisibility);
-		return () =>
-			mainElement.removeEventListener('scroll', toggleVisibility);
-	}, []);
+		element.addEventListener('scroll', toggleVisibility);
+		return () => element.removeEventListener('scroll', toggleVisibility);
+	}, [selector]);
 
 	const scrollToTop = () => {
-		document
-			.querySelector('main')
-			?.scrollTo({ top: 0, behavior: 'smooth' });
+		const element = document.querySelector(selector);
+		if (!element) return;
+
+		element.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		});
 	};
 
 	return (
 		<button
 			onClick={scrollToTop}
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
 			className={`${styles.scrollToTop} ${
 				isVisible ? styles.visible : ''
-			}`}
+			} ${isHovered ? styles.hovered : ''}`}
+			aria-label='Scroll to top'
+			title='Scroll to top'
 		>
-			<ArrowUp size={18} />
+			<ArrowUp size={18} className={styles.icon} />
 			<span>Scroll to Top</span>
 		</button>
 	);
