@@ -34,7 +34,6 @@ export default function ChatsMain({ selectedRoom, userId }) {
 		setMessages([]);
 
 		if (selectedRoom) {
-			// Fetch user data
 			fetch(`/api/chats/${selectedRoom}/${userId}`)
 				.then((response) => {
 					if (!response.ok) {
@@ -52,7 +51,6 @@ export default function ChatsMain({ selectedRoom, userId }) {
 					setUserName('Unknown User');
 				});
 
-			// Fetch historical messages
 			fetch(`/api/chats/${selectedRoom}/messages`)
 				.then((response) => response.json())
 				.then((data) => {

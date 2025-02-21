@@ -8,12 +8,88 @@ declare global {
 	var io: IOServer | undefined;
 }
 
-export async function GET(req: Request) {
-	const { socket } = global as any;
-	if (!socket) {
-		return NextResponse.json({ error: 'No socket found' });
+const initializeSocketServer = (httpServer: HTTPServer) => {
+	if (global.io) {
+		return global.io;
 	}
-	return NextResponse.json({ message: 'Socket.IO is running' });
+
+	const io = new IOServer(httpServer, {
+		path: '/api/socket',
+		cors: {
+			origin: '*',
+		},
+	});
+
+	io.on('connection', (socket) => {
+		console.log(`Socket connected: ${socket.id}`);
+
+		socket.on('join_room', (data: { roomid: string; userId: string }) => {
+			try {
+				socket.join(data.roomid);
+			} catch (err) {
+				socket.emit('error', { message: 'Failed to join room' });
+			}
+		});
+
+		socket.on('leave_room', (data: { roomid: string; userId: string }) => {
+			try {
+				socket.leave(data.roomid);
+			} catch (err) {
+				socket.emit('error', { message: 'Failed to leave room' });
+			}
+		});
+
+		socket.on('send_message', async (data: Message) => {
+			try {
+				await saveMessage(data);
+				io.to(data.roomid).emit('receive_message', data);
+			} catch (err: any) {
+				socket.emit('error', {
+					message: err.message || 'Failed to send message',
+				});
+			}
+		});
+
+		socket.on(
+			'reconnect_rooms',
+			(data: { userId: string; rooms: string[] }) => {
+				try {
+					data.rooms.forEach((roomid) => {
+						socket.join(roomid);
+					});
+				} catch (err) {
+					socket.emit('error', { message: 'Failed to rejoin rooms' });
+				}
+			}
+		);
+
+		socket.on('disconnect', (reason) => {
+			console.log(`Socket disconnected: ${socket.id} due to ${reason}`);
+		});
+	});
+
+	global.io = io;
+	return io;
+};
+
+export async function GET(req: Request) {
+	try {
+		const res = (req as any).socket?.server;
+		if (!res) {
+			return NextResponse.json(
+				{ error: 'No HTTP server available' },
+				{ status: 500 }
+			);
+		}
+
+		initializeSocketServer(res);
+		return NextResponse.json({ message: 'Socket.IO server is running' });
+	} catch (error) {
+		return NextResponse.json(
+			{ error: 'Failed to initialize Socket.IO' },
+			{ status: 500 }
+		);
+	}
 }
 
 export const config = {
@@ -21,104 +97,3 @@ export const config = {
 		bodyParser: false,
 	},
 };
-
-export default async function SocketHandler(req: Request) {
-	if (!global.io) {
-		// @ts-ignore
-		const res = req.socket?.server;
-		if (!res) {
-			throw new Error('No underlying HTTP server');
-		}
-
-		const io = new IOServer(res, {
-			path: '/api/socket',
-			cors: {
-				origin: '*',
-			},
-		});
-
-		global.io = io;
-
-		io.on('connection', (socket) => {
-			console.log(`Socket connected: ${socket.id}`);
-
-			// Join a room
-			socket.on(
-				'join_room',
-				(data: { roomid: string; userId: string }) => {
-					try {
-						socket.join(data.roomid);
-						console.log(
-							`User ${data.userId} joined room ${data.roomid}`
-						);
-					} catch (err) {
-						socket.emit('error', {
-							message: 'Failed to join room',
-						});
-					}
-				}
-			);
-
-			// Leave a room
-			socket.on(
-				'leave_room',
-				(data: { roomid: string; userId: string }) => {
-					try {
-						socket.leave(data.roomid);
-						console.log(
-							`User ${data.userId} left room ${data.roomid}`
-						);
-					} catch (err) {
-						socket.emit('error', {
-							message: 'Failed to leave room',
-						});
-					}
-				}
-			);
-
-			// Send message event – broadcast to all room members and persist to DB
-			socket.on('send_message', async (data: Message) => {
-				try {
-					// Save the message in Supabase
-					await saveMessage(data);
-					// Broadcast the message to everyone in the room
-					io.to(data.roomid).emit('receive_message', data);
-				} catch (err: any) {
-					socket.emit('error', {
-						message: err.message || 'Failed to send message',
-					});
-				}
-			});
-
-			// Handle reconnection scenario
-			socket.on(
-				'reconnect_rooms',
-				(data: { userId: string; rooms: string[] }) => {
-					try {
-						data.rooms.forEach((roomid) => {
-							socket.join(roomid);
-						});
-						console.log(
-							`User ${
-								data.userId
-							} rejoined rooms: ${data.rooms.join(', ')}`
-						);
-					} catch (err) {
-						socket.emit('error', {
-							message: 'Failed to rejoin rooms',
-						});
-					}
-				}
-			);
-
-			// Handle disconnection
-			socket.on('disconnect', (reason) => {
-				console.log(
-					`Socket disconnected: ${socket.id} due to ${reason}`
-				);
-			});
-		});
-	}
-
-	return NextResponse.json({ message: 'Socket.IO server initialized' });
-}

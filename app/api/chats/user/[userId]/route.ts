@@ -6,7 +6,7 @@ const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET(req: any, { params }: any) {
-	const { userId } = params;
+	const { userId } = await params;
 
 	const { data, error } = await supabase
 		.from('chats')

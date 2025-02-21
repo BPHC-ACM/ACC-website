@@ -7,10 +7,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export async function POST(
-	req: Request,
-	{ params }: { params: { roomId: string } }
-) {
+export async function POST(req: Request, { params }) {
 	try {
 		const body = await req.json();
 		if (!body.id || !body.content) {
@@ -20,7 +17,7 @@ export async function POST(
 			);
 		}
 
-		const { roomId } = await params;
+		const { roomId } = params;
 
 		const message: Message = {
 			roomid: roomId,
@@ -38,10 +35,7 @@ export async function POST(
 	}
 }
 
-export async function GET(
-	req: Request,
-	{ params }: { params: { roomId: string } }
-) {
+export async function GET(req: Request, { params }) {
 	const { roomId } = params;
 
 	const { data, error } = await supabase
@@ -57,16 +51,3 @@ export async function GET(
 
 	return NextResponse.json({ messages: data ? data.messages : [] });
 }
-
-export default (req: Request, { params }: { params: { roomId: string } }) => {
-	if (req.method === 'GET') {
-		return GET(req, { params });
-	} else if (req.method === 'POST') {
-		return POST(req, { params });
-	} else {
-		return NextResponse.json(
-			{ error: `Method ${req.method} Not Allowed` },
-			{ status: 405 }
-		);
-	}
-};

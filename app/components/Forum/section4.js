@@ -1,7 +1,7 @@
 import Footer from '../Footer/footer';
 import Section from '../section';
 import Forums from './forum';
-import { useUser } from 'app/userContext';
+import { useUser } from '../../userContext';
 
 export default function Section4() {
 	const { user } = useUser();

@@ -1,14 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-export async function GET(
-	req: Request,
-	{ params }: { params: { roomId: string; userId: string } }
-) {
+export async function GET(request: NextRequest, { params }) {
 	const { roomId, userId } = params;
 
 	// Fetch consultant_id and student_id based on roomId

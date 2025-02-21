@@ -1,5 +1,5 @@
 'use client';
-import { useUser } from 'app/userContext';
+import { useUser } from '../userContext';
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Section1 from './Dashboard/section1';

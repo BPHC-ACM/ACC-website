@@ -421,7 +421,7 @@ export default function ChatRequests({ userId }) {
 														src={`/api/avatar?name=${encodeURIComponent(
 															request.name || ''
 														)}`}
-														alt={request.name}
+														alt={request.name || ''}
 														unoptimized
 														className={
 															styles.avatar

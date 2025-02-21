@@ -80,7 +80,7 @@ export default function Forum({ user }) {
 
 			setQuery({ title: '', text: '', tags: [] });
 			fetchQueries();
-			// Reset to first page when posting a new query
+
 			setPage(1);
 		} catch (error) {
 			console.error(error);
@@ -123,21 +123,19 @@ export default function Forum({ user }) {
 		);
 	}, [queries, searchQuery]);
 
-	// Pagination logic
 	const pageCount = Math.ceil(filteredQueries.length / ITEMS_PER_PAGE);
 	const paginatedQueries = useMemo(() => {
 		const startIndex = (page - 1) * ITEMS_PER_PAGE;
 		return filteredQueries.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 	}, [filteredQueries, page]);
 
-	// Reset to page 1 when search changes
 	useEffect(() => {
 		setPage(1);
 	}, [searchQuery]);
 
 	const handlePageChange = (event, value) => {
 		setPage(value);
-		// Scroll to top of thread section when changing pages
+
 		document
 			.querySelector(`.${styles.threadSection}`)
 			?.scrollIntoView({ behavior: 'smooth' });

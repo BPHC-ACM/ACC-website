@@ -1,6 +1,6 @@
 import ChatRequests from './chat-requests';
 import styles from './section2.module.css';
-import { useUser } from 'app/userContext';
+import { useUser } from '../../userContext';
 import LoginButton from '../loginbutton';
 
 export default function Section2() {
