@@ -42,12 +42,19 @@ export async function GET(req) {
 		const istDate = new Date(
 			new Date(request.created_at).getTime() + 5.5 * 60 * 60 * 1000
 		);
+
+		const student = request.students as unknown as {
+			name: string;
+			identifier: string;
+			cgpa: number;
+		};
+
 		return {
 			...request,
 			relativeTime: formatDistanceToNow(istDate, { addSuffix: true }),
-			name: request.students.name,
-			identifier: request.students.identifier,
-			cgpa: request.students.cgpa,
+			name: student?.name,
+			identifier: student?.identifier,
+			cgpa: student?.cgpa,
 		};
 	});
 
