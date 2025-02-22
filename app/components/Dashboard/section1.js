@@ -648,7 +648,7 @@ export default function Section1() {
 					backgroundColor: '#111111',
 					color: 'white',
 					padding: '5rem 1rem',
-					zIndex: '100',
+					zIndex: 95,
 				}}
 			>
 				<div
