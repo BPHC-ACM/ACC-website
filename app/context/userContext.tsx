@@ -49,13 +49,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			}
 
 			if (!email.endsWith('bits-pilani.ac.in')) {
-				console.warn('Unauthorized email:', email);
+				alert(`Unauthorized email: \n${email}`);
 				await supabase.auth.signOut();
 				setLoading(false);
 				return;
 			}
 
-			const name = data.user.user_metadata?.full_name ?? 'Unknown';
+			const name = (data.user.user_metadata?.full_name ?? 'Unknown')
+				.toLowerCase()
+				.split(' ')
+				.map(
+					(word: string) =>
+						word.charAt(0).toUpperCase() + word.slice(1)
+				)
+				.join(' ');
 			const role = email.startsWith('f20') ? 'student' : 'consultant';
 
 			let userId: string | null = null;

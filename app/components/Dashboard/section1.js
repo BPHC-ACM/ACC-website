@@ -10,6 +10,7 @@ import {
 	HeartHandshake,
 	ArrowRight,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Section1() {
 	const icons = {
@@ -48,8 +49,9 @@ export default function Section1() {
 						style={{
 							fontSize: '4.5rem',
 							fontWeight: 700,
-							color: '#222222',
-							marginBottom: '2rem',
+							color: '#111111',
+							marginBottom: '3rem',
+							marginTop: '1rem',
 							lineHeight: 1.1,
 						}}
 					>
@@ -62,7 +64,7 @@ export default function Section1() {
 					<div
 						style={{
 							display: 'inline-block',
-							marginBottom: '2rem',
+							marginBottom: '3rem',
 							padding: '0.5rem 1.5rem',
 							backgroundColor: 'rgba(17,24,39,0.05)',
 							borderRadius: '9999px',
@@ -72,7 +74,7 @@ export default function Section1() {
 							style={{
 								fontSize: '0.875rem',
 								fontWeight: 500,
-								color: '#222222',
+								color: '#111111',
 								margin: '2px',
 							}}
 						>
@@ -132,7 +134,7 @@ export default function Section1() {
 							style={{
 								fontSize: '3rem',
 								fontWeight: 700,
-								color: '#222222',
+								color: '#111111',
 								marginBottom: '1.5rem',
 							}}
 						>
@@ -142,7 +144,7 @@ export default function Section1() {
 							style={{
 								width: '5rem',
 								height: '0.375rem',
-								backgroundColor: '#222222',
+								backgroundColor: '#111111',
 								borderRadius: '9999px',
 								marginBottom: '2rem',
 							}}
@@ -189,7 +191,7 @@ export default function Section1() {
 							style={{
 								fontSize: '3rem',
 								fontWeight: 700,
-								color: '#222222',
+								color: '#111111',
 								marginBottom: '1.5rem',
 							}}
 						>
@@ -199,7 +201,7 @@ export default function Section1() {
 							style={{
 								width: '5rem',
 								height: '0.375rem',
-								backgroundColor: '#222222',
+								backgroundColor: '#111111',
 								borderRadius: '9999px',
 								marginBottom: '2rem',
 							}}
@@ -212,20 +214,21 @@ export default function Section1() {
 							gap: '3rem',
 						}}
 					>
-						<div
+						<motion.div
+							whileHover={{
+								scale: 1.01,
+								boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)',
+							}}
+							transition={{ duration: 0.2 }}
 							style={{
 								backgroundColor: 'white',
 								padding: '3rem',
 								borderRadius: '1rem',
-								boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-								transition: 'all 0.3s ease',
-								':hover': {
-									boxShadow:
-										'0 20px 25px -5px rgba(0,0,0,0.1)',
-								},
+								boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
 							}}
 						>
-							<div
+							<motion.div
+								transition={{ duration: 0.2 }}
 								style={{
 									display: 'inline-flex',
 									alignItems: 'center',
@@ -241,15 +244,15 @@ export default function Section1() {
 									style={{
 										width: '2rem',
 										height: '2rem',
-										color: '#222222',
+										color: '#111111',
 									}}
 								/>
-							</div>
+							</motion.div>
 							<h3
 								style={{
 									fontSize: '1.5rem',
 									fontWeight: 700,
-									color: '#222222',
+									color: '#111111',
 									marginBottom: '1.5rem',
 								}}
 							>
@@ -266,21 +269,23 @@ export default function Section1() {
 								personal growth, making them valuable assets to
 								society.
 							</p>
-						</div>
-						<div
+						</motion.div>
+
+						<motion.div
+							whileHover={{
+								scale: 1.01,
+								boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)',
+							}}
+							transition={{ duration: 0.2 }}
 							style={{
 								backgroundColor: 'white',
 								padding: '3rem',
 								borderRadius: '1rem',
-								boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-								transition: 'all 0.3s ease',
-								':hover': {
-									boxShadow:
-										'0 20px 25px -5px rgba(0,0,0,0.1)',
-								},
+								boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
 							}}
 						>
-							<div
+							<motion.div
+								transition={{ duration: 0.2 }}
 								style={{
 									display: 'inline-flex',
 									alignItems: 'center',
@@ -296,15 +301,15 @@ export default function Section1() {
 									style={{
 										width: '2rem',
 										height: '2rem',
-										color: '#222222',
+										color: '#111111',
 									}}
 								/>
-							</div>
+							</motion.div>
 							<h3
 								style={{
 									fontSize: '1.5rem',
 									fontWeight: 700,
-									color: '#222222',
+									color: '#111111',
 									marginBottom: '1.5rem',
 								}}
 							>
@@ -322,7 +327,7 @@ export default function Section1() {
 								fully benefit from the resources and
 								opportunities provided by BITS Pilani.
 							</p>
-						</div>
+						</motion.div>
 					</div>
 				</div>
 			</section>
@@ -363,7 +368,7 @@ export default function Section1() {
 							style={{
 								fontSize: '3rem',
 								fontWeight: 700,
-								color: '#222222',
+								color: '#111111',
 								marginBottom: '1.5rem',
 							}}
 						>
@@ -373,7 +378,7 @@ export default function Section1() {
 							style={{
 								width: '5rem',
 								height: '0.375rem',
-								backgroundColor: '#222222',
+								backgroundColor: '#111111',
 								borderRadius: '9999px',
 								marginBottom: '2rem',
 							}}
@@ -401,154 +406,246 @@ export default function Section1() {
 							const IconComponent =
 								icons[service.icon] || BookOpen;
 							return (
-								<div
-									key={index}
+								<motion.div
+									initial={{ scale: 1 }}
+									transition={{ duration: 0.2 }}
 									style={{
 										padding: '2rem',
-										backgroundColor: 'white',
-										border: '1px solid #F3F4F6',
 										borderRadius: '1rem',
-										transition: 'all 0.3s ease',
+										backgroundColor: 'white',
+										boxShadow:
+											'0 4px 20px rgba(0, 0, 0, 0.08)',
+										minHeight: '280px',
+										display: 'flex',
+										flexDirection: 'column',
+										justifyContent: 'space-between',
+										gap: '1.5rem',
 									}}
 								>
 									<div
 										style={{
-											display: 'inline-flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											width: '4rem',
-											height: '4rem',
-											backgroundColor: '#F3F4F6',
-											borderRadius: '0.75rem',
-											marginBottom: '1.5rem',
+											display: 'flex',
+											flexDirection: 'column',
+											gap: '1.5rem',
 										}}
 									>
-										<IconComponent
+										<div
 											style={{
-												width: '2rem',
-												height: '2rem',
-												color: '#222222',
+												backgroundColor: '#f4f4f4',
+												borderRadius: '12px',
+												width: '56px',
+												height: '56px',
+												display: 'flex',
+												alignItems: 'center',
+												justifyContent: 'center',
 											}}
-										/>
+										>
+											<IconComponent
+												style={{
+													width: '28px',
+													height: '28px',
+													color: '#111111',
+												}}
+											/>
+										</div>
+
+										<div
+											style={{
+												display: 'flex',
+												flexDirection: 'column',
+												gap: '0.75rem',
+											}}
+										>
+											<h3
+												style={{
+													fontSize: '1.25rem',
+													fontWeight: '600',
+													color: '#111111',
+													margin: 0,
+												}}
+											>
+												{service.heading}
+											</h3>
+
+											<p
+												style={{
+													fontSize: '1rem',
+													color: '#666666',
+													lineHeight: '1.6',
+													margin: 0,
+												}}
+											>
+												{service.short_description}
+											</p>
+										</div>
 									</div>
-									<h3
-										style={{
-											fontSize: '1.25rem',
-											fontWeight: 700,
-											color: '#222222',
-											marginBottom: '1rem',
-										}}
-									>
-										{service.heading}
-									</h3>
-									<p
-										style={{
-											color: '#4B5563',
-											marginBottom: '1.5rem',
-										}}
-									>
-										{service.short_description}
-									</p>
-									<button
+
+									<motion.button
 										onClick={() => setModalContent(service)}
+										whileHover={{
+											scale: 1.05,
+											backgroundColor: '#000000',
+										}}
+										whileTap={{ scale: 0.95 }}
 										style={{
 											display: 'inline-flex',
 											alignItems: 'center',
+											gap: '0.5rem',
 											color: 'white',
 											fontFamily: 'Poppins',
-											fontWeight: 500,
-											backgroundColor: '#222222',
-											padding: '0.5rem 1rem',
+											fontSize: '0.85rem',
+											fontWeight: '500',
+											backgroundColor: '#111111',
+											padding: '0.75rem 1.25rem',
 											borderRadius: '0.5rem',
-											transition: 'all 0.3s ease',
 											cursor: 'pointer',
+											border: 'none',
+											width: 'fit-content',
 										}}
 									>
-										Learn More{' '}
-										<ArrowRight
-											style={{
-												width: '1rem',
-												height: '1rem',
-												marginLeft: '0.25rem',
-											}}
-										/>
-									</button>
-								</div>
+										Learn More
+										<svg
+											width='16'
+											height='16'
+											viewBox='0 0 16 16'
+											fill='none'
+											style={{ marginLeft: '4px' }}
+										>
+											<path
+												d='M3.33334 8H12.6667'
+												stroke='currentColor'
+												strokeWidth='1.5'
+												strokeLinecap='round'
+												strokeLinejoin='round'
+											/>
+											<path
+												d='M8 3.33334L12.6667 8.00001L8 12.6667'
+												stroke='currentColor'
+												strokeWidth='1.5'
+												strokeLinecap='round'
+												strokeLinejoin='round'
+											/>
+										</svg>
+									</motion.button>
+								</motion.div>
 							);
 						})}
 					</div>
 				</div>
-				{modalContent && (
-					<div
-						style={{
-							position: 'fixed',
-							inset: 0,
-							backgroundColor: 'rgba(0,0,0,0.3)',
-							backdropFilter: 'blur(5px)',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							zIndex: 1000,
-						}}
-					>
-						<div
+				<AnimatePresence>
+					{modalContent && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ duration: 0.2 }}
 							style={{
-								backgroundColor: 'white',
-								padding: '3rem',
-								borderRadius: '1rem',
-								maxWidth: '40rem',
-								textAlign: 'center',
+								position: 'fixed',
+								inset: 0,
+								backgroundColor: 'rgba(0,0,0,0.3)',
+								backdropFilter: 'blur(5px)',
+								display: 'flex',
+								alignItems: 'center',
+								justifyContent: 'center',
+								zIndex: 1000,
 							}}
 						>
-							<h2
+							<motion.div
+								initial={{ scale: 0.9, opacity: 0, y: 20 }}
+								animate={{ scale: 1, opacity: 1, y: 0 }}
+								exit={{ scale: 0.9, opacity: 0, y: 20 }}
+								transition={{
+									type: 'spring',
+									duration: 0.5,
+									bounce: 0.3,
+								}}
 								style={{
-									fontSize: '1.5rem',
-									fontWeight: 700,
-									marginBottom: '1rem',
+									backgroundColor: 'white',
+									padding: '3rem',
+									borderRadius: '1rem',
+									maxWidth: '40rem',
+									textAlign: 'center',
+									boxShadow:
+										'0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+									width: '90%',
+									position: 'relative',
 								}}
 							>
-								{modalContent.heading}
-							</h2>
-							<div
-								style={{
-									color: '#4B5563',
-									display: 'flex',
-									flexDirection: 'column',
-									alignItems: 'center',
-								}}
-							>
-								{modalContent.long_description.map(
-									(point, index) => (
-										<p
-											key={index}
-											style={{ marginBottom: '0.5rem' }}
-										>
-											{point}
-										</p>
-									)
-								)}
-							</div>
-							<button
-								onClick={() => setModalContent(null)}
-								style={{
-									marginTop: '1rem',
-									backgroundColor: '#222222',
-									color: 'white',
-									fontFamily: 'Poppins',
-									padding: '0.5rem 1rem',
-									borderRadius: '0.5rem',
-									cursor: 'pointer',
-								}}
-							>
-								Close
-							</button>
-						</div>
-					</div>
-				)}
+								<motion.h2
+									initial={{ y: -10, opacity: 0 }}
+									animate={{ y: 0, opacity: 1 }}
+									transition={{ delay: 0.2 }}
+									style={{
+										fontSize: '1.5rem',
+										fontWeight: 700,
+										marginBottom: '1.5rem',
+										color: '#111111',
+									}}
+								>
+									{modalContent.heading}
+								</motion.h2>
+
+								<motion.div
+									style={{
+										color: '#4B5563',
+										display: 'flex',
+										flexDirection: 'column',
+										alignItems: 'center',
+										gap: '1rem',
+									}}
+								>
+									{modalContent.long_description.map(
+										(point, index) => (
+											<motion.p
+												key={index}
+												initial={{ x: -20, opacity: 0 }}
+												animate={{ x: 0, opacity: 1 }}
+												transition={{
+													delay: 0.3 + index * 0.1,
+												}}
+												style={{
+													margin: 0,
+													lineHeight: '1.6',
+												}}
+											>
+												{point}
+											</motion.p>
+										)
+									)}
+								</motion.div>
+
+								<motion.button
+									onClick={() => setModalContent(null)}
+									whileHover={{
+										scale: 1.05,
+										backgroundColor: '#000000',
+									}}
+									whileTap={{ scale: 0.95 }}
+									transition={{ duration: 0.2 }}
+									style={{
+										marginTop: '2rem',
+										backgroundColor: '#111111',
+										color: 'white',
+										fontFamily: 'Poppins',
+										padding: '0.75rem 1.5rem',
+										borderRadius: '0.5rem',
+										cursor: 'pointer',
+										border: 'none',
+										fontSize: '0.95rem',
+										fontWeight: '500',
+									}}
+								>
+									Close
+								</motion.button>
+							</motion.div>
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</section>
 			<footer
 				style={{
-					backgroundColor: '#222222',
+					position: 'relative',
+					backgroundColor: '#111111',
 					color: 'white',
 					padding: '5rem 1rem',
 					zIndex: '100',
@@ -640,18 +737,6 @@ export default function Section1() {
 										}}
 									>
 										Services
-									</a>
-								</li>
-								<li>
-									<a
-										href='#'
-										style={{
-											color: '#9CA3AF',
-											transition: 'color 0.3s ease',
-											':hover': { color: 'white' },
-										}}
-									>
-										Contact
 									</a>
 								</li>
 							</ul>
