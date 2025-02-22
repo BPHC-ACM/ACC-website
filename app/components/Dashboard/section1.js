@@ -407,6 +407,7 @@ export default function Section1() {
 								icons[service.icon] || BookOpen;
 							return (
 								<motion.div
+									key={index}
 									initial={{ scale: 1 }}
 									transition={{ duration: 0.2 }}
 									style={{
