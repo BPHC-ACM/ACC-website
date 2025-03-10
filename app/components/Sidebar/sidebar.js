@@ -2,176 +2,174 @@
 import { useUser } from '@/context/userContext';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-
 import { createClient } from '@supabase/supabase-js';
 import LoginButton from '../loginbutton';
 import styles from './sidebar.module.css';
 import {
-	IconUsers,
-	IconMessages,
-	IconBubbleText,
-	IconSchool,
-	IconBooks,
-	IconLogout,
+  IconUsers,
+  IconMessages,
+  IconBubbleText,
+  IconSchool,
+  IconBooks,
+  IconLogout,
+  IconMenu2, // Import the hamburger icon
 } from '@tabler/icons-react';
 
 const supabase = createClient(
-	process.env.NEXT_PUBLIC_SUPABASE_URL,
-	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
 export default function Sidebar({ setActiveSection }) {
-	const [activeButton, setActiveButton] = useState(0);
-	const { user, loading } = useUser();
-	const [showLogout, setShowLogout] = useState(false);
-	const [identifier, setBranch] = useState(null);
+  const [activeButton, setActiveButton] = useState(0);
+  const { user, loading } = useUser();
+  const [showLogout, setShowLogout] = useState(false);
+  const [identifier, setBranch] = useState(null);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false); // State for sidebar visibility
 
-	useEffect(() => {
-		setActiveSection('dashboard');
-	}, []);
+  useEffect(() => {
+    setActiveSection('dashboard');
+  }, []);
 
-	useEffect(() => {
-		const fetchIdentifier = async () => {
-			if (user && user.email) {
-				const table =
-					user.role === 'student' ? 'students' : 'consultants';
-				const column =
-					user.role === 'student' ? 'identifier' : 'department';
+  useEffect(() => {
+    const fetchIdentifier = async () => {
+      if (user && user.email) {
+        const table = user.role === 'student' ? 'students' : 'consultants';
+        const column = user.role === 'student' ? 'identifier' : 'department';
 
-				const { data, error } = await supabase
-					.from(table)
-					.select(column)
-					.eq('email', user.email)
-					.single();
+        const { data, error } = await supabase
+          .from(table)
+          .select(column)
+          .eq('email', user.email)
+          .single();
 
-				if (error) {
-					console.error(
-						`Error fetching ${column} from ${table}:`,
-						error.message
-					);
-					return;
-				}
+        if (error) {
+          console.error(`Error fetching ${column} from ${table}:`, error.message);
+          return;
+        }
 
-				if (data) setBranch(data[column]);
-			}
-		};
+        if (data) setBranch(data[column]);
+      }
+    };
 
-		fetchIdentifier();
-	}, [user]);
+    fetchIdentifier();
+  }, [user]);
 
-	const handleClick = (sectionName, index) => {
-		setActiveSection(sectionName);
-		setActiveButton(index);
-	};
+  const handleClick = (sectionName, index) => {
+    setActiveSection(sectionName);
+    setActiveButton(index);
+    setIsSidebarVisible(false); // Close sidebar on small screens after clicking a link
+  };
 
-	const handleLogout = async () => {
-		await supabase.auth.signOut();
-		window.location.reload();
-	};
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
 
-	const sections = [
-		{
-			name: 'Dashboard',
-			icon: <IconSchool size={24} className='navIcon' />,
-		},
-		{
-			name: 'Messages',
-			icon: <IconMessages size={24} className='navIcon' />,
-		},
-		{
-			name: 'Community',
-			icon: <IconUsers size={24} className='navIcon' />,
-		},
-		{
-			name: user?.role === 'consultant' ? 'Requests' : 'Resources',
-			icon:
-				user?.role === 'consultant' ? (
-					<IconBubbleText size={24} className='navIcon' />
-				) : (
-					<IconBooks size={24} className='navIcon' />
-				),
-		},
-	];
+  const sections = [
+    {
+      name: 'Dashboard',
+      icon: <IconSchool size={24} className='navIcon' />,
+    },
+    {
+      name: 'Messages',
+      icon: <IconMessages size={24} className='navIcon' />,
+    },
+    {
+      name: 'Community',
+      icon: <IconUsers size={24} className='navIcon' />,
+    },
+    {
+      name: user?.role === 'consultant' ? 'Requests' : 'Resources',
+      icon:
+        user?.role === 'consultant' ? (
+          <IconBubbleText size={24} className='navIcon' />
+        ) : (
+          <IconBooks size={24} className='navIcon' />
+        ),
+    },
+  ];
 
-	return (
-		<nav className={styles.sidebar}>
-			<img src='/acc-logo.png' width={162} height={150} alt='ACC Logo' />
-			<div className={styles.navContainer}>
-				{sections.map((section, index) => (
-					<motion.div
-						key={index}
-						className={styles.navItemWrapper}
-						whileHover={{
-							backgroundColor: 'rgba(250, 250, 250, 0.1)',
-						}}
-						transition={{ duration: 0.25 }}
-					>
-						<motion.button
-							className={`${styles.navItem} ${
-								activeButton === index ? styles.active : ''
-							}`}
-							onClick={() =>
-								handleClick(section.name.toLowerCase(), index)
-							}
-							whileTap={{ scale: 0.95 }}
-						>
-							{section.icon} {section.name}
-						</motion.button>
-					</motion.div>
-				))}
-			</div>
+  return (
+    <>
+      <button
+        className={styles.hamburgerButton}
+        onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+      >
+        <IconMenu2 size={24} />
+      </button>
 
-			<div className={styles.sidebarFooter}>
-				{user ? (
-					<motion.div className={styles.userContainer}>
-						{showLogout && (
-							<motion.button
-								className={styles.logoutButton}
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: 10 }}
-								transition={{ duration: 0.25 }}
-								onClick={handleLogout}
-								whileTap={{ scale: 0.95 }}
-							>
-								<IconLogout size={30} />
-								<span>Logout</span>
-							</motion.button>
-						)}
-						<motion.button
-							className={styles.pillButton}
-							whileTap={{ scale: 0.95 }}
-							onClick={() => setShowLogout(!showLogout)}
-						>
-							<img
-								src={`/api/avatar?name=${encodeURIComponent(
-									user.name || ''
-								)}`}
-								alt={user.name}
-								width={40}
-								height={40}
-								style={{
-									width: '36px',
-									height: '36px',
-									borderRadius: '50%',
-									marginRight: '0.5rem',
-									marginLeft: '-0.5rem',
-								}}
-							/>
-							<div className={styles.userInfo}>
-								<div className={styles.name}>
-									<p className={styles.name}>{user.name}</p>
-								</div>
-								<div className={styles.identifier}>
-									<p>{identifier || ''}</p>
-								</div>
-							</div>
-						</motion.button>
-					</motion.div>
-				) : (
-					<LoginButton />
-				)}
-			</div>
-		</nav>
-	);
+      <nav className={`${styles.sidebar} ${isSidebarVisible ? styles.visible : ''}`}>
+        <img src='/acc-logo.png' width={162} height={150} alt='ACC Logo' />
+        <div className={styles.navContainer}>
+          {sections.map((section, index) => (
+            <motion.div
+              key={index}
+              className={styles.navItemWrapper}
+              whileHover={{ backgroundColor: 'rgba(250, 250, 250, 0.1)' }}
+              transition={{ duration: 0.25 }}
+            >
+              <motion.button
+                className={`${styles.navItem} ${activeButton === index ? styles.active : ''}`}
+                onClick={() => handleClick(section.name.toLowerCase(), index)}
+                whileTap={{ scale: 0.95 }}
+              >
+                {section.icon} {section.name}
+              </motion.button>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className={styles.sidebarFooter}>
+          {user ? (
+            <motion.div className={styles.userContainer}>
+              {showLogout && (
+                <motion.button
+                  className={styles.logoutButton}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.25 }}
+                  onClick={handleLogout}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <IconLogout size={30} />
+                  <span>Logout</span>
+                </motion.button>
+              )}
+              <motion.button
+                className={styles.pillButton}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowLogout(!showLogout)}
+              >
+                <img
+                  src={`/api/avatar?name=${encodeURIComponent(user.name || '')}`}
+                  alt={user.name}
+                  width={40}
+                  height={40}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    marginRight: '0.5rem',
+                    marginLeft: '-0.5rem',
+                  }}
+                />
+                <div className={styles.userInfo}>
+                  <div className={styles.name}>
+                    <p className={styles.name}>{user.name}</p>
+                  </div>
+                  <div className={styles.identifier}>
+                    <p>{identifier || ''}</p>
+                  </div>
+                </div>
+              </motion.button>
+            </motion.div>
+          ) : (
+            <LoginButton />
+          )}
+        </div>
+      </nav>
+    </>
+  );
 }

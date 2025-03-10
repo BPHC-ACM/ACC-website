@@ -134,10 +134,45 @@
 	display: flex;
 	flex-direction: column;
 	min-width: 0; /* Ensures flex doesn't force it to grow */
-}
+} 
 
 .identifier {
 	font-size: 0.8rem;
 	color: #ccc;
 	opacity: 0.6;
 }
+.hamburgerButton {
+	display: none;
+	background: none;
+	border: none;
+	color: rgb(0, 0, 0);
+	cursor: pointer;
+	position: fixed;
+	top: 1rem;
+	left: 1rem;
+	z-index: 300;
+  }
+  
+  @media screen and (max-width: 768px) {
+	.hamburgerButton {
+	  display: block;
+	}
+  
+	.sidebar {
+	  position: fixed;
+	  top: 0;
+	  left: -100%;
+	  height: 100vh;
+	  width: 70%;
+	  transition: left 0.3s ease;
+	  z-index: 250;
+	}
+  
+	.sidebar.visible {
+	  left: 0;
+	}
+  
+	.navContainer {
+	  margin-top: 2rem;
+	}
+  }

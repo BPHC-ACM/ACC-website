@@ -478,3 +478,91 @@ textarea.inputField {
 .postButton > svg {
 	margin: -0.125rem 0.25rem 0 0;
 }
+
+@media (max-width: 1024px) {
+	.forumLayout {
+		grid-template-columns: 1.5fr 1fr; /* Adjust column ratio for medium screens */
+		gap: 15px;
+	}
+	
+	.pageTitle {
+		font-size: 22px;
+	}
+	
+	.thread h3 {
+		font-size: 16px;
+	}
+}
+
+@media (max-width: 768px) {
+	.forumLayout {
+		grid-template-columns: 1fr; /* Stack elements in a single column */
+	}
+	
+	.threadSection,
+	.postSection {
+		width: 100%;
+	}
+	
+	.searchInput {
+		font-size: 14px;
+	}
+	
+	.thread h3 {
+		font-size: 15px;
+	}
+}
+
+@media (max-width: 480px) {
+	.pageTitle {
+		font-size: 20px;
+		text-align: center;
+	}
+	
+	.searchWrapper {
+		padding: 8px 12px;
+	}
+	
+	.searchIcon {
+		font-size: 18px;
+	}
+	
+	.searchInput {
+		font-size: 13px;
+	}
+	
+	.thread {
+		padding: 12px;
+	}
+	
+	.thread h3 {
+		font-size: 14px;
+	}
+	
+	.thread p {
+		font-size: 13px;
+	}
+	
+	.paginationContainer {
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	.answer {
+		padding: 6px;
+	}
+	
+	.answer h5 {
+		font-size: 12px;
+	}
+	
+	.inputField {
+		padding: 10px;
+		font-size: 14px;
+	}
+	
+	.postButton {
+		padding: 8px 12px;
+		font-size: 14px;
+	}
+}
