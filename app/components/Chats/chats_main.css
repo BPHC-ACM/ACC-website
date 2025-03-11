@@ -234,3 +234,133 @@
 .message:hover .timestamp {
 	opacity: 1;
 }
+
+/* Media Queries for smaller screens */
+@media (max-width: 768px) {
+    .chat-display {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .header {
+        height: 10vh;
+        padding: 0.5rem 1rem;
+    }
+
+    .avatar {
+        width: 35px;
+        height: 35px;
+    }
+
+    .user-name {
+        font-size: 1rem;
+    }
+
+    .user-id {
+        font-size: 0.75rem;
+    }
+
+    .messages-container {
+        max-height: 75vh;
+        padding: 0.5rem;
+    }
+
+    .defaultmsg {
+        font-size: 1rem;
+    }
+
+    .defaultmsg img {
+        height: 7rem;
+    }
+
+    .message-input-container {
+        padding: 0.5rem;
+    }
+
+    .message-input {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .send-icon {
+        width: 40px;
+        height: 40px;
+        padding: 0.5rem;
+    }
+
+    .message {
+        max-width: 80%;
+        font-size: 0.9rem;
+    }
+
+    .other-message, .user-message {
+        padding: 0.75rem 1rem;
+    }
+
+    .timestamp {
+        font-size: 0.65rem;
+    }
+}
+
+/* Additional media query for very small screens */
+@media (max-width: 480px) {
+    .chat-display {
+        width: 100%;
+        height: calc(100vh - 50px); /* Account for sidebar in mobile view */
+    }
+    
+    .header {
+        height: 7vh;
+        padding: 0.4rem 0.6rem;
+    }
+    
+    .avatar {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .user-name {
+        font-size: 0.85rem;
+    }
+    
+    .messages-container {
+        max-height: 70vh;
+        padding: 0.35rem;
+    }
+    
+    .message {
+        max-width: 85%; /* Wider messages on tiny screens */
+        font-size: 0.85rem;
+        padding: 0.6rem 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .message-input-container {
+        padding: 0.4rem;
+    }
+    
+    .message-input {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .send-icon {
+        width: 36px; /* Smaller but still touchable */
+        height: 36px;
+        padding: 0.35rem;
+        margin-left: 0.4rem;
+    }
+    
+    .timestamp {
+        font-size: 0.6rem;
+        bottom: -1rem;
+    }
+    
+    .defaultmsg {
+        font-size: 0.85rem;
+    }
+    
+    .defaultmsg img {
+        height: 5rem;
+    }
+}

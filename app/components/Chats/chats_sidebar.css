@@ -8,6 +8,11 @@
 	flex-direction: column;
 	border-right: 1px solid #ddd;
 	box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.05);
+    height: 100vh; /* Make sidebar full viewport height */
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+    position: sticky; /* Keep sidebar in place when scrolling */
+    top: 0;
+    z-index: 10; /* Ensure sidebar appears above other content */
 }
 
 .chats-heading {
@@ -16,7 +21,10 @@
 	justify-content: space-between;
 	margin: 1rem 1rem 0;
 	color: #222;
-	height: 2.75rem;
+	height: auto; /* Remove fixed height to allow button visibility */
+    padding-top: 50px; /* Add space above heading to avoid hamburger menu overlap */
+    margin-bottom: 15px; /* Creates better spacing below */
+    align-items: center;
 }
 
 .searchbox {
@@ -44,7 +52,7 @@
 	flex-direction: column;
 	gap: 10px;
 	margin-top: 10px;
-	height: calc(97vh - 10.5rem);
+	height: calc(100vh - 180px); /* Adjusted for new header spacing */
 	overflow-y: auto;
 }
 
@@ -184,4 +192,166 @@
 	100% {
 		opacity: 1;
 	}
+}
+
+/* Media Queries for smaller screens */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: 100vh;
+        padding: 10px;
+        min-height: 100vh; /* Ensure minimum height */
+    }
+
+    .chats-heading {
+        font-size: 1.5rem;
+        margin: 0.5rem 0.5rem 0;
+        padding-top: 50px; /* Keep consistent spacing on mobile */
+    }
+
+    .searchbox {
+        margin: 0.5rem 0 0.5rem 0.5rem;
+        width: 95%;
+        font-size: 0.9rem;
+    }
+
+    .students-container {
+        height: calc(100vh - 150px);
+    }
+
+    .chat {
+        padding: 10px;
+        margin: 0 0.5rem;
+    }
+
+    .chat-avatar {
+        width: 35px;
+        height: 35px;
+    }
+
+    .chat-name {
+        font-size: 14px;
+    }
+
+    .chat-id {
+        font-size: 12px;
+    }
+
+    .no-users {
+        font-size: 0.9rem;
+    }
+
+    .chat-skeleton {
+        padding: 10px;
+        margin: 0.25rem 0.5rem;
+    }
+
+    .chat-avatar-skeleton {
+        width: 35px;
+        height: 35px;
+    }
+
+    .chat-name-skeleton, .chat-id-skeleton {
+        height: 10px;
+    }
+
+    .chat-name-skeleton {
+        width: 50%;
+    }
+
+    .chat-id-skeleton {
+        width: 30%;
+    }
+}
+
+/* Additional styles for very small screens */
+@media (max-width: 480px) {
+    .sidebar {
+        padding: 8px;
+        height: 100vh;
+    }
+    
+    .chats-heading {
+        font-size: 1.2rem;
+        margin: 0.3rem 0.3rem 0;
+        height: auto; /* Remove fixed height to accommodate button */
+        min-height: 2rem;
+        padding-top: 50px;
+        flex-wrap: wrap; /* Allow wrapping if needed */
+        gap: 0.5rem; /* Space between heading and button when wrapped */
+    }
+    
+    /* Ensure any button in the header is properly sized and visible */
+    .chats-heading button {
+        transform: scale(0.9); /* Slightly reduce button size */
+        transform-origin: right center;
+        margin-left: auto; /* Push to right side */
+        visibility: visible !important; /* Force visibility */
+        opacity: 1 !important; /* Force opacity */
+        display: block !important; /* Force display */
+        z-index: 100; /* Ensure it's above other elements */
+    }
+    
+    .searchbox {
+        height: 2rem;
+        margin: 0.3rem 0 0.3rem 0.3rem;
+        width: 92%;
+        font-size: 0.85rem;
+        padding: 0.3rem;
+    }
+    
+    .students-container {
+        gap: 6px;
+        height: calc(100vh - 150px);
+        margin-top: 5px;
+    }
+    
+    .chat {
+        padding: 8px;
+        margin: 0 0.3rem;
+        gap: 8px;
+    }
+    
+    .chat-avatar {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .chat-name {
+        font-size: 12px;
+    }
+    
+    .chat-id {
+        font-size: 10px;
+    }
+    
+    .no-users {
+        font-size: 0.8rem;
+    }
+    
+    .chat-skeleton {
+        padding: 8px;
+        margin: 0.15rem 0.3rem;
+    }
+    
+    .chat-avatar-skeleton {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* For extremely small screens */
+@media (max-width: 360px) {
+    .chats-heading {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 0.5rem;
+        padding-top: 60px; /* Extra space for hamburger menu */
+    }
+    
+    .chats-heading button {
+        margin-top: 0.25rem;
+        align-self: flex-end;
+        margin-right: 0.3rem;
+    }
 }
