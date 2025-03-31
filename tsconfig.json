@@ -30,6 +30,6 @@
 		"**/*.ts",
 		"**/*.tsx",
 		"server.ts"
-	],
+, "app/layout.tsx"	],
 	"exclude": ["node_modules"]
 }

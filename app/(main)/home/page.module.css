@@ -1,0 +1,20 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	overflow: hidden;
+	background-color: #f8fafc;
+	color: black;
+}
+
+.content {
+	display: flex;
+	flex: 1;
+	overflow: hidden;
+}
+
+.main {
+	flex: 3;
+	font-family: 'Poppins', Arial, Helvetica, sans-serif;
+	overflow-y: auto;
+}
