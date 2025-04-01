@@ -1,6 +1,9 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import styles from "../../page.module.css"
+import LoginButton from "../loginbutton"
 
 export default function Hero() {
   return (
@@ -17,9 +20,7 @@ export default function Hero() {
           <h1 className={styles.heroTitle}>Empowering Your Academic Journey</h1>
           <p className={styles.heroSubtitle}>Discover Your Potential, Define Your Path, Achieve Your Goals</p>
           <div className={styles.heroButtons}>
-            <Link href="/home" className={styles.primaryButton}>
-              <span>Dive In</span>
-            </Link>
+            <LoginButton/>
           </div>
         </div>
         <div className={styles.heroImage}>
