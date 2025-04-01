@@ -1,4 +1,3 @@
-"use client"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -20,7 +19,9 @@ export default function Hero() {
           <h1 className={styles.heroTitle}>Empowering Your Academic Journey</h1>
           <p className={styles.heroSubtitle}>Discover Your Potential, Define Your Path, Achieve Your Goals</p>
           <div className={styles.heroButtons}>
-            <LoginButton/>
+            <Link href="/home" className={styles.primaryButton}>
+               <span>Dive In</span>
+             </Link>
           </div>
         </div>
         <div className={styles.heroImage}>
