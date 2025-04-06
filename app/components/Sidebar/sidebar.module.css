@@ -2,13 +2,16 @@
 	background-color: #000;
 	color: white;
 	width: 18%;
+	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
 	font-family: 'Poppins', serif;
 	padding: 1rem;
-	top: 8vh;
+	position: fixed;
+	top: 0;
+	left: 0;
 	overflow-y: auto;
 	font-weight: 100;
 	font-style: normal;
@@ -16,23 +19,29 @@
 }
 
 .navContainer {
-	margin-top: -20rem;
+	margin-top: 0;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	width: 100%;
+	height: 100%;
+	flex: 1;
+	padding: 2rem 0;
+	gap: 1rem;
 }
 
 @media screen and (max-height: 768px) {
 	.navContainer {
-		margin-top: -10rem;
+		margin-top: 0;
+		padding: 1rem 0;
 	}
 }
 
 .navItemWrapper {
 	width: 90%;
 	border-radius: 2rem;
-	margin: 0.25rem;
+	margin: 0.75rem 0.25rem;
+	margin-left: 20px;
 }
 
 .navItem {
@@ -41,7 +50,7 @@
 	color: white;
 	font-size: 1.3rem;
 	cursor: pointer;
-	padding: 0.5rem 1rem;
+	padding: 0.75rem 1rem;
 	width: 100%;
 	text-align: left;
 	font-family: 'Poppins', serif;
@@ -69,6 +78,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	margin-bottom: 1rem;
 }
 
 .pillButton {
@@ -130,10 +140,10 @@
 	font-family: 'Poppins', sans-serif;
 	flex: 1;
 	margin-left: 0.125rem;
-	overflow: hidden; /* This prevents child elements from expanding beyond their container */
+	overflow: hidden; 
 	display: flex;
 	flex-direction: column;
-	min-width: 0; /* Ensures flex doesn't force it to grow */
+	min-width: 0;
 } 
 
 .identifier {
@@ -173,6 +183,7 @@
 	}
   
 	.navContainer {
-	  margin-top: 2rem;
+	  margin-top: 0;
+	  padding-top: 2rem;
 	}
   }
