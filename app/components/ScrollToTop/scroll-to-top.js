@@ -4,10 +4,21 @@ import React, { useState, useEffect } from 'react'; // Import React
 import { ArrowUp } from 'lucide-react';
 import styles from './ScrollToTop.module.css';
 
-export default function ScrollToTop({ selector = 'main' }) {
+export default function ScrollToTop({ selector = 'main', dependency }) {
 	const [isVisible, setIsVisible] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
 	const [isMobile, setIsMobile] = useState(false); // State for mobile check
+
+	useEffect(() => {
+		if (!dependency) return;
+
+		const element = document.querySelector(selector);
+		if (!element) return;
+
+		if (typeof element.scrollTo === 'function') {
+			element.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+	}, [dependency, selector]);
 
 	// Check mobile state on mount and resize
 	useEffect(() => {

@@ -95,7 +95,7 @@ export default function HomeContent() {
 			/>
 			<main className={`${pageStyles.main} ${getMainContentClass()}`}>
 				<AnimatePresence mode='wait'>{renderSection()}</AnimatePresence>
-				<ScrollToTop selector={'main'} />
+				<ScrollToTop selector='main' dependency={activeSection} />
 			</main>
 		</div>
 	);
