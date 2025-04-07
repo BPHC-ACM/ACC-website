@@ -82,7 +82,7 @@ export default function Section1({ setActiveSection }) {
 		primaryLight: '#dbeafe',
 		primary: '#3b82f6',
 		primaryDark: '#2563eb',
-		secondary: '#ec4899',
+		secondary: '#ffa500',
 		tertiary: '#10b981',
 		lightBg: '#f8faff',
 		darkBg: '#1f2937',
@@ -248,13 +248,14 @@ export default function Section1({ setActiveSection }) {
 			backgroundColor: 'white',
 			borderRadius: '0.75rem',
 			maxHeight: '85vh',
-			overflowY: 'auto',
+			overflowY: 'hidden',
 			boxShadow: '0 25px 30px -10px rgba(0, 0, 0, 0.2)',
 			borderTop: `4px solid ${colors.primary}`,
 			textAlign: 'left',
 			position: 'relative',
 			zIndex: 2150,
 			display: 'flex',
+			alignItems: 'center',
 			flexDirection: 'column',
 		},
 		modalBackdrop: {
@@ -555,7 +556,7 @@ export default function Section1({ setActiveSection }) {
 							transition={{ duration: 0.5 }}
 							style={styles.sectionHeading}
 						>
-							Overview (ACC)
+							Overview
 						</motion.h2>
 						<motion.div
 							initial={{ scaleX: 0 }}
@@ -859,7 +860,7 @@ export default function Section1({ setActiveSection }) {
 								cardColor === colors.primary
 									? colors.primaryDark
 									: cardColor === colors.secondary
-									? '#d946ef'
+									? '#ff8c00'
 									: '#059669';
 
 							return (

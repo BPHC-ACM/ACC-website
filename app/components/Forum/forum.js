@@ -301,7 +301,7 @@ export default function Forum({ user }) {
 														styles.pillbutton
 													}
 												>
-													<LoginButton />
+													<LoginButton variant='light' />
 												</div>
 											</div>
 										)}

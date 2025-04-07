@@ -110,3 +110,16 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+@media screen and (max-width: 768px) {
+	.pillButton {
+		font-size: 0.8rem;
+	}
+	.avatar {
+		width: 32px;
+		height: 32px;
+	}
+	.name {
+		font-size: 0.9rem;
+	}
+}

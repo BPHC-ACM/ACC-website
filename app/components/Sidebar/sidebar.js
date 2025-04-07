@@ -147,7 +147,7 @@ export default function Sidebar({
 
 	const sidebarCombinedVariants = {
 		expanded: (isMobileCheck) => ({
-			width: !isMobileCheck ? '18%' : undefined,
+			width: !isMobileCheck ? '18%' : '70%',
 			left: isMobileCheck ? '0%' : '0%',
 			transition: { type: 'tween', duration: 0.3, ease: 'easeInOut' },
 		}),
@@ -178,6 +178,7 @@ export default function Sidebar({
 		collapsed: { opacity: 0, transition: { duration: 0.1 } },
 	};
 
+	// The mobile toggle button is now only shown when the sidebar is collapsed
 	const MobileToggleButton = () => (
 		<button
 			className={styles.mobileToggleButton}
@@ -192,7 +193,7 @@ export default function Sidebar({
 	return (
 		<>
 			{/* Mobile-only elements rendered outside the main nav */}
-			{isMobile && <MobileToggleButton />}
+			{isMobile && !isExpanded && <MobileToggleButton />}
 			{isMobile && isExpanded && (
 				<div
 					className={styles.mobileOverlay}
@@ -213,12 +214,21 @@ export default function Sidebar({
 				transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
 				style={{
 					position: 'fixed',
-
 					zIndex: 1000,
 				}}
 			>
 				{/* 1. Logo Section */}
 				<div className={styles.logoContainer}>
+					{/* Add close button for mobile when sidebar is expanded */}
+					{isMobile && isExpanded && (
+						<button
+							className={styles.mobileSidebarCloseButton}
+							onClick={() => handleToggle(false)}
+							aria-label='Close sidebar'
+						>
+							<IconX size={28} />
+						</button>
+					)}
 					<img
 						src='/acc-logo.png'
 						width={isExpanded ? 162 : 50}

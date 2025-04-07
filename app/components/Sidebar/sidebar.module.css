@@ -196,6 +196,7 @@
 }
 
 .logoutButton {
+	align-self: center;
 	position: absolute;
 	bottom: calc(100% + 5px);
 	left: 50%;
@@ -246,23 +247,21 @@
 }
 
 .desktopToggleButton:hover {
-	background: rgba(255, 255, 255, 0.1);
+	background: rgba(156, 156, 156, 0.1);
 	color: white;
 }
 
 .mobileToggleButton {
 	display: none;
-	background: #1a1a1a;
 	border: none;
-	color: white;
+	background: transparent;
+	color: #1a1a1a;
 	cursor: pointer;
 	position: fixed;
 	top: 1rem;
 	left: 1rem;
 	z-index: 300;
 	padding: 0.5rem;
-	border-radius: 50%;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .mobileOverlay {
@@ -274,6 +273,23 @@
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.5);
 	z-index: 240;
+}
+
+.mobileSidebarCloseButton {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background: none;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+	z-index: 1001;
+	padding: 8px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(0, 0, 0, 0.2);
 }
 
 @media screen and (min-width: 769px) {
