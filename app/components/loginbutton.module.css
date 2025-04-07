@@ -1,26 +1,71 @@
 .pillButton {
 	background-color: #222;
-	border: 2px solid #222;
+	align-self: center;
+	border: 1px solid #444;
 	color: white;
 	font-size: 0.9rem;
 	cursor: pointer;
-	padding: 3px 18px;
+	padding: 6px 10px;
 	width: 100%;
-	max-width: 100%;
 	text-align: left;
 	border-radius: 50px;
 	margin: 5px 0;
 	display: flex;
 	align-items: center;
+	transition: background-color 0.2s ease, border-color 0.2s ease,
+		color 0.2s ease;
+	overflow: hidden;
 }
 
-.pillButton img {
-	margin-left: -0.35rem;
-	padding: 0.5rem;
+.pillButton:hover {
+	background-color: #333;
+	border-color: #555;
+}
+
+.avatar {
+	width: 36px;
+	height: 36px;
+	margin-right: 0.5rem;
+	margin-left: -4px;
+	flex-shrink: 0;
+	transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease;
+}
+
+.userInfo {
+	flex-grow: 1;
+	overflow: hidden;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
 }
 
 .name {
-	margin-left: 0.25rem;
-	font-size: 1rem;
+	font-size: 0.95rem;
 	font-family: 'Poppins', sans-serif;
+	font-weight: 400;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.pillButton.collapsed {
+	width: 45px;
+	height: 45px;
+	padding: 0;
+	justify-content: center;
+	border-color: #222;
+}
+.pillButton.collapsed:hover {
+	background-color: #333;
+	border-color: #333;
+}
+
+.pillButton.collapsed .avatar {
+	width: 28px;
+	height: 28px;
+	margin: 0;
+}
+
+.pillButton.collapsed .userInfo {
+	display: none;
 }

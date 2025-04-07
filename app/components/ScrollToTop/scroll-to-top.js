@@ -1,33 +1,57 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // Import React
 import { ArrowUp } from 'lucide-react';
 import styles from './ScrollToTop.module.css';
 
 export default function ScrollToTop({ selector = 'main' }) {
 	const [isVisible, setIsVisible] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
+	const [isMobile, setIsMobile] = useState(false); // State for mobile check
 
+	// Check mobile state on mount and resize
+	useEffect(() => {
+		const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+		return () => window.removeEventListener('resize', checkMobile);
+	}, []);
+
+	// Effect to handle scroll visibility
 	useEffect(() => {
 		const element = document.querySelector(selector);
-		if (!element) return;
+		if (!element) {
+			console.warn(
+				`ScrollToTop: Element with selector "${selector}" not found.`
+			);
+			return; // Exit if element not found
+		}
 
 		const toggleVisibility = () => {
-			setIsVisible(element.scrollTop > 300);
+			// Ensure element has scrollTop property (like HTMLElement)
+			if (typeof element.scrollTop === 'number') {
+				setIsVisible(element.scrollTop > 300);
+			}
 		};
 
-		element.addEventListener('scroll', toggleVisibility);
+		element.addEventListener('scroll', toggleVisibility, { passive: true }); // Use passive listener
+		// Initial check in case element is already scrolled
+		toggleVisibility();
+
 		return () => element.removeEventListener('scroll', toggleVisibility);
-	}, [selector]);
+	}, [selector]); // Dependency: only re-run if selector changes
 
 	const scrollToTop = () => {
 		const element = document.querySelector(selector);
 		if (!element) return;
 
-		element.scrollTo({
-			top: 0,
-			behavior: 'smooth',
-		});
+		// Check if element has the scrollTo method
+		if (typeof element.scrollTo === 'function') {
+			element.scrollTo({
+				top: 0,
+				behavior: 'smooth',
+			});
+		}
 	};
 
 	return (
@@ -37,12 +61,12 @@ export default function ScrollToTop({ selector = 'main' }) {
 			onMouseLeave={() => setIsHovered(false)}
 			className={`${styles.scrollToTop} ${
 				isVisible ? styles.visible : ''
-			} ${isHovered ? styles.hovered : ''}`}
+			} ${isHovered ? styles.hovered : ''}`} // Keep hovered class if needed by CSS
 			aria-label='Scroll to top'
 			title='Scroll to top'
 		>
-			<ArrowUp size={18} className={styles.icon} />
-			<span>Scroll to Top</span>
+			<ArrowUp size={isMobile ? 20 : 18} className={styles.icon} />{' '}
+			{!isMobile && <span>Scroll to Top</span>}
 		</button>
 	);
 }

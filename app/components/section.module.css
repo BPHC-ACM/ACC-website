@@ -3,12 +3,14 @@
 	background-color: #f8fafc;
 	color: black;
 	height: 97vh;
-	margin: 20px;
 }
 
 .title {
 	font-size: 2rem;
 	margin-bottom: 20px;
+	@media screen and (max-width: 768px) {
+		text-align: center;
+	}
 }
 
 .content {
