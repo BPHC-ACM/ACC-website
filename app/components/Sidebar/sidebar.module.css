@@ -123,6 +123,9 @@
 	margin-top: auto;
 	padding-top: 1rem;
 	position: relative;
+	@media screen and (max-width: 768px) {
+		padding-bottom: 5rem;
+	}
 }
 
 .userContainer {

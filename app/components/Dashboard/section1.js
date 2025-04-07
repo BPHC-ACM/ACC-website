@@ -471,7 +471,7 @@ export default function Section1({ setActiveSection }) {
 						transition={{ duration: 0.3, ease: 'easeOut' }}
 						style={{
 							position: 'absolute',
-							bottom: '5vh',
+							bottom: '15vh',
 							top: 'auto',
 							left: '50%',
 							zIndex: 50,
