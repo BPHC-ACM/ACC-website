@@ -156,6 +156,7 @@ export default function Sidebar({
 		}),
 		collapsed: (isMobileCheck) => ({
 			// Desktop: Set width, Mobile: Set left to slide out
+			width: !isMobileCheck ? '80px' : undefined,
 			left: isMobileCheck ? '-100%' : '0%',
 			transition: { type: 'tween', duration: 0.3, ease: 'easeInOut' },
 		}),
