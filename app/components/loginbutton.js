@@ -1,21 +1,19 @@
 import React from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { motion } from 'framer-motion';
-import styles from './loginbutton.module.css'; // Ensure this path is correct
+import styles from './loginbutton.module.css';
 
 const supabase = createClient(
 	process.env.NEXT_PUBLIC_SUPABASE_URL,
 	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-// Accept isCollapsed prop
-const LoginButton = ({ isCollapsed }) => {
+const LoginButton = ({ isCollapsed, variant = 'dark' }) => {
 	const handleLogin = async () => {
 		try {
 			const { error } = await supabase.auth.signInWithOAuth({
 				provider: 'google',
 				options: {
-					// Ensure window.location.origin is correct, especially if behind proxy/custom domain
 					redirectTo:
 						typeof window !== 'undefined'
 							? window.location.origin
@@ -32,44 +30,56 @@ const LoginButton = ({ isCollapsed }) => {
 	};
 
 	const textVariants = {
-		expanded: { opacity: 1, display: 'block', transition: { delay: 0.1 } },
-		collapsed: { opacity: 0, transitionEnd: { display: 'none' } },
+		expanded: {
+			opacity: 1,
+			display: 'flex',
+			transition: { delay: 0.1, duration: 0.2 },
+		},
+		collapsed: {
+			opacity: 0,
+			transition: { duration: 0.1 },
+			transitionEnd: { display: 'none' },
+		},
 	};
+
+	const buttonClasses = [
+		styles.pillButton,
+		variant === 'light' ? styles.lightVariant : styles.darkVariant,
+		isCollapsed ? styles.collapsed : '',
+	]
+		.filter(Boolean)
+		.join(' ');
 
 	return (
 		<motion.button
-			// Add collapsed class conditionally
-			className={`${styles.pillButton} ${
-				isCollapsed ? styles.collapsed : ''
-			}`}
+			className={buttonClasses}
 			initial={{ opacity: 0, y: 10 }}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: 10 }}
-			whileHover={
-				!isCollapsed ? { backgroundColor: '#fff', color: '#222' } : {}
-			} // Disable hover effect when collapsed?
 			style={{ transformOrigin: 'center' }}
-			transition={{ duration: 0.25 }}
+			transition={{ duration: 0.3 }}
 			whileTap={{ scale: 0.95 }}
 			onClick={handleLogin}
-			title={isCollapsed ? 'Login with Google' : ''} // Add tooltip when collapsed
+			title={isCollapsed ? 'Login with Google' : ''}
 		>
-			<img
+			<motion.img
+				layout
 				src={'https://img.icons8.com/?size=512&id=17949&format=png'}
 				alt={'Google Icon'}
-				width={isCollapsed ? 28 : 40} // Adjust icon size when collapsed
+				width={isCollapsed ? 28 : 40}
 				height={isCollapsed ? 28 : 40}
 				className={styles.avatar}
+				transition={{ duration: 0.3 }}
 			/>
 			{/* Animate the text presence */}
 			<motion.div
 				className={styles.userInfo}
 				variants={textVariants}
 				animate={isCollapsed ? 'collapsed' : 'expanded'}
-				initial={false} // Don't animate initial state based on variant name
+				initial={false}
 			>
-				<span className={styles.name}>Login with Google</span>{' '}
-				{/* Use span */}
+				{/* Use span for cleaner structure */}
+				<span className={styles.name}>Login with Google</span>
 			</motion.div>
 		</motion.button>
 	);

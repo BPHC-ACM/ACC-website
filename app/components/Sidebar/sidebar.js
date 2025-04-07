@@ -25,10 +25,10 @@ const supabase = createClient(
 
 export default function Sidebar({
 	setActiveSection,
+	activeSection,
 	isExpanded,
 	toggleSidebar,
 }) {
-	const [activeButton, setActiveButton] = useState(0);
 	const { user, loading: userLoading } = useUser();
 	const [showLogout, setShowLogout] = useState(false);
 	const [identifier, setBranch] = useState(null);
@@ -40,11 +40,6 @@ export default function Sidebar({
 		window.addEventListener('resize', checkMobile);
 
 		return () => window.removeEventListener('resize', checkMobile);
-	}, []);
-
-	useEffect(() => {
-		setActiveSection('dashboard');
-		setActiveButton(0);
 	}, []);
 
 	useEffect(() => {
@@ -81,9 +76,8 @@ export default function Sidebar({
 		}
 	}, [user, userLoading]);
 
-	const handleClick = (sectionName, index) => {
+	const handleClick = (sectionName) => {
 		setActiveSection(sectionName);
-		setActiveButton(index);
 		setShowLogout(false);
 
 		if (isMobile && typeof toggleSidebar === 'function') {
@@ -93,9 +87,14 @@ export default function Sidebar({
 
 	const handleLogout = async () => {
 		setShowLogout(false);
-		await supabase.auth.signOut();
+		try {
+			const { error } = await supabase.auth.signOut();
+			if (error) throw error;
 
-		window.location.reload();
+			window.location.reload();
+		} catch (error) {
+			console.error('Error logging out:', error.message);
+		}
 	};
 
 	const handleToggle = (forceState) => {
@@ -137,25 +136,22 @@ export default function Sidebar({
 	];
 
 	const visibleSections = sections.filter((section) => {
-		if (section.sectionId === 'requests' && user?.role !== 'consultant')
+		if (section.sectionId === 'requests' && user?.role !== 'consultant') {
 			return false;
-
-		if (section.sectionId === 'resources' && user?.role === 'consultant')
+		}
+		if (section.sectionId === 'resources' && user?.role === 'consultant') {
 			return false;
-
+		}
 		return true;
 	});
 
 	const sidebarCombinedVariants = {
 		expanded: (isMobileCheck) => ({
-			// Use custom prop
-			// Desktop: Set width, Mobile: Set left to slide in
-			width: !isMobileCheck ? '18%' : undefined, // Let CSS handle mobile width
+			width: !isMobileCheck ? '18%' : undefined,
 			left: isMobileCheck ? '0%' : '0%',
 			transition: { type: 'tween', duration: 0.3, ease: 'easeInOut' },
 		}),
 		collapsed: (isMobileCheck) => ({
-			// Desktop: Set width, Mobile: Set left to slide out
 			width: !isMobileCheck ? '80px' : undefined,
 			left: isMobileCheck ? '-100%' : '0%',
 			transition: { type: 'tween', duration: 0.3, ease: 'easeInOut' },
@@ -201,6 +197,7 @@ export default function Sidebar({
 				<div
 					className={styles.mobileOverlay}
 					onClick={() => handleToggle(false)}
+					aria-hidden='true'
 				></div>
 			)}
 
@@ -214,7 +211,11 @@ export default function Sidebar({
 				variants={sidebarCombinedVariants}
 				initial={false}
 				transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-				style={{ position: 'fixed' }}
+				style={{
+					position: 'fixed',
+
+					zIndex: 1000,
+				}}
 			>
 				{/* 1. Logo Section */}
 				<div className={styles.logoContainer}>
@@ -223,11 +224,13 @@ export default function Sidebar({
 						width={isExpanded ? 162 : 50}
 						height={isExpanded ? 150 : 46}
 						alt='ACC Logo'
+						style={{ transition: 'width 0.3s, height 0.3s' }}
 					/>
 				</div>
+
 				{/* 2. Navigation Links Section */}
 				<div className={styles.navContainer}>
-					{visibleSections.map((section, index) => (
+					{visibleSections.map((section) => (
 						<motion.div
 							key={section.sectionId}
 							className={styles.navItemWrapper}
@@ -244,13 +247,13 @@ export default function Sidebar({
 						>
 							<button
 								className={`${styles.navItem} ${
-									activeButton === index ? styles.active : ''
+									activeSection === section.sectionId
+										? styles.active
+										: ''
 								}`}
-								onClick={() =>
-									handleClick(section.sectionId, index)
-								}
+								onClick={() => handleClick(section.sectionId)}
 							>
-								{section.icon} {/* Icon */}
+								{section.icon} {/* Icon always visible */}
 								{/* Animated Text Label */}
 								<motion.span
 									className={styles.navItemText}
@@ -266,9 +269,10 @@ export default function Sidebar({
 						</motion.div>
 					))}
 				</div>
+
 				{/* 3. Footer Section (User/Login and Toggle) */}
 				<div className={styles.sidebarFooter}>
-					{/* Animated Logout Button (appears above user pill) */}
+					{/* Animated Logout Button */}
 					<AnimatePresence>
 						{showLogout && isExpanded && (
 							<motion.button
@@ -281,7 +285,7 @@ export default function Sidebar({
 								onClick={handleLogout}
 							>
 								<IconLogout size={20} />
-								{/* Ensure text animates consistently */}
+								{/* Text animation for consistency */}
 								<motion.span
 									variants={textVariants}
 									animate={'expanded'}
@@ -299,34 +303,51 @@ export default function Sidebar({
 							<button
 								className={styles.pillButton}
 								onClick={() => setShowLogout((prev) => !prev)}
-								title={user.name || 'User Profile'}
+								title={
+									user.name
+										? `User profile options for ${user.name}`
+										: 'User profile options'
+								}
+								aria-haspopup='true'
+								aria-expanded={showLogout}
 							>
 								{/* User Avatar */}
 								<img
 									src={`/api/avatar?name=${encodeURIComponent(
-										user.name || 'User'
+										user.name || '?'
 									)}`}
-									alt={user.name || 'User Avatar'}
+									alt={
+										user.name
+											? `${user.name}'s Avatar`
+											: 'User Avatar'
+									}
 									width={36}
 									height={36}
 									className={styles.avatar}
 								/>
 								{/* Animated User Details */}
-								<motion.div
-									className={styles.userInfo}
-									variants={userDetailsVariants}
-									animate={
-										isExpanded ? 'expanded' : 'collapsed'
-									}
-									initial={false}
-								>
-									<span className={styles.name}>
-										{user.name}
-									</span>
-									<span className={styles.identifier}>
-										{identifier || ''}
-									</span>
-								</motion.div>
+								{/* Conditionally render based on isExpanded */}
+								{isExpanded && (
+									<motion.div
+										className={styles.userInfo}
+										variants={userDetailsVariants}
+										animate={
+											isExpanded
+												? 'expanded'
+												: 'collapsed'
+										}
+										initial={false}
+									>
+										<span className={styles.name}>
+											{/* Display placeholder if name is loading or missing */}
+											{user.name || 'User'}
+										</span>
+										<span className={styles.identifier}>
+											{/* Display identifier or role - consider placeholder */}
+											{identifier || user.role || ''}
+										</span>
+									</motion.div>
+								)}
 							</button>
 						</div>
 					) : (
@@ -339,7 +360,9 @@ export default function Sidebar({
 							className={styles.desktopToggleButton}
 							onClick={() => handleToggle()}
 							aria-label={
-								isExpanded ? 'Collapse menu' : 'Expand menu'
+								isExpanded
+									? 'Collapse sidebar'
+									: 'Expand sidebar'
 							}
 							aria-expanded={isExpanded}
 							title={isExpanded ? 'Collapse' : 'Expand'}

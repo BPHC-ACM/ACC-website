@@ -34,12 +34,21 @@ export default function HomeContent() {
 
 	const renderSection = () => {
 		if (loading) {
-			return <div>Loading...</div>;
+			return (
+				<div style={{ padding: '2rem', textAlign: 'center' }}>
+					Loading user data...
+				</div>
+			);
 		}
 
 		switch (activeSection) {
 			case 'dashboard':
-				return <Section1 key='dashboard' />;
+				return (
+					<Section1
+						key='dashboard'
+						setActiveSection={setActiveSection}
+					/>
+				);
 			case 'messages':
 				return <Section3 key='messages' />;
 			case 'community':
@@ -51,7 +60,12 @@ export default function HomeContent() {
 					<Section5 key='resources' />
 				);
 			default:
-				return <Section1 key='dashboard' />;
+				return (
+					<Section1
+						key='dashboard'
+						setActiveSection={setActiveSection}
+					/>
+				);
 		}
 	};
 
@@ -75,10 +89,10 @@ export default function HomeContent() {
 		>
 			<Sidebar
 				setActiveSection={setActiveSection}
+				activeSection={activeSection}
 				isExpanded={isSidebarExpanded}
 				toggleSidebar={toggleSidebar}
 			/>
-			{/* Apply dynamic class to main */}
 			<main className={`${pageStyles.main} ${getMainContentClass()}`}>
 				<AnimatePresence mode='wait'>{renderSection()}</AnimatePresence>
 				<ScrollToTop selector={'main'} />

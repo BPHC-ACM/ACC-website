@@ -420,7 +420,7 @@ export default function Forum({ user }) {
 				) : (
 					<div className={styles.loginbutton}>
 						<div className={styles.pillbutton}>
-							<LoginButton />
+							<LoginButton variant='light' />
 						</div>
 					</div>
 				)}
