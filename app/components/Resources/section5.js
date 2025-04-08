@@ -98,7 +98,7 @@ export default function Section5() {
 	if (loading) {
 		return (
 			<Section
-				title={`Professor's Chambers`}
+				title={`Mentor Professors' Chambers`}
 				content={
 					<motion.div
 						initial={{ opacity: 0 }}
@@ -117,7 +117,7 @@ export default function Section5() {
 	if (error || !profsData || profsData.length === 0) {
 		return (
 			<Section
-				title={`Professor's Chambers`}
+				title={`Mentor Professors' Chambers`}
 				content={
 					<motion.div
 						style={{ textAlign: 'center' }}
@@ -136,7 +136,7 @@ export default function Section5() {
 
 	return (
 		<Section
-			title={`Professor's Chambers`}
+			title={`Mentor Professors' Chambers`}
 			content={
 				<motion.div
 					initial={{ opacity: 0 }}
