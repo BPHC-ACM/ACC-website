@@ -144,6 +144,7 @@
 	cursor: pointer;
 	padding: 6px 10px;
 	width: 100%;
+	position: relative;
 	text-align: left;
 	border-radius: 50px;
 	display: flex;
@@ -197,7 +198,7 @@
 	color: #ccc;
 	opacity: 0.7;
 }
-
+/* 
 .logoutButton {
 	align-self: center;
 	position: absolute;
@@ -228,7 +229,7 @@
 }
 .logoutButton svg {
 	flex-shrink: 0;
-}
+} */
 
 .desktopToggleButton {
 	background: none;
@@ -293,6 +294,53 @@
 	align-items: center;
 	justify-content: center;
 	background-color: rgba(0, 0, 0, 0.2);
+}
+
+.userActionContainer {
+	position: absolute;
+	bottom: calc(100% + 8px);
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 0.5rem;
+	background-color: #282828;
+	padding: 6px;
+	border-radius: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	z-index: 10;
+	width: auto;
+	max-width: 90%;
+}
+
+.actionButton {
+	background-color: #3a3a3a;
+	border: none;
+	color: #e0e0e0;
+	font-size: 0.85rem;
+	cursor: pointer;
+	padding: 6px 12px;
+	width: auto;
+	white-space: nowrap;
+	border-radius: 16px;
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	transition: background-color 0.2s ease, color 0.2s ease;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 400;
+}
+
+.actionButton:hover {
+	background-color: #4f4f4f;
+	color: #fff;
+}
+
+.actionButton svg {
+	flex-shrink: 0;
+}
+
+.sidebar.collapsed .userActionContainer {
+	display: none;
 }
 
 @media screen and (min-width: 769px) {

@@ -1,8 +1,9 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/context/userContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@supabase/supabase-js';
+import UpdateProfileModal from './update-profile-modal';
 import LoginButton from '../loginbutton';
 import styles from './sidebar.module.css';
 import {
@@ -16,6 +17,7 @@ import {
 	IconLayoutSidebarLeftCollapse,
 	IconLayoutSidebarLeftExpand,
 	IconX,
+	IconUserEdit,
 } from '@tabler/icons-react';
 
 const supabase = createClient(
@@ -30,9 +32,10 @@ export default function Sidebar({
 	toggleSidebar,
 }) {
 	const { user, loading: userLoading } = useUser();
-	const [showLogout, setShowLogout] = useState(false);
-	const [identifier, setBranch] = useState(null);
+	const [showUserActions, setShowUserActions] = useState(false);
+	const [identifier, setIdentifier] = useState(null);
 	const [isMobile, setIsMobile] = useState(false);
+	const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
 	useEffect(() => {
 		const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -42,43 +45,54 @@ export default function Sidebar({
 		return () => window.removeEventListener('resize', checkMobile);
 	}, []);
 
-	useEffect(() => {
-		const fetchIdentifier = async () => {
-			if (user && user.email) {
-				const table =
-					user.role === 'student' ? 'students' : 'consultants';
-				const column =
-					user.role === 'student' ? 'identifier' : 'department';
+	const fetchIdentifier = useCallback(async () => {
+		if (user && user.email) {
+			const table = user.role === 'student' ? 'students' : 'consultants';
+			const column =
+				user.role === 'student' ? 'identifier' : 'department';
 
-				try {
-					const { data, error } = await supabase
-						.from(table)
-						.select(column)
-						.eq('email', user.email)
-						.single();
+			try {
+				const { data, error } = await supabase
+					.from(table)
+					.select(column)
+					.eq('email', user.email)
+					.single();
 
-					if (error) throw error;
-					if (data) setBranch(data[column]);
-				} catch (error) {
-					console.error(
-						`Error fetching ${column} from ${table}:`,
-						error.message
-					);
-					setBranch(null);
+				if (error && error.code !== 'PGRST116') {
+					throw error;
 				}
-			} else {
-				setBranch(null);
+				if (data) {
+					setIdentifier(data[column]);
+				} else {
+					setIdentifier(
+						user.role === 'student' ? 'Update Profile' : user.role
+					);
+				}
+			} catch (error) {
+				console.error(
+					`Error fetching ${column} from ${table}:`,
+					error.message
+				);
+				setIdentifier(
+					user.role === 'student' ? 'Update Profile' : user.role
+				);
 			}
-		};
-
-		if (!userLoading) {
-			fetchIdentifier();
+		} else {
+			setIdentifier(null);
 		}
-	}, [user, userLoading]);
+	}, [user]);
+
+	useEffect(() => {
+		if (!userLoading && user) {
+			fetchIdentifier();
+		} else if (!user) {
+			setIdentifier(null);
+		}
+	}, [user, userLoading, fetchIdentifier]);
 
 	const handleClick = (sectionName) => {
 		setActiveSection(sectionName);
-		setShowLogout(false);
+		setShowUserActions(false);
 
 		if (isMobile && typeof toggleSidebar === 'function') {
 			toggleSidebar(false);
@@ -86,7 +100,7 @@ export default function Sidebar({
 	};
 
 	const handleLogout = async () => {
-		setShowLogout(false);
+		setShowUserActions(false);
 		try {
 			const { error } = await supabase.auth.signOut();
 			if (error) throw error;
@@ -95,6 +109,19 @@ export default function Sidebar({
 		} catch (error) {
 			console.error('Error logging out:', error.message);
 		}
+	};
+
+	const handleOpenUpdateModal = () => {
+		setIsUpdateModalOpen(true);
+		setShowUserActions(false);
+	};
+
+	const handleCloseUpdateModal = () => {
+		setIsUpdateModalOpen(false);
+	};
+
+	const handleUpdateSuccess = () => {
+		fetchIdentifier();
 	};
 
 	const handleToggle = (forceState) => {
@@ -178,7 +205,6 @@ export default function Sidebar({
 		collapsed: { opacity: 0, transition: { duration: 0.1 } },
 	};
 
-	// The mobile toggle button is now only shown when the sidebar is collapsed
 	const MobileToggleButton = () => (
 		<button
 			className={styles.mobileToggleButton}
@@ -284,26 +310,47 @@ export default function Sidebar({
 				<div className={styles.sidebarFooter}>
 					{/* Animated Logout Button */}
 					<AnimatePresence>
-						{showLogout && isExpanded && (
-							<motion.button
-								key='logoutButton'
-								className={styles.logoutButton}
+						{showUserActions && isExpanded && (
+							<motion.div
+								key='userActionsContainer'
+								className={styles.userActionContainer}
 								initial={{ opacity: 0, y: 10 }}
 								animate={{ opacity: 1, y: 0 }}
 								exit={{ opacity: 0, y: 10 }}
 								transition={{ duration: 0.2 }}
-								onClick={handleLogout}
 							>
-								<IconLogout size={20} />
-								{/* Text animation for consistency */}
-								<motion.span
-									variants={textVariants}
-									animate={'expanded'}
-									initial={false}
+								{/* Update Profile Button - Only for students */}
+								{user?.role === 'student' && (
+									<button
+										className={styles.actionButton}
+										onClick={handleOpenUpdateModal}
+									>
+										<IconUserEdit size={18} />
+										<motion.span
+											variants={textVariants}
+											animate={'expanded'}
+											initial={false}
+										>
+											Update
+										</motion.span>
+									</button>
+								)}
+
+								{/* Logout Button */}
+								<button
+									className={styles.actionButton}
+									onClick={handleLogout}
 								>
-									Logout
-								</motion.span>
-							</motion.button>
+									<IconLogout size={18} />
+									<motion.span
+										variants={textVariants}
+										animate={'expanded'}
+										initial={false}
+									>
+										Logout
+									</motion.span>
+								</button>
+							</motion.div>
 						)}
 					</AnimatePresence>
 
@@ -312,17 +359,18 @@ export default function Sidebar({
 						<div className={styles.userContainer}>
 							<button
 								className={styles.pillButton}
-								onClick={() => setShowLogout((prev) => !prev)}
+								onClick={() =>
+									setShowUserActions((prev) => !prev)
+								} // Toggle action menu
 								title={
 									user.name
 										? `User profile options for ${user.name}`
 										: 'User profile options'
 								}
 								aria-haspopup='true'
-								aria-expanded={showLogout}
+								aria-expanded={showUserActions} // Use the renamed state
 							>
-								{/* User Avatar */}
-								<img
+								<img /* ... avatar props ... */
 									src={`/api/avatar?name=${encodeURIComponent(
 										user.name || '?'
 									)}`}
@@ -335,10 +383,8 @@ export default function Sidebar({
 									height={36}
 									className={styles.avatar}
 								/>
-								{/* Animated User Details */}
-								{/* Conditionally render based on isExpanded */}
 								{isExpanded && (
-									<motion.div
+									<motion.div /* ... user info motion ... */
 										className={styles.userInfo}
 										variants={userDetailsVariants}
 										animate={
@@ -349,12 +395,14 @@ export default function Sidebar({
 										initial={false}
 									>
 										<span className={styles.name}>
-											{/* Display placeholder if name is loading or missing */}
 											{user.name || 'User'}
 										</span>
 										<span className={styles.identifier}>
-											{/* Display identifier or role - consider placeholder */}
-											{identifier || user.role || ''}
+											{/* Display identifier or role */}
+											{identifier ||
+												(user.role === 'student'
+													? 'Loading...'
+													: user.role)}
 										</span>
 									</motion.div>
 								)}
@@ -365,6 +413,7 @@ export default function Sidebar({
 					)}
 
 					{/* 4. Desktop Toggle Button */}
+					{/* ... (toggle button remains the same) ... */}
 					{!isMobile && (
 						<button
 							className={styles.desktopToggleButton}
@@ -377,7 +426,6 @@ export default function Sidebar({
 							aria-expanded={isExpanded}
 							title={isExpanded ? 'Collapse' : 'Expand'}
 						>
-							{/* Switch icon based on state */}
 							{isExpanded ? (
 								<IconLayoutSidebarLeftCollapse size={24} />
 							) : (
@@ -386,8 +434,17 @@ export default function Sidebar({
 						</button>
 					)}
 				</div>
-				{/* End sidebarFooter */}
 			</motion.nav>
+
+			{/* Render the Update Profile Modal */}
+			{user?.role === 'student' && user?.id && (
+				<UpdateProfileModal
+					isOpen={isUpdateModalOpen}
+					onClose={handleCloseUpdateModal}
+					studentId={user.id} // Pass the student's actual ID
+					onUpdateSuccess={handleUpdateSuccess} // Pass the callback
+				/>
+			)}
 		</>
 	);
 }
