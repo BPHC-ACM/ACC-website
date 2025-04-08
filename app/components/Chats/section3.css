@@ -45,24 +45,3 @@
 		width: 13rem;
 	}
 }
-
-/* Additional styles for very small screens */
-@media (max-width: 480px) {
-	.chatsystem {
-		flex-direction: column;
-		height: 100vh;
-		overflow: hidden;
-	}
-
-	.sidebar {
-		border-bottom: 1px solid #ddd;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		z-index: 10;
-		height: 100vh; /* Full height sidebar */
-	}
-
-	.chat-display {
-		flex: 1;
-		overflow: hidden;
-	}
-}
