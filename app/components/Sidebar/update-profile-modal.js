@@ -2,13 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import styles from './update-profile-modal.module.css';
 import { IconX } from '@tabler/icons-react';
+import { useUser } from '@/context/userContext';
 
 export default function UpdateProfileModal({
 	isOpen,
 	onClose,
-	studentId,
+
+	studentId: propStudentId,
 	onUpdateSuccess,
 }) {
+	const { user, loading: userLoading } = useUser();
+	const studentId = user?.studentid || propStudentId;
+
 	const [branch, setBranch] = useState('');
 	const [cgpa, setCgpa] = useState('');
 	const [batch, setBatch] = useState('');
@@ -24,8 +29,15 @@ export default function UpdateProfileModal({
 			setError(null);
 			setSuccess(null);
 			setIsLoading(false);
+
+			if (!userLoading && user) {
+				setBranch(user.branch ?? '');
+
+				setCgpa(user.cgpa?.toString() ?? '');
+				setBatch(user.batch?.toString() ?? '');
+			}
 		}
-	}, [isOpen, studentId]);
+	}, [isOpen, user, userLoading]);
 
 	if (!isOpen) return null;
 
@@ -36,6 +48,12 @@ export default function UpdateProfileModal({
 
 		if (!branch || !cgpa || !batch) {
 			setError('All fields are required.');
+			return;
+		}
+
+		if (!studentId) {
+			setError('Student ID not found. Cannot update profile.');
+			console.error('Update Error: studentId is missing.');
 			return;
 		}
 
@@ -62,7 +80,7 @@ export default function UpdateProfileModal({
 					studentid: studentId,
 					branch: branch.toUpperCase(),
 					cgpa: parsedCgpa,
-					batch: batch,
+					batch: parseInt(batch, 10),
 				}),
 			});
 
@@ -74,7 +92,11 @@ export default function UpdateProfileModal({
 
 			setSuccess('Profile updated successfully!');
 			if (onUpdateSuccess) {
-				onUpdateSuccess();
+				onUpdateSuccess({
+					branch: branch.toUpperCase(),
+					cgpa: parsedCgpa,
+					batch: parseInt(batch, 10),
+				});
 			}
 
 			setTimeout(() => {
@@ -99,49 +121,58 @@ export default function UpdateProfileModal({
 					Enter your current academic details. This helps connect you
 					with the right resources.
 				</p>
+				{/* Show loading indicator inside form if user data is still loading */}
+				{userLoading && <p>Loading current data...</p>}
+
+				{/* Disable form while user data is loading initially */}
 				<form onSubmit={handleSubmit}>
-					<div className={styles.formGroup}>
-						<label htmlFor='batch'>Batch (Year, e.g., 2023)</label>
-						<input
-							type='text'
-							id='batch'
-							value={batch}
-							onChange={(e) => setBatch(e.target.value)}
-							placeholder='YYYY'
-							required
-							maxLength={4}
-							pattern='\d{4}'
-						/>
-					</div>
-					<div className={styles.formGroup}>
-						<label htmlFor='branch'>
-							Branch Code (e.g., A7, B4A7)
-						</label>
-						<input
-							type='text'
-							id='branch'
-							value={branch}
-							onChange={(e) =>
-								setBranch(e.target.value.toUpperCase())
-							}
-							placeholder='e.g., A7 or B4A7'
-							required
-						/>
-					</div>
-					<div className={styles.formGroup}>
-						<label htmlFor='cgpa'>Current CGPA</label>
-						<input
-							type='number'
-							id='cgpa'
-							value={cgpa}
-							onChange={(e) => setCgpa(e.target.value)}
-							placeholder='e.g., 8.75'
-							required
-							step='0.01'
-							min='0'
-							max='10'
-						/>
-					</div>
+					<fieldset disabled={userLoading}>
+						<div className={styles.formGroup}>
+							<label htmlFor='batch'>
+								Batch (Year, e.g., 2023)
+							</label>
+							<input
+								type='text'
+								id='batch'
+								value={batch}
+								onChange={(e) => setBatch(e.target.value)}
+								placeholder='YYYY'
+								required
+								maxLength={4}
+								pattern='\d{4}'
+								inputMode='numeric'
+							/>
+						</div>
+						<div className={styles.formGroup}>
+							<label htmlFor='branch'>
+								Branch Code (e.g., A7, B4A7)
+							</label>
+							<input
+								type='text'
+								id='branch'
+								value={branch}
+								onChange={(e) =>
+									setBranch(e.target.value.toUpperCase())
+								}
+								placeholder='e.g., A7 or B4A7'
+								required
+							/>
+						</div>
+						<div className={styles.formGroup}>
+							<label htmlFor='cgpa'>Current CGPA</label>
+							<input
+								type='number'
+								id='cgpa'
+								value={cgpa}
+								onChange={(e) => setCgpa(e.target.value)}
+								placeholder='e.g., 8.75'
+								required
+								step='0.01'
+								min='0'
+								max='10'
+							/>
+						</div>
+					</fieldset>
 
 					{error && <p className={styles.errorMessage}>{error}</p>}
 					{success && (
@@ -150,10 +181,14 @@ export default function UpdateProfileModal({
 
 					<button
 						type='submit'
-						disabled={isLoading}
+						disabled={isLoading || userLoading}
 						className={styles.submitButton}
 					>
-						{isLoading ? 'Updating...' : 'Update Profile'}
+						{isLoading
+							? 'Updating...'
+							: userLoading
+							? 'Loading Data...'
+							: 'Update Profile'}
 					</button>
 				</form>
 			</div>

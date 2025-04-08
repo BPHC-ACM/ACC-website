@@ -314,9 +314,9 @@ export default function Sidebar({
 							<motion.div
 								key='userActionsContainer'
 								className={styles.userActionContainer}
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: 10 }}
+								initial={{ opacity: 0, y: 10, x: '-50%' }}
+								animate={{ opacity: 1, y: 0, x: '-50%' }}
+								exit={{ opacity: 0, y: 10, x: '-50%' }}
 								transition={{ duration: 0.2 }}
 							>
 								{/* Update Profile Button - Only for students */}
