@@ -13,26 +13,26 @@ import {
 
 const servicesData = [
 	{
-		heading: 'Mentor-Mentee Program',
+		heading: 'Community Forum',
 		short_description:
-			'Connect with experienced mentors for guidance and support',
+			'Ask and answer questions in a student-driven support space',
 		long_description: [
-			'BITS Pilani has implemented effective mentor-mentee programs through ACC to address academic and psychological issues among students. The objectives of this scheme include',
-			'Support System: Serving as a consistent support system for all students.',
-			'Personalized Mentoring: Providing one-on-one mentoring privately to ensure overall student growth.',
-			'Communication Improvement: Bridging the communication gap between teachers and students to enhance the academic atmosphere on campus.',
-			'Feedback Channel: Acting as a feedback channel for issues concerning students, faculty, departments, and the campus director.',
+			'Open Discussion: A community forum where students can freely post academic, career, or personal queries.',
+			'Peer Support: Get answers from fellow students, mentors, and faculty who drop in to help.',
+			'Shared Learning: Search and explore previously discussed topics, making it a growing knowledge base.',
+			'Inclusive & Supportive: Anonymous posting available to make it safe and welcoming for everyone.',
 		],
 		icon: 'mentor',
 	},
 	{
-		heading: 'Counselling Services',
+		heading: 'Faculty Mentorship',
 		short_description:
-			'One-on-one help for academic, career, and personal concerns',
+			'One-on-one chats with faculty mentors for guidance and support',
 		long_description: [
-			'Academic Counselling: Assistance with course selection, strategies for academic success, and using academic flexibilities like elective choices and early graduation.',
-			'Career Counselling: Talks with experts, guidance on career decisions, and preparation for job placements.',
-			'Personal Counselling: Professional counsellors address psychological, emotional, and interpersonal challenges.',
+			'Direct Connection: Talk to assigned faculty mentors in a private chat-based system.',
+			'Academic Help: Clarify doubts about electives, projects, flexibilities, or course planning.',
+			'Career Guidance: Receive help with career choices, higher studies, and job preparation.',
+			'Personal Support: Mentors are also available to listen and guide you through personal challenges.',
 		],
 		icon: 'councelling',
 	},
