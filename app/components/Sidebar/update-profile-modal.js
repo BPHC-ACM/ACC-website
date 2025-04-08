@@ -126,7 +126,7 @@ export default function UpdateProfileModal({
 
 				{/* Disable form while user data is loading initially */}
 				<form onSubmit={handleSubmit}>
-					<fieldset disabled={userLoading}>
+					<fieldset style={{ border: 'none' }} disabled={userLoading}>
 						<div className={styles.formGroup}>
 							<label htmlFor='batch'>
 								Batch (Year, e.g., 2023)
