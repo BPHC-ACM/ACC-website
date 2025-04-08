@@ -1,13 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import Section from '../section';
-
 import { motion, AnimatePresence } from 'framer-motion';
-
-import profsData from '../../profs.json';
 import styles from './section5.module.css';
 
 export default function Section5() {
 	const [searchTerm, setSearchTerm] = useState('');
+	const [profsData, setProfsData] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
+
+	useEffect(() => {
+		const fetchConsultants = async () => {
+			try {
+				setLoading(true);
+				const response = await fetch('/api/consultants?type=all');
+
+				if (!response.ok) {
+					throw new Error(
+						`API request failed with status ${response.status}`
+					);
+				}
+
+				const data = await response.json();
+				setProfsData(data);
+				setError(null);
+			} catch (err) {
+				console.error('Error fetching consultants:', err);
+				setError(
+					'Failed to load faculty information. Please try again later.'
+				);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchConsultants();
+	}, []);
 
 	const sortedProfs = React.useMemo(
 		() => [...profsData].sort((a, b) => a.name.localeCompare(b.name)),
@@ -29,24 +57,6 @@ export default function Section5() {
 			),
 		[sortedProfs, searchTerm]
 	);
-
-	if (!profsData || profsData.length === 0) {
-		return (
-			<Section
-				title={`Professor's Chambers`}
-				content={
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						className={styles.errorMessage}
-					>
-						No faculty information available at the moment.
-					</motion.div>
-				}
-			/>
-		);
-	}
 
 	const gridContainerVariants = {
 		hidden: { opacity: 0 },
@@ -84,6 +94,45 @@ export default function Section5() {
 		visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
 		exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
 	};
+
+	if (loading) {
+		return (
+			<Section
+				title={`Professor's Chambers`}
+				content={
+					<motion.div
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						style={{ textAlign: 'center' }}
+						exit={{ opacity: 0 }}
+						className={styles.loadingMessage}
+					>
+						Loading faculty information...
+					</motion.div>
+				}
+			/>
+		);
+	}
+
+	if (error || !profsData || profsData.length === 0) {
+		return (
+			<Section
+				title={`Professor's Chambers`}
+				content={
+					<motion.div
+						style={{ textAlign: 'center' }}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						className={styles.errorMessage}
+					>
+						{error ||
+							'No faculty information available at the moment.'}
+					</motion.div>
+				}
+			/>
+		);
+	}
 
 	return (
 		<Section

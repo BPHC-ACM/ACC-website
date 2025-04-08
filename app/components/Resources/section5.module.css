@@ -111,3 +111,9 @@
 	text-align: center;
 	color: #718096;
 }
+
+@media screen and (max-width: 768px) {
+	.introText {
+		text-align: center;
+	}
+}

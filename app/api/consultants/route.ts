@@ -12,14 +12,26 @@ export async function GET(request) {
 	const department = searchParams.get('department');
 
 	try {
-		let query = supabase.from('consultants').select('*');
-
-		if (type === 'academic') {
-			query = query
+		let query;
+		if (type === 'all') {
+			query = supabase
+				.from('consultants')
+				.select('name, chamber')
+				.not('email', 'ilike', 'f20%');
+		} else if (type === 'academic') {
+			query = supabase
+				.from('consultants')
+				.select('*')
 				.not('email', 'ilike', 'f20%')
 				.eq('department', department);
 		} else if (type === 'career') {
-			query = query.ilike('email', 'f%').eq('department', department);
+			query = supabase
+				.from('consultants')
+				.select('*')
+				.ilike('email', 'f%')
+				.eq('department', department);
+		} else {
+			query = supabase.from('consultants').select('*');
 		}
 
 		const { data, error } = await query;
