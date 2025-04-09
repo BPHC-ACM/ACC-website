@@ -178,7 +178,7 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 					>
 						{loadingStatus === 'declined' ? (
 							<>
-								<span className={styles.loader}></span>{' '}
+								<span className={styles.loader}></span>
 								Declining...
 							</>
 						) : (
@@ -195,7 +195,7 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 					>
 						{loadingStatus === 'accepted' ? (
 							<>
-								<span className={styles.loader}></span>{' '}
+								<span className={styles.loader}></span>
 								Accepting...
 							</>
 						) : (

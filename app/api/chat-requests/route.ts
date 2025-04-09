@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import { formatDistanceToNow } from 'date-fns';
-
-const supabase = createClient(
-	process.env.SUPABASE_URL,
-	process.env.SUPABASE_ANON_KEY
-);
+import { supabase } from '@/utils/supabaseClient';
 
 export async function GET(req) {
 	const { searchParams } = new URL(req.url);

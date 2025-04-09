@@ -76,7 +76,7 @@ export default function ScrollToTop({ selector = 'main', dependency }) {
 			aria-label='Scroll to top'
 			title='Scroll to top'
 		>
-			<ArrowUp size={isMobile ? 20 : 18} className={styles.icon} />{' '}
+			<ArrowUp size={isMobile ? 20 : 18} className={styles.icon} />
 			{!isMobile && <span>Scroll to Top</span>}
 		</button>
 	);

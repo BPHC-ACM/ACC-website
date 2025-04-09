@@ -180,7 +180,7 @@ export default function Forum({ user }) {
 									<div className={styles.threadInfo}>
 										<h3>{query.title}</h3>
 										<p className={styles.meta}>
-											{query.name}{' '}
+											{query.name}
 											<span className={styles.identifier}>
 												{query.identifier}
 											</span>
@@ -202,7 +202,7 @@ export default function Forum({ user }) {
 												className={styles.answerHeader}
 											>
 												<h5 className={styles.meta}>
-													{answer.name}{' '}
+													{answer.name}
 													<span
 														className={
 															styles.identifier

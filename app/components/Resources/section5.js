@@ -52,9 +52,13 @@ export default function Section5() {
 
 	const filteredProfs = React.useMemo(
 		() =>
-			sortedProfs.filter((prof) =>
-				prof.name.toLowerCase().includes(searchTerm.toLowerCase())
-			),
+			sortedProfs.filter((prof) => {
+				const lowerCaseSearch = searchTerm.toLowerCase();
+				return (
+					prof.name.toLowerCase().includes(lowerCaseSearch) ||
+					prof.chamber.toLowerCase().includes(lowerCaseSearch)
+				);
+			}),
 		[sortedProfs, searchTerm]
 	);
 
@@ -151,11 +155,11 @@ export default function Section5() {
 					<div className={styles.searchContainer}>
 						<input
 							type='search'
-							placeholder='Search by name...'
+							placeholder='Search'
 							value={searchTerm}
 							onChange={handleSearchChange}
 							className={styles.searchInput}
-							aria-label='Search faculty members'
+							aria-label='Search faculty members by name or chamber'
 						/>
 					</div>
 
@@ -206,14 +210,14 @@ export default function Section5() {
 															styles.chamberLabel
 														}
 													>
-														Chamber:{' '}
+														Chamber:
 													</span>
 													<span
 														className={
 															styles.chamberValue
 														}
 													>
-														{prof.chamber}
+														{' ' + prof.chamber}
 													</span>
 												</p>
 											</div>
