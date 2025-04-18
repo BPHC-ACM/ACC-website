@@ -33,21 +33,17 @@ export async function GET(req) {
 		return NextResponse.json({ error: error.message }, { status: 500 });
 
 	const requestsWithRelativeTime = data.map((request) => {
-		const istDate = new Date(
-			new Date(request.created_at).getTime() + 5.5 * 60 * 60 * 1000
-		);
-		const student = request.students as unknown as {
-			name: string;
-			identifier: string;
-			cgpa: number;
-		};
+		const createdAtDate = new Date(request.created_at);
 
 		return {
 			...request,
-			relativeTime: formatDistanceToNow(istDate, { addSuffix: true }),
-			name: student?.name,
-			identifier: student?.identifier,
-			cgpa: student?.cgpa,
+			relativeTime: formatDistanceToNow(createdAtDate, {
+				addSuffix: true,
+			}),
+
+			name: request.students?.[0]?.name,
+			identifier: request.students?.[0]?.identifier,
+			cgpa: request.students?.[0]?.cgpa,
 		};
 	});
 
