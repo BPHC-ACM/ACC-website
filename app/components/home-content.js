@@ -59,6 +59,8 @@ export default function HomeContent() {
 				) : (
 					<Section5 key='resources' />
 				);
+			case 'requests':
+				<Section2 key='requests' />;
 			default:
 				return (
 					<Section1
