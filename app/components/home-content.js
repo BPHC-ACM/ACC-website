@@ -53,15 +53,10 @@ export default function HomeContent() {
 				return <Section3 key='messages' />;
 			case 'community':
 				return <Section4 key='community' />;
-			case 'requests':
-				<Section2 key='requests' />;
 			case 'resources':
-				return user?.role === 'consultant' ? (
-					<Section2 key='requests' />
-				) : (
-					<Section5 key='resources' />
-				);
-			
+				return <Section5 key='resources' />;
+			case 'requests':
+				return <Section2 key='requests' />;
 			default:
 				return (
 					<Section1
