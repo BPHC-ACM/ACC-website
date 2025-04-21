@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@/context/userContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/utils/supabaseClient';
 import UpdateProfileModal from './update-profile-modal';
 import LoginButton from '../loginbutton';
 import styles from './sidebar.module.css';
@@ -19,11 +19,6 @@ import {
 	IconX,
 	IconUserEdit,
 } from '@tabler/icons-react';
-
-const supabase = createClient(
-	process.env.NEXT_PUBLIC_SUPABASE_URL,
-	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 export default function Sidebar({
 	setActiveSection,

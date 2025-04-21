@@ -1,12 +1,7 @@
 import React from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/utils/supabaseClient';
 import { motion } from 'framer-motion';
 import styles from './loginbutton.module.css';
-
-const supabase = createClient(
-	process.env.NEXT_PUBLIC_SUPABASE_URL,
-	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
 
 const LoginButton = ({ isCollapsed, variant = 'dark' }) => {
 	const handleLogin = async () => {

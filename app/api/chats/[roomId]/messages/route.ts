@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/utils/supabaseClient';
+
 import { saveMessage } from '../../../../utils/db';
 import type { Message } from '../../../../utils/types';
-
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(req: Request, { params }) {
 	try {
