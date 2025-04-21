@@ -38,7 +38,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 			if (developerEmail === email) {
 				setUser({
-					email: 'email@domain.com',
+					email: developerEmail,
 					name: 'Developer',
 					role: 'consultant',
 					id: '7a61c68e-0e82-4b57-bbc6-e28b79561d1f',
