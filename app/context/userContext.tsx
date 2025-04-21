@@ -63,8 +63,41 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 						word.charAt(0).toUpperCase() + word.slice(1)
 				)
 				.join(' ');
-			const role = email.startsWith('f20') ? 'student' : 'consultant';
 
+			let determinedRole: 'student' | 'consultant' = 'student';
+			let consultantInfo: {
+				id: string;
+				department: string | null;
+			} | null = null;
+
+			try {
+				const { data: consultantData, error: consultantCheckError } =
+					await supabase
+						.from('consultants')
+						.select('id, department')
+						.eq('email', email)
+						.maybeSingle();
+
+				if (consultantCheckError) {
+					console.error(
+						'Error checking consultant table:',
+						consultantCheckError.message
+					);
+				} else if (consultantData) {
+					determinedRole = 'consultant';
+					consultantInfo = {
+						id: consultantData.id,
+						department: consultantData.department,
+					};
+				}
+			} catch (error) {
+				console.error(
+					'Unexpected error checking consultant status:',
+					error
+				);
+			}
+
+			const role = determinedRole;
 			let userId: string | null = null;
 			let identifier: string | null = null;
 
@@ -110,7 +143,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 							'Error inserting student:',
 							insertError.message
 						);
-					} else {
+					} else if (newStudent) {
 						userId = newStudent.id;
 						identifier = newStudent.identifier;
 					}
@@ -119,23 +152,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 					identifier = studentExists.identifier;
 				}
 			} else if (role === 'consultant') {
-				const { data: consultantExists, error: consultantError } =
-					await supabase
-						.from('consultants')
-						.select('id, department')
-						.eq('email', email)
-						.maybeSingle();
-
-				if (consultantError) {
+				if (consultantInfo) {
+					userId = consultantInfo.id;
+					identifier = consultantInfo.department;
+				} else {
 					console.error(
-						'Error checking consultant:',
-						consultantError.message
+						'Data consistency error: Role is consultant but consultantInfo is missing.'
 					);
-				}
-
-				if (consultantExists?.id) {
-					userId = consultantExists.id;
-					identifier = consultantExists.department;
 				}
 			}
 
@@ -144,7 +167,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 				name,
 				role,
 				id: userId ?? 'unknown',
-				identifier,
+				identifier: identifier ?? undefined,
 			});
 			setLoading(false);
 		};
