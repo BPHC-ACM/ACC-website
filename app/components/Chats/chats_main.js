@@ -220,7 +220,8 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
                             ref={messagesContainerRef}
                             style={{
                                 flex: 1,
-                                overflow: 'auto',
+                                overflowX: 'hidden',
+                                overflowY: 'auto',
                                 padding: '0.75rem',
                                 display: 'flex',
                                 flexDirection: 'column',
