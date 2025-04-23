@@ -11,7 +11,6 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 	const messagesContainerRef = useRef(null);
 	const socketRef = useRef(null);
 	const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 768);
-	const [showChat, setShowChat] = useState(false);
 
 	useEffect(() => {
 		if (messagesContainerRef.current) {
@@ -26,16 +25,7 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 		setUserName('');
 		setMessages([]);
 
-		const currentIsMobile = window.innerWidth <= 768;
-		setIsMobileView(currentIsMobile);
-
 		if (selectedRoom) {
-			if (currentIsMobile) {
-				setShowChat(true);
-			} else {
-				setShowChat(false);
-			}
-
 			fetch(`/api/chats/${selectedRoom}/${userId}`)
 				.then((response) => {
 					if (!response.ok) {
@@ -55,19 +45,32 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 				});
 
 			fetch(`/api/chats/${selectedRoom}/messages`)
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error(
+							`HTTP error fetching messages! status: ${response.status}`
+						);
+					}
+					return response.json();
+				})
 				.then((data) => {
-					if (data.messages && Array.isArray(data.messages)) {
+					if (data && data.messages && Array.isArray(data.messages)) {
 						const sortedMessages = sortMessagesByTimestamp(
 							data.messages
 						);
 						setMessages(sortedMessages);
+					} else {
+						console.warn(
+							'Received unexpected message format:',
+							data
+						);
+						setMessages([]);
 					}
 				})
 				.catch((error) => {
 					console.error('Error fetching messages:', error);
+					setMessages([]);
 				});
-		} else {
-			setShowChat(false);
 		}
 	}, [selectedRoom, userId]);
 
@@ -80,7 +83,14 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 	};
 
 	useEffect(() => {
-		if (!selectedRoom) return;
+		if (!selectedRoom) {
+			if (socketRef.current) {
+				console.log('Closing WebSocket as room is deselected.');
+				socketRef.current.close();
+				socketRef.current = null;
+			}
+			return;
+		}
 
 		if (socketRef.current) {
 			socketRef.current.close();
@@ -103,6 +113,15 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 				const receivedMessage = JSON.parse(event.data);
 				if (receivedMessage.room === selectedRoom) {
 					setMessages((prevMessages) => {
+						const messageExists = prevMessages.some(
+							(msg) =>
+								msg.id === receivedMessage.id &&
+								msg.timestamp === receivedMessage.timestamp
+						);
+
+						if (messageExists) {
+							return prevMessages;
+						}
 						const newMessages = [...prevMessages, receivedMessage];
 						return sortMessagesByTimestamp(newMessages);
 					});
@@ -137,15 +156,14 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 		window.addEventListener('resize', handleResize);
 		handleResize();
 		return () => window.removeEventListener('resize', handleResize);
-	}, [selectedRoom]);
+	}, []);
 
 	const handleBackToSidebar = () => {
-		setShowChat(false);
 		setSelectedRoom(null);
 	};
 
 	const sendMessage = () => {
-		if (newMessage.trim() === '') return;
+		if (newMessage.trim() === '' || !selectedRoom || !userId) return;
 		const timestamp = new Date().toISOString();
 
 		const messageData = {
@@ -155,43 +173,54 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 			timestamp: timestamp,
 		};
 
+		setMessages((prevMessages) => {
+			const newMessages = [...prevMessages, messageData];
+			return sortMessagesByTimestamp(newMessages);
+		});
+		setNewMessage('');
+		if (socketRef.current?.readyState === WebSocket.OPEN) {
+			socketRef.current.send(JSON.stringify(messageData));
+		} else {
+			console.warn('WebSocket not open when sending message.');
+		}
 		fetch(`/api/chats/${selectedRoom}/messages`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(messageData),
 		})
-			.then((response) => response.json())
-			.then((data) => {
-				setMessages((prevMessages) => {
-					const newMessages = [...prevMessages, messageData];
-					return sortMessagesByTimestamp(newMessages);
-				});
-				setNewMessage('');
-
-				if (socketRef.current?.readyState === WebSocket.OPEN) {
-					socketRef.current.send(JSON.stringify(messageData));
+			.then((response) => {
+				if (!response.ok) {
+					return response
+						.json()
+						.catch(() => ({}))
+						.then((errData) => {
+							throw new Error(
+								`HTTP error sending message! status: ${
+									response.status
+								}, details: ${JSON.stringify(errData)}`
+							);
+						});
 				}
 			})
 			.catch((error) => {
-				console.error('Error sending message:', error);
+				console.error('Error sending message via API:', error);
+				setMessages((prevMessages) =>
+					sortMessagesByTimestamp(
+						prevMessages.filter(
+							(msg) =>
+								msg.timestamp !== messageData.timestamp ||
+								msg.id !== messageData.id
+						)
+					)
+				);
+				alert('Failed to send message. Please try again.');
 			});
 	};
-
-	if (!selectedRoom) {
-		return (
-			<div className='chat-display' style={{ width: '78%' }}>
-				<div className='defaultmsg'>
-					<img src='/acc-logo.png' alt='Logo' />
-					<p>Your Academic Network, Simplified.</p>
-				</div>
-			</div>
-		);
-	}
 
 	return (
 		<div
 			className={`chat-display ${
-				showChat && isMobileView ? 'active' : ''
+				selectedRoom && isMobileView ? 'active' : ''
 			}`}
 		>
 			<AnimatePresence mode='wait'>
@@ -208,7 +237,9 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 							height: '100%',
 						}}
 					>
-						<div className='header active'>
+						<div
+							className={`header ${selectedRoom ? 'active' : ''}`}
+						>
 							{isMobileView && (
 								<div
 									className='back-button'

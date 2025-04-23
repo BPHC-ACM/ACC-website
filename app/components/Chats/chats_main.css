@@ -57,6 +57,7 @@
 	color: #222;
 	display: flex;
 	align-items: center;
+	justify-content: flex-start;
 	gap: 1rem;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
@@ -238,20 +239,16 @@
 	}
 
 	.header {
-		height: 10vh;
 		padding: 0.5rem 1rem;
 	}
 
 	.avatar {
-		margin-top: -12px;
-		margin-left: 3rem;
 		width: 35px;
 		height: 35px;
 	}
 
 	.back-button {
 		display: block;
-		position: absolute;
 	}
 
 	.user-name {
