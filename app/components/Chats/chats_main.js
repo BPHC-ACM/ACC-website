@@ -158,10 +158,6 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 
-	const handleBackToSidebar = () => {
-		setSelectedRoom(null);
-	};
-
 	const sendMessage = () => {
 		if (newMessage.trim() === '' || !selectedRoom || !userId) return;
 		const timestamp = new Date().toISOString();
@@ -240,14 +236,6 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 						<div
 							className={`header ${selectedRoom ? 'active' : ''}`}
 						>
-							{isMobileView && (
-								<div
-									className='back-button'
-									onClick={handleBackToSidebar}
-								>
-									{'<'}
-								</div>
-							)}
 							<img
 								src={`/api/avatar?name=${encodeURIComponent(
 									userName || ''
