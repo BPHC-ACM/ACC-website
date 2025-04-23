@@ -231,7 +231,6 @@ export default function Sidebar({
 				animate={isExpanded ? 'expanded' : 'collapsed'}
 				custom={isMobile}
 				variants={sidebarCombinedVariants}
-				initial={false}
 				transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
 				style={{
 					position: 'fixed',
