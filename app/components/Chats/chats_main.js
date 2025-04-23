@@ -209,6 +209,14 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 						}}
 					>
 						<div className='header active'>
+							{isMobileView && (
+								<div
+									className='back-button'
+									onClick={handleBackToSidebar}
+								>
+									{'<'}
+								</div>
+							)}
 							<img
 								src={`/api/avatar?name=${encodeURIComponent(
 									userName || ''
