@@ -38,7 +38,6 @@
 
 	.chat-display {
 		width: 100%;
-		height: calc(100vh - 60px); /* Adjust height to fit below the sidebar */
 	}
 
 	.pill {

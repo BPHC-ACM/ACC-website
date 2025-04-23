@@ -184,7 +184,6 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 			className={`chat-display ${
 				showChat && isMobileView ? 'active' : ''
 			}`}
-			style={{ width: '78%' }}
 		>
 			<AnimatePresence mode='wait'>
 				{selectedRoom ? (
@@ -201,14 +200,6 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 						}}
 					>
 						<div className='header active'>
-							{isMobileView && (
-								<div
-									className='back-button'
-									onClick={handleBackToSidebar}
-								>
-									← Back
-								</div>
-							)}
 							<img
 								src={`/api/avatar?name=${encodeURIComponent(
 									userName || ''
