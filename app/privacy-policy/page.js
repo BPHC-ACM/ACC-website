@@ -114,11 +114,11 @@ export default function PrivacyPolicy() {
 						<strong>Website</strong> refers to Academic Counselling
 						Cell | BPHC - Official Website, accessible from{' '}
 						<a
-							href='https://academic-councelling-cell.vercel.app'
+							href='https://acc-bphc.netlify.app'
 							rel='external nofollow noopener'
 							target='_blank'
 						>
-							https://academic-councelling-cell.vercel.app
+							https://acc-bphc.netlify.app
 						</a>
 					</p>
 				</li>

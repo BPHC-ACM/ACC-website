@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const corsOptions = {
-	origin: 'https://academic-councelling-cell.vercel.app/',
+	origin: 'https://acc-bphc.netlify.app/',
 	credentials: true,
 	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 	allowedHeaders: ['Content-Type', 'Authorization'],
