@@ -37,8 +37,17 @@ export default function ChatsMain({ selectedRoom, userId, setSelectedRoom }) {
 			}
 
 			fetch(`/api/chats/${selectedRoom}/${userId}`)
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error(
+							`HTTP error! status: ${response.status}`
+						);
+					}
+					return response.json();
+				})
 				.then((data) => {
-					setUserName(data.userName);
+					console.log('Fetched user data:', data);
+					setUserName(data.userName || 'Unknown User');
 				})
 				.catch((error) => {
 					console.error('Error fetching user data:', error);
