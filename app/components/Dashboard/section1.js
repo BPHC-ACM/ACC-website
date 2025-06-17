@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import React from 'react';
 import { ChevronDown, Target, ArrowRight, Info } from 'lucide-react';
 import { IconUsers, IconMessages, IconBooks } from '@tabler/icons-react';
@@ -1220,50 +1221,39 @@ export default function Section1({ setActiveSection }) {
 									margin: 0,
 								}}
 							>
-								{['Overview', 'Services', 'Contact'].map(
-									(link) => (
-										<motion.li
-											key={link}
-											whileHover={{
-												x: 6,
-												color: colors.primary,
-											}}
-											transition={{
-												duration: 0.2,
-												ease: 'easeOut',
+								{[
+									{
+										name: 'Terms of Service',
+										path: '/terms-of-service',
+									},
+									{
+										name: 'Privacy Policy',
+										path: '/privacy-policy',
+									},
+								].map((link) => (
+									<motion.li
+										key={link.path}
+										whileHover={{
+											x: 6,
+											color: 'var(--primary-color)',
+										}}
+										transition={{
+											duration: 0.2,
+											ease: 'easeOut',
+										}}
+									>
+										<Link
+											href={link.path}
+											style={{
+												color: 'inherit',
+												textDecoration: 'none',
+												fontSize: '0.92rem',
 											}}
 										>
-											<a
-												onClick={(e) => {
-													e.preventDefault();
-													const targetId = link
-														.toLowerCase()
-														.replace(' & ', '');
-													const targetElement =
-														document.getElementById(
-															targetId
-														);
-													targetElement?.scrollIntoView(
-														{
-															behavior: 'smooth',
-															block: 'start',
-														}
-													);
-												}}
-												href={`#${link
-													.toLowerCase()
-													.replace(' & ', '')}`}
-												style={{
-													color: 'inherit',
-													textDecoration: 'none',
-													fontSize: '0.92rem',
-												}}
-											>
-												{link}
-											</a>
-										</motion.li>
-									)
-								)}
+											{link.name}
+										</Link>
+									</motion.li>
+								))}
 							</ul>
 						</div>
 						<div>

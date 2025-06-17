@@ -12,6 +12,10 @@ export default function RootLayout({ children }) {
 				<title>Academic Counselling Cell | BPHC</title>
 				<link rel='icon' href='/acc-logo.png' />
 				<meta
+					name='google-site-verification'
+					content='UBu4QubhSpH5GIt8R1WSvv9Moy-Y71t5w0aBzpzVKyk'
+				/>
+				<meta
 					name='viewport'
 					content='width=device-width, initial-scale=1'
 				/>
