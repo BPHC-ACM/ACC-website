@@ -7,7 +7,7 @@
 .chat-display {
 	position: relative;
 	background: linear-gradient(to bottom, #f9f9f9, #eaeaea);
-	width: 90vw;
+	width: 70%;
 	color: black;
 	font-family: 'Poppins', sans-serif;
 	font-weight: 300;
