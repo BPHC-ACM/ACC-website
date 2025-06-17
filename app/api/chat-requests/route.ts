@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { v4 as uuidv4 } from 'uuid';
 import { formatDistanceToNow } from 'date-fns';
 import { supabase } from '@/utils/supabaseClient';
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
 	host: process.env.EMAIL_HOST,
-	port: process.env.EMAIL_PORT,
+	port: Number(process.env.EMAIL_PORT),
 	secure: process.env.EMAIL_SECURE === 'true',
 	auth: {
 		user: process.env.EMAIL_USER,
@@ -17,15 +16,15 @@ const transporter = nodemailer.createTransport({
 async function sendEmail(to, subject, html) {
 	try {
 		const mailOptions = {
-			from: process.env.EMAIL_FROM,
+			from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM}>`,
 			to,
 			subject,
 			html,
 		};
-
 		await transporter.sendMail(mailOptions);
 		return true;
 	} catch (error) {
+		console.error('Nodemailer error:', error);
 		return false;
 	}
 }
@@ -39,10 +38,9 @@ async function getUserEmail(userId, role) {
 		.single();
 
 	if (error || !data) {
-		console.error(`Error fetching ${role} email:`, error);
+		console.error(`Error fetching ${role} email for ID ${userId}:`, error);
 		return null;
 	}
-
 	return data.email;
 }
 
@@ -61,6 +59,7 @@ export async function GET(req) {
       details,
       status,
       created_at,
+      request_type,
       students (name, identifier, cgpa)
     `
 		)
@@ -77,6 +76,7 @@ export async function GET(req) {
 
 	const requestsWithRelativeTime = data.map((request) => {
 		const createdAtDate = new Date(request.created_at);
+		const student = request.students?.[0];
 
 		return {
 			...request,
@@ -84,9 +84,9 @@ export async function GET(req) {
 				addSuffix: true,
 			}),
 
-			name: request.students?.[0]?.name,
-			identifier: request.students?.[0]?.identifier,
-			cgpa: request.students?.[0]?.cgpa,
+			name: student?.name,
+			identifier: student?.identifier,
+			cgpa: student?.cgpa,
 		};
 	});
 
@@ -101,21 +101,25 @@ export async function POST(req) {
 		const { student_id, consultant_id, subject, details, request_type } =
 			await req.json();
 
-		if (!student_id || !consultant_id || !subject || !details) {
+		if (
+			!student_id ||
+			!consultant_id ||
+			!subject ||
+			!details ||
+			!request_type
+		) {
 			return NextResponse.json(
 				{ error: 'Missing required fields' },
 				{ status: 400 }
 			);
 		}
 
-		if (!['academic', 'career'].includes(request_type)) {
+		if (!['professor', 'student'].includes(request_type)) {
 			return NextResponse.json(
 				{ error: 'Invalid request type' },
 				{ status: 400 }
 			);
 		}
-
-		const id = uuidv4();
 
 		const { data, error } = await supabase
 			.from('requests')
@@ -126,15 +130,16 @@ export async function POST(req) {
 					subject,
 					details,
 					status: 'pending',
+					request_type,
 				},
 			])
-			.select();
+			.select()
+			.single();
 
 		if (error) throw error;
 
 		const consultantEmail = await getUserEmail(consultant_id, 'consultant');
-
-		const { data: studentData, error: studentError } = await supabase
+		const { data: studentData } = await supabase
 			.from('students')
 			.select('name')
 			.eq('id', student_id)
@@ -143,12 +148,15 @@ export async function POST(req) {
 		if (consultantEmail) {
 			const studentName = studentData?.name || 'A student';
 
+			const requestTypeDescription =
+				request_type === 'professor' ? 'an academic' : 'a peer';
+
 			await sendEmail(
 				consultantEmail,
-				'New Consultation Request',
+				'New Consultation Request Received',
 				`
         <h2>New Request Notification</h2>
-        <p>${studentName} has submitted a new ${request_type} consultation request.</p>
+        <p>${studentName} has submitted ${requestTypeDescription} consultation request.</p>
         <h3>Subject: ${subject}</h3>
         <p><strong>Details:</strong> ${details}</p>
         <p>Please log in to the system to accept or decline this request.</p>
@@ -158,7 +166,7 @@ export async function POST(req) {
 
 		return NextResponse.json({
 			message: 'Request created successfully',
-			request: data[0],
+			request: data,
 		});
 	} catch (err) {
 		console.error('Error creating request:', err);
@@ -186,7 +194,7 @@ export async function PATCH(req) {
 
 		const { data: requestData, error: requestError } = await supabase
 			.from('requests')
-			.select('subject, details')
+			.select('subject, request_type')
 			.eq('id', id)
 			.single();
 
@@ -196,16 +204,10 @@ export async function PATCH(req) {
 
 		const { error: updateError } = await supabase
 			.from('requests')
-			.update({ status, consultant_id })
+			.update({ status })
 			.eq('id', id);
 
-		if (updateError) {
-			console.error('Supabase Update Error:', updateError);
-			return NextResponse.json(
-				{ error: 'Failed to update request', details: updateError },
-				{ status: 500 }
-			);
-		}
+		if (updateError) throw updateError;
 
 		let chatRoomId = null;
 		if (status === 'accepted') {
@@ -216,82 +218,62 @@ export async function PATCH(req) {
 				);
 			}
 
-			const { data: existingRooms, error: fetchError } = await supabase
+			const { data: existingRoom } = await supabase
 				.from('chats')
 				.select('roomid')
 				.eq('consultant_id', consultant_id)
-				.eq('student_id', student_id);
+				.eq('student_id', student_id)
+				.maybeSingle();
 
-			if (fetchError) {
-				console.error('Supabase Chat Room Fetch Error:', fetchError);
-				return NextResponse.json(
-					{ error: 'Failed to verify chat room existence' },
-					{ status: 500 }
-				);
-			}
+			if (!existingRoom) {
+				const { data: newChatRoom, error: chatRoomError } =
+					await supabase
+						.from('chats')
+						.insert({ consultant_id, student_id, messages: [] })
+						.select('roomid')
+						.single();
 
-			if (!existingRooms || existingRooms.length === 0) {
-				const chatRoom = {
-					roomid: uuidv4(),
-					consultant_id,
-					student_id,
-					messages: [],
-				};
-
-				const { data: chatRoomData, error: chatRoomError } =
-					await supabase.from('chats').insert([chatRoom]).select();
-
-				if (chatRoomError) {
-					console.error(
-						'Supabase Chat Room Insert Error:',
-						chatRoomError
-					);
-					return NextResponse.json(
-						{ error: 'Failed to create chat room' },
-						{ status: 500 }
-					);
-				}
-
-				chatRoomId = chatRoom.roomid;
+				if (chatRoomError) throw chatRoomError;
+				chatRoomId = newChatRoom.roomid;
 			} else {
-				chatRoomId = existingRooms[0].roomid;
+				chatRoomId = existingRoom.roomid;
 			}
 		}
 
 		const studentEmail = await getUserEmail(student_id, 'student');
-		const consultantData = await supabase
+		const { data: consultantData } = await supabase
 			.from('consultants')
 			.select('name')
 			.eq('id', consultant_id)
 			.single();
 
-		if (studentEmail) {
-			const consultantName =
-				consultantData?.data?.name || 'The consultant';
+		if (studentEmail && consultantData) {
+			const consultantName = consultantData.name || 'The consultant';
 			const subject = requestData?.subject || 'your consultation request';
 
-			if (status === 'accepted') {
-				await sendEmail(
-					studentEmail,
-					'Your Consultation Request was Accepted',
-					`
+			const consultantTitle =
+				requestData?.request_type === 'professor'
+					? 'The faculty mentor,'
+					: 'The student consultant,';
+
+			const emailSubject = `Your Consultation Request was ${
+				status.charAt(0).toUpperCase() + status.slice(1)
+			}`;
+			const emailHtml =
+				status === 'accepted'
+					? `
           <h2>Request Accepted</h2>
-          <p>${consultantName} has <strong>accepted</strong> your consultation request about "${subject}".</p>
+          <p>${consultantTitle} ${consultantName}, has <strong>accepted</strong> your consultation request about "${subject}".</p>
           <p>You can now chat with your consultant through the messaging system.</p>
           <p>Log in to access your consultation chat.</p>
           `
-				);
-			} else {
-				await sendEmail(
-					studentEmail,
-					'Your Consultation Request was Declined',
-					`
+					: `
           <h2>Request Declined</h2>
-          <p>${consultantName} has <strong>declined</strong> your consultation request about "${subject}".</p>
+          <p>${consultantTitle} ${consultantName}, has <strong>declined</strong> your consultation request about "${subject}".</p>
           <p>You may submit a new request or try with a different consultant.</p>
-          `
-				);
-			}
+          `;
+
+			await sendEmail(studentEmail, emailSubject, emailHtml);
 		}
 
 		return NextResponse.json({
@@ -299,9 +281,12 @@ export async function PATCH(req) {
 			chatRoomId: status === 'accepted' ? chatRoomId : null,
 		});
 	} catch (err) {
-		console.error('Unexpected error:', err);
+		console.error('Unexpected error in PATCH:', err);
 		return NextResponse.json(
-			{ error: 'Failed to process request' },
+			{
+				error: 'Failed to process request',
+				details: (err as Error).message,
+			},
 			{ status: 500 }
 		);
 	}
