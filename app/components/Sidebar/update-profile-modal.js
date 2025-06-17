@@ -7,12 +7,15 @@ import { useUser } from '@/context/userContext';
 export default function UpdateProfileModal({
 	isOpen,
 	onClose,
-
 	studentId: propStudentId,
 	onUpdateSuccess,
 }) {
 	const { user, loading: userLoading } = useUser();
-	const studentId = user?.studentid || propStudentId;
+	let idFromContext = null;
+	if (user && user.role === 'student' && user.id && user.id !== 'unknown') {
+		idFromContext = user.id;
+	}
+	const studentId = idFromContext || propStudentId;
 
 	const [branch, setBranch] = useState('');
 	const [cgpa, setCgpa] = useState('');

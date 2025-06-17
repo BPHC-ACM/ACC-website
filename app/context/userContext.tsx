@@ -7,7 +7,7 @@ interface User {
 	email: string;
 	name: string;
 	role: 'student' | 'consultant' | 'unknown';
-	id: string;
+	id: string | null;
 	identifier?: string;
 }
 
@@ -73,12 +73,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 						.eq('email', email)
 						.maybeSingle();
 
-				if (consultantCheckError) {
-					console.error(
-						'Error checking consultant table:',
-						consultantCheckError.message
-					);
-				} else if (consultantData) {
+				if (consultantCheckError) throw consultantCheckError;
+
+				if (consultantData) {
 					determinedRole = 'consultant';
 					consultantInfo = {
 						id: consultantData.id,
@@ -97,71 +94,38 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			let identifier: string | null = null;
 
 			if (role === 'student') {
-				const { data: studentExists, error: studentError } =
-					await supabase
-						.from('students')
-						.select('id, identifier')
-						.eq('email', email)
-						.maybeSingle();
+				try {
+					const response = await fetch('/api/user-sync', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ email, name }),
+					});
 
-				if (studentError) {
-					console.error(
-						'Error checking student:',
-						studentError.message
-					);
-				}
-
-				if (!studentExists?.id) {
-					identifier = `20XXXXH`;
-
-					const formattedname = name
-						.toLowerCase()
-						.split(' ')
-						.map(
-							(word: string) =>
-								word.charAt(0).toUpperCase() + word.slice(1)
-						)
-						.join(' ');
-					const { data: newStudent, error: insertError } =
-						await supabase
-							.from('students')
-							.insert({
-								email,
-								name: formattedname,
-								identifier,
-							})
-							.select('id, identifier')
-							.single();
-
-					if (insertError) {
-						console.error(
-							'Error inserting student:',
-							insertError.message
+					const studentData = await response.json();
+					if (!response.ok) {
+						throw new Error(
+							studentData.error || 'Failed to sync student data'
 						);
-					} else if (newStudent) {
-						userId = newStudent.id;
-						identifier = newStudent.identifier;
 					}
-				} else {
-					userId = studentExists.id;
-					identifier = studentExists.identifier;
+
+					userId = studentData.id;
+					identifier = studentData.identifier;
+				} catch (e: any) {
+					console.error('Error during user sync:', e.message);
+					setUser(null);
+					setLoading(false);
+					return;
 				}
-			} else if (role === 'consultant') {
-				if (consultantInfo) {
-					userId = consultantInfo.id;
-					identifier = consultantInfo.department;
-				} else {
-					console.error(
-						'Data consistency error: Role is consultant but consultantInfo is missing.'
-					);
-				}
+			} else if (role === 'consultant' && consultantInfo) {
+				userId = consultantInfo.id;
+				identifier = consultantInfo.department;
 			}
 
 			setUser({
 				email,
 				name,
 				role,
-				id: userId ?? 'unknown',
+				id: userId ?? null,
 				identifier: identifier ?? undefined,
 			});
 			setLoading(false);
