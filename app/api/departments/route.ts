@@ -5,26 +5,33 @@ export async function GET() {
 	try {
 		const { data: consultants, error } = await supabase
 			.from('consultants')
-			.select('department, email');
+			.select('department, type');
 
 		if (error) throw error;
 
 		const departments = consultants.reduce(
 			(acc, consultant) => {
-				const isAcademic = !consultant.email.startsWith('f');
-				const category = isAcademic ? 'academic' : 'career';
-
-				if (!acc[category].includes(consultant.department)) {
-					acc[category].push(consultant.department);
+				const category = consultant.type;
+				if (category && consultant.department) {
+					const individualDepts = consultant.department.split(',');
+					individualDepts.forEach((dept) => {
+						const trimmedDept = dept.trim();
+						if (
+							trimmedDept &&
+							!acc[category].includes(trimmedDept)
+						) {
+							acc[category].push(trimmedDept);
+						}
+					});
 				}
 
 				return acc;
 			},
-			{ academic: [], career: [] }
+			{ professor: [], student: [] }
 		);
 
-		departments.academic.sort();
-		departments.career.sort();
+		departments.professor.sort();
+		departments.student.sort();
 
 		return NextResponse.json(departments);
 	} catch (error) {
