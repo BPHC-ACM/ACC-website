@@ -184,7 +184,8 @@
 
 .identifier {
 	background: #ddd;
-	padding: 2px 6px;
+	padding: 0 6px;
+	margin-left: 6px;
 	border-radius: 10px;
 	font-size: 12px;
 }
