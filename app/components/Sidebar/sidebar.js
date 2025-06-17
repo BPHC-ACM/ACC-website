@@ -1,8 +1,7 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from '@/context/userContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/utils/supabaseClient';
 import UpdateProfileModal from './update-profile-modal';
 import LoginButton from '../loginbutton';
 import styles from './sidebar.module.css';
@@ -26,9 +25,8 @@ export default function Sidebar({
 	isExpanded,
 	toggleSidebar,
 }) {
-	const { user, loading: userLoading } = useUser();
+	const { user, loading: userLoading, refetchUser } = useUser();
 	const [showUserActions, setShowUserActions] = useState(false);
-	const [identifier, setIdentifier] = useState(null);
 	const [isMobile, setIsMobile] = useState(false);
 	const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
@@ -36,59 +34,12 @@ export default function Sidebar({
 		const checkMobile = () => setIsMobile(window.innerWidth <= 768);
 		checkMobile();
 		window.addEventListener('resize', checkMobile);
-
 		return () => window.removeEventListener('resize', checkMobile);
 	}, []);
-
-	const fetchIdentifier = useCallback(async () => {
-		if (user && user.email) {
-			const table = user.role === 'student' ? 'students' : 'consultants';
-			const column =
-				user.role === 'student' ? 'identifier' : 'department';
-
-			try {
-				const { data, error } = await supabase
-					.from(table)
-					.select(column)
-					.eq('email', user.email)
-					.single();
-
-				if (error && error.code !== 'PGRST116') {
-					throw error;
-				}
-				if (data) {
-					setIdentifier(data[column]);
-				} else {
-					setIdentifier(
-						user.role === 'student' ? 'Update Profile' : user.role
-					);
-				}
-			} catch (error) {
-				console.error(
-					`Error fetching ${column} from ${table}:`,
-					error.message
-				);
-				setIdentifier(
-					user.role === 'student' ? 'Update Profile' : user.role
-				);
-			}
-		} else {
-			setIdentifier(null);
-		}
-	}, [user]);
-
-	useEffect(() => {
-		if (!userLoading && user) {
-			fetchIdentifier();
-		} else if (!user) {
-			setIdentifier(null);
-		}
-	}, [user, userLoading, fetchIdentifier]);
 
 	const handleClick = (sectionName) => {
 		setActiveSection(sectionName);
 		setShowUserActions(false);
-
 		if (isMobile && typeof toggleSidebar === 'function') {
 			toggleSidebar(false);
 		}
@@ -99,7 +50,6 @@ export default function Sidebar({
 		try {
 			const { error } = await supabase.auth.signOut();
 			if (error) throw error;
-
 			window.location.reload();
 		} catch (error) {
 			console.error('Error logging out:', error.message);
@@ -116,16 +66,14 @@ export default function Sidebar({
 	};
 
 	const handleUpdateSuccess = () => {
-		fetchIdentifier();
+		if (refetchUser) {
+			refetchUser();
+		}
 	};
 
 	const handleToggle = (forceState) => {
 		if (typeof toggleSidebar === 'function') {
 			toggleSidebar(forceState);
-		} else {
-			console.error(
-				'Sidebar: toggleSidebar prop is not a function or not passed correctly.'
-			);
 		}
 	};
 
@@ -213,7 +161,6 @@ export default function Sidebar({
 
 	return (
 		<>
-			{/* Mobile-only elements rendered outside the main nav */}
 			{isMobile && !isExpanded && <MobileToggleButton />}
 			{isMobile && isExpanded && (
 				<div
@@ -222,8 +169,6 @@ export default function Sidebar({
 					aria-hidden='true'
 				></div>
 			)}
-
-			{/* The Sidebar Navigation Element */}
 			<motion.nav
 				className={`${styles.sidebar} ${
 					isExpanded ? styles.expanded : styles.collapsed
@@ -232,14 +177,9 @@ export default function Sidebar({
 				custom={isMobile}
 				variants={sidebarCombinedVariants}
 				transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-				style={{
-					position: 'fixed',
-					zIndex: 1000,
-				}}
+				style={{ position: 'fixed', zIndex: 1000 }}
 			>
-				{/* 1. Logo Section */}
 				<div className={styles.logoContainer}>
-					{/* Add close button for mobile when sidebar is expanded */}
 					{isMobile && isExpanded && (
 						<button
 							className={styles.mobileSidebarCloseButton}
@@ -257,8 +197,6 @@ export default function Sidebar({
 						style={{ transition: 'width 0.3s, height 0.3s' }}
 					/>
 				</div>
-
-				{/* 2. Navigation Links Section */}
 				<div className={styles.navContainer}>
 					{visibleSections.map((section) => (
 						<motion.div
@@ -283,8 +221,7 @@ export default function Sidebar({
 								}`}
 								onClick={() => handleClick(section.sectionId)}
 							>
-								{section.icon} {/* Icon always visible */}
-								{/* Animated Text Label */}
+								{section.icon}
 								<motion.span
 									className={styles.navItemText}
 									variants={textVariants}
@@ -299,10 +236,7 @@ export default function Sidebar({
 						</motion.div>
 					))}
 				</div>
-
-				{/* 3. Footer Section (User/Login and Toggle) */}
 				<div className={styles.sidebarFooter}>
-					{/* Animated Logout Button */}
 					<AnimatePresence>
 						{showUserActions && isExpanded && (
 							<motion.div
@@ -313,7 +247,6 @@ export default function Sidebar({
 								exit={{ opacity: 0, y: 10, x: '-50%' }}
 								transition={{ duration: 0.2 }}
 							>
-								{/* Update Profile Button - Only for students */}
 								{user?.role === 'student' && (
 									<button
 										className={styles.actionButton}
@@ -329,8 +262,6 @@ export default function Sidebar({
 										</motion.span>
 									</button>
 								)}
-
-								{/* Logout Button */}
 								<button
 									className={styles.actionButton}
 									onClick={handleLogout}
@@ -347,24 +278,22 @@ export default function Sidebar({
 							</motion.div>
 						)}
 					</AnimatePresence>
-
-					{/* User Info Pill OR Login Button */}
 					{user ? (
 						<div className={styles.userContainer}>
 							<button
 								className={styles.pillButton}
 								onClick={() =>
 									setShowUserActions((prev) => !prev)
-								} // Toggle action menu
+								}
 								title={
 									user.name
 										? `User profile options for ${user.name}`
 										: 'User profile options'
 								}
 								aria-haspopup='true'
-								aria-expanded={showUserActions} // Use the renamed state
+								aria-expanded={showUserActions}
 							>
-								<img /* ... avatar props ... */
+								<img
 									src={`/api/avatar?name=${encodeURIComponent(
 										user.name || '?'
 									)}`}
@@ -378,7 +307,7 @@ export default function Sidebar({
 									className={styles.avatar}
 								/>
 								{isExpanded && (
-									<motion.div /* ... user info motion ... */
+									<motion.div
 										className={styles.userInfo}
 										variants={userDetailsVariants}
 										animate={
@@ -392,10 +321,9 @@ export default function Sidebar({
 											{user.name || 'User'}
 										</span>
 										<span className={styles.identifier}>
-											{/* Display identifier or role */}
-											{identifier ||
+											{user.identifier ||
 												(user.role === 'student'
-													? 'Loading...'
+													? 'Update Profile'
 													: user.role)}
 										</span>
 									</motion.div>
@@ -405,9 +333,6 @@ export default function Sidebar({
 					) : (
 						<LoginButton isCollapsed={!isExpanded && !isMobile} />
 					)}
-
-					{/* 4. Desktop Toggle Button */}
-					{/* ... (toggle button remains the same) ... */}
 					{!isMobile && (
 						<button
 							className={styles.desktopToggleButton}
@@ -429,14 +354,12 @@ export default function Sidebar({
 					)}
 				</div>
 			</motion.nav>
-
-			{/* Render the Update Profile Modal */}
 			{user?.role === 'student' && user?.id && (
 				<UpdateProfileModal
 					isOpen={isUpdateModalOpen}
 					onClose={handleCloseUpdateModal}
-					studentId={user.id} // Pass the student's actual ID
-					onUpdateSuccess={handleUpdateSuccess} // Pass the callback
+					studentId={user.id}
+					onUpdateSuccess={handleUpdateSuccess}
 				/>
 			)}
 		</>
