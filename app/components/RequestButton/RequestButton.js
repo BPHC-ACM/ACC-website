@@ -10,10 +10,10 @@ export default function RequestButton({ studentId }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [departments, setDepartments] = useState({
-		academic: [],
-		career: [],
+		professor: [],
+		student: [],
 	});
-	const [requestType, setRequestType] = useState('academic');
+	const [requestType, setRequestType] = useState('professor');
 	const [formData, setFormData] = useState({
 		subject: '',
 		details: '',
@@ -53,13 +53,17 @@ export default function RequestButton({ studentId }) {
 		}
 	}
 
+	function handleRequestTypeChange(newType) {
+		setRequestType(newType);
+		setFormData((prev) => ({ ...prev, department: '' }));
+		setErrors((prev) => ({ ...prev, department: undefined }));
+	}
+
 	function validateForm() {
 		const newErrors = {};
 
 		if (!formData.department) {
-			newErrors.department = `Please select a ${
-				requestType === 'academic' ? 'department' : 'career choice'
-			}`;
+			newErrors.department = 'Please select a department';
 		}
 
 		if (!formData.subject) {
@@ -174,34 +178,33 @@ export default function RequestButton({ studentId }) {
 							Create New Chat Request
 						</h2>
 						<p className={styles.subtitle}>
-							Select the type of request and fill in the details
-							below
+							Select the mentor type and fill in the details below
 						</p>
 
 						<Tabs.Root
 							value={requestType}
-							onValueChange={setRequestType}
+							onValueChange={handleRequestTypeChange}
 						>
 							<Tabs.List className={styles.tabs}>
 								<Tabs.Trigger
-									value='academic'
+									value='professor'
 									className={`${styles.tab} ${
-										requestType === 'academic'
+										requestType === 'professor'
 											? styles.tabActive
 											: ''
 									}`}
 								>
-									Academic
+									Professor Mentor
 								</Tabs.Trigger>
 								<Tabs.Trigger
-									value='career'
+									value='student'
 									className={`${styles.tab} ${
-										requestType === 'career'
+										requestType === 'student'
 											? styles.tabActive
 											: ''
 									}`}
 								>
-									Career
+									Student Mentor
 								</Tabs.Trigger>
 							</Tabs.List>
 
@@ -214,9 +217,7 @@ export default function RequestButton({ studentId }) {
 										htmlFor='department'
 										className={styles.label}
 									>
-										{requestType === 'academic'
-											? 'Department'
-											: 'Career Choice'}
+										Department
 									</label>
 									<Select.Root
 										value={formData.department}
@@ -233,13 +234,7 @@ export default function RequestButton({ studentId }) {
 											className={styles.selectTrigger}
 											aria-label='Department'
 										>
-											<Select.Value
-												placeholder={`Select a ${
-													requestType === 'academic'
-														? 'department'
-														: 'career choice'
-												}`}
-											/>
+											<Select.Value placeholder='Select a department' />
 											<Select.Icon>
 												<ChevronDown size={16} />
 											</Select.Icon>

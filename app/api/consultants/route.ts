@@ -12,19 +12,19 @@ export async function GET(request) {
 			query = supabase
 				.from('consultants')
 				.select('name, chamber')
-				.not('email', 'ilike', 'f20%');
-		} else if (type === 'academic') {
+				.eq('type', 'professor');
+		} else if (type === 'professor') {
 			query = supabase
 				.from('consultants')
 				.select('*')
-				.not('email', 'ilike', 'f20%')
-				.eq('department', department);
-		} else if (type === 'career') {
+				.eq('type', 'professor')
+				.like('department', `%${department}%`);
+		} else if (type === 'student') {
 			query = supabase
 				.from('consultants')
 				.select('*')
-				.ilike('email', 'f%')
-				.eq('department', department);
+				.eq('type', 'student')
+				.like('department', `%${department}%`);
 		} else {
 			query = supabase.from('consultants').select('*');
 		}
