@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '@/context/userContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import UpdateProfileModal from './update-profile-modal';
+import { supabase } from '@/utils/supabaseClient';
 import LoginButton from '../loginbutton';
 import styles from './sidebar.module.css';
 import {
