@@ -1,6 +1,58 @@
 'use client';
 import { UserProvider } from '@/context/userContext';
 
+export const metadata = {
+	title: {
+		default: 'Academic Counselling Cell | BITS Pilani, Hyderabad Campus',
+		template: '%s | ACC BPHC',
+	},
+
+	description:
+		'Your dedicated partner in academic success, providing personalized guidance and support throughout your educational journey at BITS Pilani, Hyderabad Campus.',
+
+	keywords: [
+		'BITS Pilani',
+		'Academic Counselling',
+		'Student Support',
+		'Faculty Mentorship',
+		'BPHC',
+	],
+
+	openGraph: {
+		title: 'Academic Counselling Cell | BITS Pilani, Hyderabad Campus',
+		description:
+			'Empowering your academic journey with guidance and resources.',
+		url: 'https://acc-bphc.netlify.app',
+		siteName: 'ACC BPHC',
+		images: [
+			{
+				url: 'https://acc-bphc.netlify.app/acc-logo.png',
+				width: 512,
+				height: 512,
+			},
+		],
+		locale: 'en_US',
+		type: 'website',
+	},
+
+	twitter: {
+		card: 'summary',
+		title: 'Academic Counselling Cell | BITS Pilani, Hyderabad Campus',
+		description:
+			'Empowering your academic journey with guidance and resources.',
+		images: ['https://acc-bphc.netlify.app/acc-logo.png'],
+	},
+
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+		},
+	},
+};
+
 export default function RootLayout({ children }) {
 	return (
 		<html lang='en'>
