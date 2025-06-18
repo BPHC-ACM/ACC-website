@@ -1,5 +1,4 @@
-'use client';
-import { UserProvider } from '@/context/userContext';
+import { Providers } from './providers';
 
 export const metadata = {
 	title: {
@@ -62,7 +61,13 @@ export default function RootLayout({ children }) {
 					rel='stylesheet'
 				/>
 				<title>Academic Counselling Cell | BPHC</title>
-				<link rel='icon' href='/acc-logo.png' />
+				<link
+					rel='icon'
+					type='image/x-icon'
+					href='/acc-small-icon.ico'
+				/>
+				<link rel='icon' type='image/x-icon' href='/acc-icon.ico' />
+				<link rel='icon' type='image/png' href='/acc-icon.png' />
 				<meta
 					name='google-site-verification'
 					content='UBu4QubhSpH5GIt8R1WSvv9Moy-Y71t5w0aBzpzVKyk'
@@ -82,7 +87,7 @@ export default function RootLayout({ children }) {
 				<meta name='author' content='Academic Counselling Cell, BPHC' />
 			</head>
 			<body>
-				<UserProvider>{children}</UserProvider>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);
