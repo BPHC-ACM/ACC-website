@@ -349,7 +349,7 @@ export default function Section1({ setActiveSection }) {
 			<header
 				style={{
 					position: 'relative',
-					minHeight: '100vh',
+					height: '105vh',
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',
