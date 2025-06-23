@@ -54,17 +54,22 @@ const useViewport = () => {
 	const [width, setWidth] = useState(
 		typeof window !== 'undefined' ? window.innerWidth : 1200
 	);
+
 	useEffect(() => {
 		if (typeof window === 'undefined') return;
+
 		const handleWindowResize = () => setWidth(window.innerWidth);
+
 		window.addEventListener('resize', handleWindowResize);
 		return () => window.removeEventListener('resize', handleWindowResize);
 	}, []);
+
 	return {
 		width,
 		isMobile: width < 768,
-		isTablet: width >= 768 && width < 1024,
-		isDesktop: width >= 1024,
+		isTablet: width >= 768 && width < 1099,
+		isLaptop: width >= 1099 && width < 1300,
+		isDesktop: width >= 1300,
 	};
 };
 
@@ -343,13 +348,21 @@ export default function Section1({ setActiveSection }) {
 		return { buttonText, ButtonIcon, targetSection };
 	};
 
+	const height = viewport.isDesktop
+		? '100vh'
+		: viewport.isLaptop
+		? '111vh'
+		: viewport.isTablet
+		? '125vh'
+		: 'auto';
+
 	return (
 		<div style={{ backgroundColor: 'white', position: 'relative' }}>
 			{/* Header */}
 			<header
 				style={{
 					position: 'relative',
-					height: '105vh',
+					height: height,
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'center',

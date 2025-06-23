@@ -44,3 +44,15 @@
 		width: 13rem;
 	}
 }
+
+@media (max-width: 1299px) {
+	.chatsystem {
+		min-height: 110vh;
+	}
+}
+
+@media (max-width: 1099px) {
+	.chatsystem {
+		min-height: 125vh;
+	}
+}
