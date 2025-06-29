@@ -70,3 +70,9 @@ a {
 		zoom: 0.8;
 	}
 }
+
+@media (max-width: 767px) {
+	html {
+		zoom: 1;
+	}
+}
