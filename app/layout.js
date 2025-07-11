@@ -71,7 +71,7 @@ export default function RootLayout({ children }) {
 				<link rel='icon' type='image/png' href='/acc-icon.png' />
 				<meta
 					name='google-site-verification'
-					content='UBu4QubhSpH5GIt8R1WSvv9Moy-Y71t5w0aBzpzVKyk'
+					content='KDTHyNvfLy_eV1Ci1GoZfGVSrAbZh-7U3C8kYDPAYxc'
 				/>
 				<meta
 					name='viewport'
