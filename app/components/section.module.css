@@ -1,7 +1,8 @@
 .section {
-	padding: 20px;
-	background-color: #f8fafc;
-	color: black;
+  padding: 20px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  color: black;
 }
 
 .title {
