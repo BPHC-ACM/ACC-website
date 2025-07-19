@@ -34,3 +34,15 @@
 		margin-left: 0 !important;
 	}
 }
+
+@media (max-width: 1299px) {
+  .main {
+    min-height: 110vh;
+  }
+}
+
+@media (max-width: 1099px) {
+  .main {
+    min-height: 125vh;
+  }
+}

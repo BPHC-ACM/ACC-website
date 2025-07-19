@@ -1,18 +1,19 @@
 .sidebar {
-	background: linear-gradient(180deg, #f7f7f7, #eaeaea);
-	color: #222;
-	width: 30%;
-	padding: 15px;
-	font-family: 'Poppins', sans-serif;
-	display: flex;
-	flex-direction: column;
-	border-right: 1px solid #ddd;
-	box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.05);
-	height: 100%;
-	overflow-y: auto;
-	position: sticky;
-	top: 0;
-	z-index: 10;
+  background: linear-gradient(180deg, #f7f7f7, #eaeaea);
+  color: #222;
+  width: 30%;
+  padding: 15px;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ddd;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.05);
+  height: 100%;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  min-height: inherit;
+  z-index: 10;
 }
 
 .sidebar.hidden {
