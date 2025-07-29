@@ -1336,7 +1336,7 @@ export default function Section1({ setActiveSection }) {
 						}}
 					>
 						© {new Date().getFullYear()} Academic Counselling Cell
-						(ACC), BITS Pilani Hyderabad Campus. All Rights
+						(ACC), BITS Pilani Hyderabad Campus. Designed and Developed by ACM BPHC. All Rights
 						Reserved.
 					</div>
 				</div>
