@@ -55,6 +55,11 @@ const ChatRequest = ({
 					details,
 					student_id,
 					consultant_id,
+					students: {
+						name,
+						identifier,
+						cgpa
+					}
 				})
 			}
 		>
@@ -131,26 +136,26 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 				<div className={styles.modalRow}>
 					<Image
 						src={`/api/avatar?name=${encodeURIComponent(
-							request.name || ''
+							request.students.name || ''
 						)}`}
-						alt={request.name}
+						alt={request.students.name}
 						width={60}
 						unoptimized
 						height={60}
 						className={styles.modalAvatar}
 					/>
 					<div>
-						<h3 className={styles.modalHeader}>{request.name}</h3>
-						{(request.identifier || request.cgpa) && (
+						<h3 className={styles.modalHeader}>{request.students.name}</h3>
+						{(request.students.identifier || request.students.cgpa) && (
 							<p className={styles.modalSubHeader}>
-								{request.identifier
-									? `${request.identifier}`
+								{request.students.identifier
+									? `${request.students.identifier}`
 									: ''}
-								{request.identifier && request.cgpa
+								{request.students.identifier && request.students.cgpa
 									? ' | '
 									: ''}
-								{typeof request.cgpa === 'number'
-									? `CGPA: ${request.cgpa.toFixed(1)}`
+								{typeof request.students.cgpa === 'number'
+									? `CGPA: ${request.students.cgpa.toFixed(1)}`
 									: ''}
 							</p>
 						)}
@@ -278,51 +283,20 @@ export default function ChatRequests({ userId }) {
 	}, [userId]);
 
 	const handleStatusChange = async (id, newStatus) => {
-		try {
-			const response = await fetch('/api/chat-requests', {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					id,
-					status: newStatus,
-					consultant_id: userId,
-					student_id: requests.find((req) => req.id === id)
-						?.student_id,
-				}),
-			});
+		setRequests((prevRequests) =>
+        	prevRequests.filter((request) => request.id !== id)
+    	);
 
-			if (!response.ok)
-				throw new Error('Failed to update request status');
+		setNotification({
+			message:
+				newStatus === 'accepted'
+					? 'Chat request accepted!'
+					: 'Chat request declined.',
+			type: newStatus === 'accepted' ? 'success' : 'error',
+		});
 
-			setRequests((prevRequests) =>
-				prevRequests
-					.filter(
-						(request) =>
-							!(
-								request.id === id &&
-								(newStatus === 'accepted' ||
-									newStatus === 'declined')
-							)
-					)
-					.map((request) =>
-						request.id === id
-							? { ...request, status: newStatus }
-							: request
-					)
-			);
-
-			setNotification({
-				message:
-					newStatus === 'accepted'
-						? 'Chat request accepted!'
-						: 'Chat request declined.',
-				type: newStatus === 'accepted' ? 'success' : 'error',
-			});
-
-			setTimeout(() => setNotification(null), 3000);
-		} catch (error) {
-			console.error('Error updating request status:', error);
-		}
+		const timer = setTimeout(() => setNotification(null), 3000);
+		return () => clearTimeout(timer);
 	};
 
 	return (
@@ -355,15 +329,15 @@ export default function ChatRequests({ userId }) {
 						<ChatRequest
 							key={request.id}
 							id={request.id}
-							name={request.name}
+							name={request.students.name}
 							student_id={request.student_id}
 							consultant_id={request.consultant_id}
 							subject={request.subject}
-							identifier={request.identifier}
-							cgpa={request.cgpa}
+							identifier={request.students.identifier}
+							cgpa={request.students.cgpa}
 							details={request.details}
 							relativeTime={request.relativeTime}
-							onClick={setSelectedRequest}
+							onClick={(requestData) => setSelectedRequest({ ...request, ...requestData })}
 						/>
 					))
 				) : (
@@ -419,9 +393,9 @@ export default function ChatRequests({ userId }) {
 												>
 													<Image
 														src={`/api/avatar?name=${encodeURIComponent(
-															request.name || ''
+															request.students.name || ''
 														)}`}
-														alt={request.name || ''}
+														alt={request.students.name || ''}
 														unoptimized
 														className={
 															styles.avatar
@@ -439,7 +413,7 @@ export default function ChatRequests({ userId }) {
 																styles.name
 															}
 														>
-															{request.name}
+															{request.students.name}
 														</h4>
 													</div>
 													<span
