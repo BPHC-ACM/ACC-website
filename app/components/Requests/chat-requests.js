@@ -355,12 +355,12 @@ export default function ChatRequests({ userId }) {
 						<ChatRequest
 							key={request.id}
 							id={request.id}
-							name={request.name}
+							name={request.students.name}
 							student_id={request.student_id}
 							consultant_id={request.consultant_id}
 							subject={request.subject}
-							identifier={request.identifier}
-							cgpa={request.cgpa}
+							identifier={request.students.identifier}
+							cgpa={request.students.cgpa}
 							details={request.details}
 							relativeTime={request.relativeTime}
 							onClick={setSelectedRequest}
