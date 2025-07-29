@@ -405,7 +405,7 @@ export default function Section1({ setActiveSection }) {
 						position: 'relative',
 						zIndex: 10,
 						textAlign: 'center',
-						padding: '0 1rem',
+						padding: '12rem 1rem',
 						maxWidth: '64rem',
 						margin: '0 auto',
 						display: 'flex',
