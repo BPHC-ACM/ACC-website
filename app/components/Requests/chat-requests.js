@@ -141,16 +141,16 @@ const ChatRequestModal = ({ request, onClose, onStatusChange }) => {
 					/>
 					<div>
 						<h3 className={styles.modalHeader}>{request.name}</h3>
-						{(request.identifier || request.cgpa) && (
+						{(request.students.identifier || request.students.cgpa) && (
 							<p className={styles.modalSubHeader}>
-								{request.identifier
-									? `${request.identifier}`
+								{request.students.identifier
+									? `${request.students.identifier}`
 									: ''}
-								{request.identifier && request.cgpa
+								{request.students.identifier && request.students.cgpa
 									? ' | '
 									: ''}
-								{typeof request.cgpa === 'number'
-									? `CGPA: ${request.cgpa.toFixed(1)}`
+								{typeof request.students.cgpa === 'number'
+									? `CGPA: ${request.students.cgpa.toFixed(1)}`
 									: ''}
 							</p>
 						)}
@@ -439,7 +439,7 @@ export default function ChatRequests({ userId }) {
 																styles.name
 															}
 														>
-															{request.name}
+															{request.students.name}
 														</h4>
 													</div>
 													<span
